@@ -1,18 +1,17 @@
 CREATE TABLE users(
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    email CVARCHAR(150) NOT NULL UNIQUE,
+    email VARCHAR(150) NOT NULL UNIQUE,
     student_number VARCHAR (50) UNIQUE,
     institution VARCHAR (100),
     phone VARCHAR (20),
-    role ENUM('student', 'user') DEFAULT 'student',
+    role ENUM('student', 'admin') DEFAULT 'student',
     status ENUM('active', 'suspended', 'banned') DEFAULT 'active',
     password VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABBLE categories(
+CREATE TABLE categories(
 id INT AUTO_INCREMENT PRIMARY KEY,
 name VARCHAR(100) NOT NULL,
 slug VARCHAR(100) UNIQUE NOT NULL
@@ -28,7 +27,7 @@ isbn VARCHAR (100),
 institution VARCHAR (200) NOT NULL,
 description TEXT,
 price DECIMAL (5,2) NOT NULL,
-condition ENUM('new', 'good', 'fair', 'poor') NOT NULL,
+`condition` ENUM('new', 'good', 'fair', 'poor') NOT NULL,
 status ENUM ('active', 'sold', 'expired', 'flagged') DEFAULT 'active',
 image VARCHAR (255),
 expires_at TIMESTAMP NULL,
@@ -47,3 +46,16 @@ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 FOREIGN KEY (listing_id) REFERENCES listings(id) ON DELETE CASCADE,
 FOREIGN KEY (reported_by) REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE TABLE orders(
+id INT AUTO_INCREMENT PRIMARY KEY,
+listing_id INT NOT NULL,
+buyer_id INT NOT NULL,
+seller_id INT NOT NULL,
+status ENUM('pending', 'completed', 'cancelled') DEFAULT 'pending',
+FOREIGN KEY (listing_id) REFERENCES listings(id) ON DELETE CASCADE,
+FOREIGN KEY (buyer_id) REFERENCES users(id) ON DELETE CASCADE, 
+FOREIGN KEY (seller_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+
