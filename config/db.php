@@ -1,13 +1,10 @@
 <?php
-$require_once __DIR__ . '/../vendor/autoload.php';
+$env = parse_ini_file(__DIR__ . '/../.env');
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
-$dotenv->load();
-
-$servername = $_ENV['DB_HOST'];
-$username = $_ENV['DB_USER'];
-$password = $_ENV['DB_PASS'];
-$dbname = $_ENV['DB_NAME'];
+$servername = $env['DB_HOST'];
+$username = $env['DB_USER'];
+$password = $env['DB_PASS'];
+$dbname = $env['DB_NAME'];
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
