@@ -33,7 +33,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 </li>
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="/public/create-listing.php">Post Listing</a>
+                        <a class="nav-link" href="/public/create-listing.php">Create Listing</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/public/my-listings.php">My Listings</a>
@@ -55,15 +55,15 @@ if (session_status() === PHP_SESSION_NONE) {
                     </li>
                 <?php else: ?>
                     <li class="nav-item">
-                        <a class="nav-link btn btn-outline-dark text-white px-3 me-2" href="/public/login.php">Login</a>
+                        <a class="nav-link" href="/public/login.php">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link btn btn-outline-dark text-white px-3 me-2" href="/public/register.php">Register</a>
+                        <a class="nav-link" href="/public/register.php">Register</a>
                     </li>
                 <?php endif; ?>
             </ul>
-        </div> <!-- end navbar-collapse -->
-    </div> <!-- end container -->
+        </div> 
+    </div> 
 </nav>
 
 <div class="container mt-4">
