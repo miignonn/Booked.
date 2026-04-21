@@ -109,8 +109,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
             $error = "An account with this email already exists.";
         } else {
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $conn->prepare("INSERT INTO users (name, email, student_number, institution, phone, password) VALUES (?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("ssssss", $name, $email, $student_number, $institution, $phone, $hashed_password);
+            $stmt = $conn->prepare("INSERT INTO users (name, email, institution, phone, password) VALUES (?, ?, ?, ?, ?)");
+$stmt->bind_param("sssss", $name, $email, $institution, $phone, $hashed_password);
 
             if ($stmt->execute()) {
                 $success = "Account created! You can now log in.";

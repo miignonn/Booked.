@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE){
 
     //checks is session variable exists
     if(!isset($_SESSION['user_id'])){
-        header("Location: /public/login.php");
+        header("Location: /login.php");
         exit();
     }
 
