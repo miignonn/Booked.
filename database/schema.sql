@@ -2,7 +2,6 @@ CREATE TABLE users(
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(150) NOT NULL UNIQUE,
-    student_number VARCHAR (50) UNIQUE,
     institution VARCHAR (100),
     phone VARCHAR (20),
     role ENUM('student', 'admin') DEFAULT 'student',
