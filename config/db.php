@@ -1,5 +1,8 @@
 <?php
-$env = parse_ini_file(__DIR__ . '/../.env');
+
+$env = parse_ini_file('/Users/mignon/textbook-marketplace/.env');
+
+
 
 $servername = $env['DB_HOST'];
 $username = $env['DB_USER'];
