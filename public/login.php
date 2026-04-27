@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['name'] = $user['name'];
                 $_SESSION['role'] = $user['role'];
-                header('Location: /public/index.php');
+                header('Location: /index.php');
                 exit();
             }
         } else {
@@ -139,7 +139,7 @@ $stmt->bind_param("sssss", $name, $email, $institution, $phone, $hashed_password
                 <a class="nav-link rounded-pill <?= $active_tab === 'login' ? 'active bg-dark' : 'text-muted' ?>" href="#" onclick="showTab('login', this)">Login</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link rounded-pill <?= $active_tab === 'register' ? 'active bg-light' : 'text-muted' ?>" href="#" onclick="showTab('register', this)">Register</a>
+                <a class="nav-link rounded-pill <?= $active_tab === 'register' ? 'active bg-dark' : 'text-muted' ?>" href="#" onclick="showTab('register', this)">Register</a>
             </li>
         </ul>
 
@@ -185,7 +185,7 @@ $stmt->bind_param("sssss", $name, $email, $institution, $phone, $hashed_password
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Email Address <span class="text-danger">*</span></label>
-                    <input type="email" name="email" class="form-control" placeholder="example@institution.ac.za" required>
+                    <input type="email" name="email" class="form-control" placeholder="example@institution.ac.za" autocomplete="off" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Institution</label>
@@ -197,11 +197,11 @@ $stmt->bind_param("sssss", $name, $email, $institution, $phone, $hashed_password
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Password <span class="text-danger">*</span></label>
-                    <input type="password" name="password" class="form-control" placeholder="At least 6 characters" required>
+                    <input type="password" name="password" class="form-control" placeholder="At least 6 characters" autocomplete="new-password" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Confirm Password <span class="text-danger">*</span></label>
-                    <input type="password" name="confirm_password" class="form-control" placeholder="Repeat your password" required>
+                    <input type="password" name="confirm_password" class="form-control" placeholder="Repeat your password" autocomplete="new-password" required>
                 </div>
                 <button type="submit" name="register" class="btn btn-dark w-100">Register</button>
                 <p class="text-center text-muted small mt-3">

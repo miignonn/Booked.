@@ -17,7 +17,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="/public/index.php">
+        <a class="navbar-brand fw-bold" href="/index.php">
             Booked.
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -26,39 +26,39 @@ if (session_status() === PHP_SESSION_NONE) {
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-    <a class="nav-link" href="/public/index.php">Home</a>
+    <a class="nav-link" href="/index.php">Home</a>
 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/public/index.php">Browse</a>
+                    <a class="nav-link" href="/index.php">Browse</a>
                 </li>
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="/public/create-listing.php">Create Listing</a>
+                        <a class="nav-link" href="/create-listing.php">Create Listing</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/public/my-listings.php">My Listings</a>
+                        <a class="nav-link" href="/my-listings.php">My Listings</a>
                     </li>
                     <?php if ($_SESSION['role'] === 'admin'): ?>
                         <li class="nav-item">
-                            <a class="nav-link text-warning" href="/public/admin/dashboard.php">
+                            <a class="nav-link text-warning" href="/admin/dashboard.php">
                                 <i class="bi bi-shield-lock"></i> Admin
                             </a>
                         </li>
                     <?php endif; ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="/public/profile.php">
+                        <a class="nav-link" href="/profile.php">
                             <i class="bi bi-person-circle"></i> <?= htmlspecialchars($_SESSION['name']) ?>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-danger" href="/public/logout.php">Logout</a>
+                        <a class="nav-link text-danger" href="/logout.php">Logout</a>
                     </li>
                 <?php else: ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="/public/login.php">Login</a>
+                        <a class="nav-link" href="/login.php">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/public/register.php">Register</a>
+                        <a class="nav-link" href="/login.php?tab=register">Register</a>
                     </li>
                 <?php endif; ?>
             </ul>
