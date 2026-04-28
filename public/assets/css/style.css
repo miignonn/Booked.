@@ -1,0 +1,72 @@
+.listings-scroll {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.listings-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.listing-card {
+    scroll-snap-align: start;
+    width: 220px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.listing-card:hover {
+    transform: translateY(-4px);
+}
+
+.listing-img-wrap {
+    width: 220px;
+    height: 280px;
+    background: #f0f0f0;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.listing-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.no-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f0f0;
+}
+
+.listing-info {
+    padding: 10px 4px 0;
+}
+
+.listing-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.listing-author {
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 4px;
+}
+
+.listing-price {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0;
+}
