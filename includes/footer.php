@@ -10,10 +10,10 @@
             <div class="col-md-4 mb-3">
                 <h6 class="fw-bold">Quick Links</h6>
                 <ul class="list-unstyled">
-                    <li><a href="/public/index.php" class="text-muted text-decoration-none">Home</a></li>
-                    <li><a href="/public/index.php" class="text-muted text-decoration-none">Browse</a></li>
-                    <li><a href="/public/login.php" class="text-muted text-decoration-none">Login</a></li>
-                    <li><a href="/public/register.php" class="text-muted text-decoration-none">Register</a></li>
+                    <li><a href="/index.php" class="text-muted text-decoration-none">Home</a></li>
+                    <li><a href="/index.php" class="text-muted text-decoration-none">Browse</a></li>
+                    <li><a href="/login.php" class="text-muted text-decoration-none">Login</a></li>
+                    <li><a href="/login.php?tab=register" class="text-muted text-decoration-none">Register</a></li>
                 </ul>
             </div>
             <div class="col-md-4 mb-3">
