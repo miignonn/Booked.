@@ -36,19 +36,24 @@ $img_stmt->bind_param("i", $id);
 $img_stmt->execute();
 $images = $img_stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
+$from = isset($_GET['from']) ? $_GET['from'] : 'home'; 
 ?>
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/index.php">Browse</a></li>
-        <li class="breadcrumb-item"><?=  htmlspecialchars($listing['category_name']) ?></li>
-        <li class="breadcrumb-item"><?= htmlspecialchars($listing['title']) ?></li>
+        <?php if ($from === 'browse'): ?>
+            <li class="breadcrumb-item"><a href="/browse.php">Browse</a></li>
+        <?php else: ?>
+            <li class="breadcrumb-item"><a href="/index.php">Home</a></li>
+        <?php endif; ?>
+        <li class="breadcrumb-item"><?= htmlspecialchars($listing['category_name']) ?></li>
+        <li class="breadcrumb-item active"><?= htmlspecialchars($listing['title']) ?></li>
     </ol>
 </nav>
 
 <div class="row g-5">
 
-    <!-- LEFT: Images -->
+   
     <div class="col-md-6">
         <?php if (!empty($images)): ?>
             <img src="/<?= htmlspecialchars($images[0]['image_path']) ?>" 
@@ -72,7 +77,7 @@ $images = $img_stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             </div>
         <?php endif; ?>
 
-        <!-- Seller info below image -->
+       
         <div class="d-flex align-items-center gap-3 mt-4 pt-3 border-top">
             <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
                  style="width:48px;height:48px;">
@@ -85,7 +90,7 @@ $images = $img_stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         </div>
     </div>
 
-    <!-- RIGHT: Details -->
+    
     <div class="col-md-6">
         <p class="text-muted small mb-1 fw-semibold"><?= htmlspecialchars($listing['category_name']) ?></p>
         <h2 class="fw-bold"><?= htmlspecialchars($listing['title']) ?></h2>
