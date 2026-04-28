@@ -24,7 +24,7 @@ $result = $conn->query($sql);
     <div class="listings-scroll d-flex gap-3 pb-3">
         <?php if ($result && $result->num_rows > 0): ?>
             <?php while ($listing = $result->fetch_assoc()): ?>
-                <div class="listing-card flex-shrink-0" onclick="window.location='/listing.php?id=<?= $listing['id'] ?>&from=home'" ?>'">
+                <div class="listing-card flex-shrink-0" onclick="window.location='/listing.php?id=<?= $listing['id'] ?>&from=home'" ?>
 
                     <div class="listing-img-wrap">
                         <?php if ($listing['image']): ?>
