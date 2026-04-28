@@ -1,6 +1,5 @@
 <?php
 require_once '../includes/header.php';
-require_once '../includes/auth_check.php';
 require_once __DIR__ . '/../config/db.php';
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
@@ -120,9 +119,23 @@ $from = isset($_GET['from']) ? $_GET['from'] : 'home';
             <p class="mt-3 text-muted"><?= nl2br(htmlspecialchars($listing['description'])) ?></p>
         <?php endif; ?>
 
+        <?php if (isset($_SESSION['user_id'])): ?>
         <button class="btn btn-dark w-100 mt-4">
             <i class="bi bi-cart-plus"></i> Add to Cart
         </button>
+        <?php else: ?>
+        <div class="alert alert-dark mt-4">
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-cart fs-3"></i>
+                <div>
+                    <p class="fw-bold mb-1">Books don't add themselves.</p>
+                    <p class="small mb-2">Looks like you're browsing as a guest. Join thousands of students already saving on textbooks.</p>
+                    <a href="/login.php" class="btn btn-dark btn-sm me-2">Login</a>
+                    <a href="/login.php?tab=register" class="btn btn-dark btn-sm">Register - it's free!</a>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
 
         <button class="btn btn-link text-muted text-decoration-none mt-2 w-100"
             onclick="reportListing()">
