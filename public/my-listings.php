@@ -105,14 +105,43 @@ $total = array_sum($status_counts);
             <div class="d-flex gap-2">
                 <a href="/edit-listing.php?id=<?= $listing['id'] ?>" 
                    class="btn btn-sm btn-outline-dark">Edit</a>
-                <form method="POST" onsubmit="return confirm('Delete this listing?')">
-                    <input type="hidden" name="delete_id" value="<?= $listing['id'] ?>">
-                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                </form>
+                
+                    <!-- Delete Button -->
+                 <button type="button" class="btn btn-sm btn-outline-danger"  
+                   onclick="confirmDelete(<?= $listing['id'] ?>)">Delete</button>
+                
             </div>
 
         </div>
     <?php endforeach; ?>
 <?php endif; ?>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-3">
+            <div class="modal-body text-center p-4">
+                <i class="bi bi-trash fs-1 text-danger"></i>
+                <h5 class="fw-bold mt-3">Delete this listing?</h5>
+                <p class="text-muted">This action cannot be undone.</p>
+                <form method="POST" id="delete-form">
+                    <input type="hidden" name="delete_id" id="delete-id-input">
+                    <div class="d-flex gap-2 justify-content-center mt-3">
+                        <button type="button" class="btn btn-outline-secondary" 
+                            data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function confirmDelete(id) {
+    document.getElementById('delete-id-input').value = id;
+    new bootstrap.Modal(document.getElementById('deleteModal')).show();
+}
+</script>
 
 <?php require_once '../includes/footer.php'; ?>
