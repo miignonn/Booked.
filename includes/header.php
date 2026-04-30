@@ -27,40 +27,56 @@ if (session_status() === PHP_SESSION_NONE) {
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
     <a class="nav-link" href="/index.php">Home</a>
-</li>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/index.php">Browse</a>
                 </li>
                 <?php if (isset($_SESSION['user_id'])): ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/create-listing.php">Create Listing</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/my-listings.php">My Listings</a>
-                    </li>
-                    <?php if ($_SESSION['role'] === 'admin'): ?>
-                        <li class="nav-item">
-                            <a class="nav-link text-warning" href="/admin/dashboard.php">
-                                <i class="bi bi-shield-lock"></i> Admin
-                            </a>
-                        </li>
-                    <?php endif; ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/profile.php">
-                            <i class="bi bi-person-circle"></i> <?= htmlspecialchars($_SESSION['name']) ?>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-danger" href="/logout.php">Logout</a>
-                    </li>
-                <?php else: ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login.php">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login.php?tab=register">Register</a>
-                    </li>
-                <?php endif; ?>
+                <li class="nav-item">
+                   <a class="nav-link" href="/create-listing.php">Create Listing</a>
+                </li>
+    <?php if ($_SESSION['role'] === 'admin'): ?>
+        <li class="nav-item">
+            <a class="nav-link text-warning" href="/admin/dashboard.php">
+                <i class="bi bi-shield-lock"></i> Admin
+            </a>
+        </li>
+    <?php endif; ?>
+    
+    
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" 
+           href="#" role="button" data-bs-toggle="dropdown">
+            <div class="bg-dark rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
+                 style="width:32px;height:32px;font-size:0.85rem;">
+                <?= strtoupper(substr($_SESSION['username'] ?? $_SESSION['name'], 0, 1)) ?>
+            </div>
+            <?= htmlspecialchars($_SESSION['username'] ?? $_SESSION['name']) ?>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="/profile.php">
+                <i class="bi bi-person"></i> Profile
+            </a></li>
+            <li><a class="dropdown-item" href="/my-listings.php">
+                <i class="bi bi-list-ul"></i> My Listings
+            </a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="/logout.php">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </a></li>
+        </ul>
+    </li>
+
+<?php else: ?>
+    <li class="nav-item">
+        <a class="nav-link" href="/login.php">Login</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/login.php?tab=register">Register</a>
+    </li>
+<?php endif; ?>
+                   
+                 
             </ul>
         </div> 
     </div> 
