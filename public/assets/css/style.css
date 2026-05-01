@@ -1,3 +1,17 @@
+body{
+    background-color: #f2e9db;
+}
+
+.navbar {
+    background-color: #f2e9db !important;
+}
+
+footer {
+    background-color: #f2e9db !important;
+}
+
+
+
 .listings-scroll {
     overflow-x: auto;
     scroll-snap-type: x mandatory;

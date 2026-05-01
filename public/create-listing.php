@@ -191,7 +191,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
         
         <input type="hidden" name="status" id="status" value="active">
-<div class="d-flex flex-column gap-2 mt-2">
+    <div class="d-flex flex-column gap-2 mt-2">
     <button type="submit" class="btn btn-dark w-100"
         onclick="document.getElementById('status').value='active'">
         Publish Listing
