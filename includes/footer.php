@@ -1,6 +1,6 @@
     </div> <!-- end container -->
 
-<footer class="bg-white border-top mt-5 py-4">
+<footer class="border-top mt-5 py-4">
     <div class="container">
         <div class="row">
             <div class="col-md-4 mb-3">
