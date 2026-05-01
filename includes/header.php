@@ -29,7 +29,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <a class="nav-link" href="/index.php">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/index.php">Browse</a>
+                    <a class="nav-link" href="/browse.php">Browse</a>
                 </li>
                 <?php if (isset($_SESSION['user_id'])): ?>
                 <li class="nav-item">
