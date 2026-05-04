@@ -5,7 +5,7 @@ require_once __DIR__ . '/../config/db.php';
 
 //get filter values from URL
 $filter_institution = isset($_GET['institution']) ? trim($_GET['institution']) : '';
-$filter_faculty = isset($_GET['faculty']) ? trim($_GET['faculty']) : '';
+$filter_category = isset($_GET['category']) ? trim($_GET['category']) : '';
 $filter_condition = isset($_GET['condition']) ? trim($_GET['condition']) : '';
 $filter_price_max = isset($_GET['price_max']) ? (float)$_GET['price_max'] : '';
 $filter_edition = isset($_GET['edition']) ? trim($_GET['edition']) : '';
@@ -22,14 +22,14 @@ if ($filter_institution) {
     $types .= 's';
 }
 
-if($filter_faculty){
+if($filter_category){
     $where[] = "listings.category_id = ?";
-    $params[] = $filter_faculty;
+    $params[] = $filter_category;
     $types .= 'i';
 }
 
 if ($filter_condition){
-    $where[] = "listings.codnition = ?";
+    $where[] = "listings.condition = ?";
     $params[] = $filter_condition;
     $types .= 's';
 }
@@ -121,7 +121,7 @@ $categories = $conn->query("SELECT * FROM categories ORDER BY name ASC");
                     <input class="form-check-input" type="radio" name="category"
                            value="<?= $cat['id'] ?>"
                            id="cat_<?= $cat['id'] ?>"
-                           <?= $filter_faculty == $cat['id'] ? 'checked' : '' ?>
+                           <?= $filter_category == $cat['id'] ? 'checked' : '' ?>
                            onchange="this.form.submit()">
                     <label class="form-check-label" for="cat_<?= $cat['id'] ?>">
                         <?= htmlspecialchars($cat['name']) ?>
@@ -184,7 +184,7 @@ $categories = $conn->query("SELECT * FROM categories ORDER BY name ASC");
         </div>
     </div>
 
-    <?php if (!empty(array_filter([$filter_institution, $filter_faculty, $filter_condition, $filter_edition, $filter_price_max]))): ?>
+    <?php if (!empty(array_filter([$filter_institution, $filter_category, $filter_condition, $filter_edition, $filter_price_max]))): ?>
         <a href="/browse.php" class="btn btn-outline-secondary btn-sm w-100">Clear Filters</a>
     <?php endif; ?>
 
@@ -201,7 +201,7 @@ $categories = $conn->query("SELECT * FROM categories ORDER BY name ASC");
                 <p class="text-muted small mb-0"><?= $total ?> books available</p>
             </div>
             <div>
-                <select class="form-select form-select-sm" onchange="window.location='?sort='+this.value+'&<?= http_build_query(array_filter(['institution'=>$filter_institution,'faculty'=>$filter_faculty,'condition'=>$filter_condition,'edition'=>$filter_edition,'price_max'=>$filter_price_max])) ?>'">
+                <select class="form-select form-select-sm" onchange="window.location='?sort='+this.value+'&<?= http_build_query(array_filter(['institution'=>$filter_institution,'faculty'=>$filter_category,'condition'=>$filter_condition,'edition'=>$filter_edition,'price_max'=>$filter_price_max])) ?>'">
                     <option value="newest" <?= $sort === 'newest' ? 'selected' : '' ?>>Sort: Newest</option>
                     <option value="price_asc" <?= $sort === 'price_asc' ? 'selected' : '' ?>>Price: Low to High</option>
                     <option value="price_desc" <?= $sort === 'price_desc' ? 'selected' : '' ?>>Price: High to Low</option>
@@ -243,11 +243,8 @@ $categories = $conn->query("SELECT * FROM categories ORDER BY name ASC");
 <script>
 // hide sidebar when filters are applied, show toggle button
 const sidebar = document.getElementById('filter-sidebar');
-const hasFilters = <?= !empty(array_filter([$filter_institution, $filter_faculty, $filter_condition, $filter_edition, $filter_price_max])) ? 'true' : 'false' ?>;
+const hasFilters = <?= !empty(array_filter([$filter_institution, $filter_category, $filter_condition, $filter_edition, $filter_price_max])) ? 'true' : 'false' ?>;
 
-if (hasFilters) {
-    sidebar.style.display = 'none';
-}
 
 function toggleSection(id) {
     const section = document.getElementById(id);
@@ -256,10 +253,6 @@ function toggleSection(id) {
     section.classList.toggle('d-none');
     icon.classList.toggle('bi-chevron-up');
     icon.classList.toggle('bi-chevron-down');
-}
-
-function toggleFilter() {
-    document.getElementById('filter-sidebar').classList.toggle('d-none');
 }
 
 </script>
