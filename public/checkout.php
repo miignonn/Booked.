@@ -68,6 +68,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
 <?php endif; ?>
 
+<div class="d-flex align-items-center mb-5">
+    <div class="d-flex align-items-center gap-2">
+        <div class="rounded-circle bg-dark text-white d-flex align-items-center justify-content-center fw-bold"
+             style="width:32px;height:32px;">1</div>
+        <span class="fw-bold">Cart</span>
+    </div>
+
+    <div class="flex-grow-1 border-top mx-3"></div>
+    <div class="d-flex align-items-center gap-2">
+        <div class="rounded-circle bg-dark text-white d-flex align-items-center justify-content-center"
+             style="width:32px;height:32px;">2</div>
+        <span class="fw-bold">Checkout</span>
+    </div>
+
+    <div class="flex-grow-1 border-top mx-3"></div>
+    <div class="d-flex align-items-center gap-2">
+        <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center"
+             style="width:32px;height:32px;">3</div>
+        <span class="text-muted">Confirmed</span>
+    </div>
+
+</div>
+
 <form method="POST">
 <div class="row g-4">
 
