@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../config/db.php';
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -42,6 +44,21 @@ if (session_status() === PHP_SESSION_NONE) {
             </a>
         </li>
     <?php endif; ?>
+
+    <li class="nav-item">
+    <a class="nav-link" href="/cart.php">
+        <i class="bi bi-cart"></i>
+        <?php
+        if (isset($_SESSION['user_id'])) {
+            $cart_count = $conn->prepare("SELECT COUNT(*) as count FROM cart WHERE user_id = ?");
+            $cart_count->bind_param("i", $_SESSION['user_id']);
+            $cart_count->execute();
+            $count = $cart_count->get_result()->fetch_assoc()['count'];
+            if ($count > 0) echo '<span class="badge bg-dark">' . $count . '</span>';
+        }
+        ?>
+    </a>
+</li>
     
     
     <li class="nav-item dropdown">
