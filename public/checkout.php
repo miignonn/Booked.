@@ -36,6 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     if(empty($campus) || empty($preferred_time)){
         $error = "Please fill in all required fields";
     } else {
+
+    $order_id = 0;
         //loop through cart and create orders
         foreach($cart_items as $item){
             $seller_id = $item['user_id'];
