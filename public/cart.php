@@ -10,6 +10,7 @@ $user_id = $_SESSION['user_id'];
 if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['listing_id'])){
     $listing_id = (int)$_POST['listing_id'];
 
+
     //check if already in cart
     $check = $conn->prepare("SELECT id FROM cart WHERE user_id = ? AND listing_id =?");
     $check->bind_param("ii", $user_id, $listing_id);
@@ -21,7 +22,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['listing_id'])){
         $insert->bind_param("ii", $user_id, $listing_id);
         $insert->execute();
     }
-    header('Location: /cart.php');
+    header('Location: /listing.php?id=' . $listing_id . '&added=1');
     exit();
 }
 
@@ -127,10 +128,9 @@ $total = array_sum(array_column($cart_items, 'price'));
                     <!-- Price & Remove -->
                     <div class="text-end">
                         <p class="fw-bold mb-2">R<?= number_format($item['price'], 2) ?></p>
-                        <a href="/cart.php?remove=<?= $item['cart_id'] ?>" 
-                           class="text-danger" onclick="return confirm('Remove this item?')">
-                            <i class="bi bi-trash"></i>
-                        </a>
+                       <button onclick="confirmRemove(<?= $item['cart_id'] ?>)" class="btn btn-link text-danger p-0">
+                         <i class="bi bi-trash"></i>
+                    </button>
                     </div>
 
                 </div>
@@ -160,6 +160,30 @@ $total = array_sum(array_column($cart_items, 'price'));
     </div>
 
 </div>
+
 <?php endif; ?>
+<div class="modal fade" id="removeModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-3">
+            <div class="modal-body text-center p-4">
+                <i class="bi bi-trash fs-1 text-danger"></i>
+                <h5 class="fw-bold mt-3">Remove this book?</h5>
+                <p class="text-muted">It will be removed from your cart.</p>
+                <div class="d-flex gap-2 justify-content-center mt-3">
+                    <button type="button" class="btn btn-outline-secondary" 
+                        data-bs-dismiss="modal">Cancel</button>
+                    <a id="remove-link" href="#" class="btn btn-danger">Yes, Remove</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function confirmRemove(cartId) {
+    document.getElementById('remove-link').href = '/cart.php?remove=' + cartId;
+    new bootstrap.Modal(document.getElementById('removeModal')).show();
+}
+</script>
 
 <?php require_once '../includes/footer.php'; ?>
