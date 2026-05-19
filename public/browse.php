@@ -1,5 +1,8 @@
 <?php
 require_once '../includes/header.php';
+require_once '../includes/auth_check.php';
+require_once __DIR__ . '/../includes/functions.php';
+
 
 //get filter values from URL
 $filter_institution = isset($_GET['institution']) ? trim($_GET['institution']) : '';
