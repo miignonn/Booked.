@@ -24,6 +24,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['listing_id'])){
         $insert->bind_param("ii", $user_id, $listing_id);
         $insert->execute();
     }
+    set_flash('succes', 'Item added to cart!');
     header('Location: /listing.php?id=' . $listing_id . '&added=1');
     exit();
 }
@@ -34,6 +35,7 @@ if(isset($_GET['remove'])){
     $del = $conn->prepare("DELETE FROM cart WHERE id = ? AND user_id = ?");
     $del->bind_param("ii", $remove_id, $user_id);
     $del->execute();
+    set_flash('success', 'Item removed from cart.');
     header('Location: /cart.php');
     exit();
 }

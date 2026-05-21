@@ -11,6 +11,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['mark_received'])){
     $stmt = $conn->prepare("UPDATE orders SET status = 'completed' WHERE id = ? AND buyer_id = ?");
     $stmt->bind_param("ii", $order_id, $user_id);
     $stmt->execute();
+    set_flash('success', 'Order status updated');
     header('Location: /orders.php');
     exit();
 } 
@@ -21,6 +22,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirm_handover'])){
     $stmt = $conn->prepare("UPDATE orders SET status = 'handed_over' WHERE id = ? AND seller_id =?");
     $stmt->bind_param("ii", $order_id, $user_id);
     $stmt->execute();
+    set_flash('success', 'Order marked as complete.');
     header('Location: /orders.php');
     exit();
 }

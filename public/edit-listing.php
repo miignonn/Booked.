@@ -8,6 +8,7 @@ $success = '';
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 if ($id == 0) {
+    set_flash('danger', 'Listing not found.');
     header('Location: /my-listings.php');
     exit();
 }
@@ -19,6 +20,7 @@ $stmt->execute();
 $listing = $stmt->get_result()->fetch_assoc();
 
 if ($listing['status'] == 'sold') {
+    set_flash('danger', 'You are not authorised to edit this listing.');
     header('Location: /my-listings.php');
     exit();
 }
@@ -105,6 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $img_stmt->execute();
                 }
             }
+            set_flash('success', 'Listing updated successfully!');
             header('Location: /my-listings.php');
             exit();
         } else {

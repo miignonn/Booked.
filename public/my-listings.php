@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_id'])) {
     $del = $conn->prepare("DELETE FROM listings WHERE id = ? AND user_id = ?");
     $del->bind_param("ii", $delete_id, $user_id);
     $del->execute();
+    set_flash('warning', 'Listing deleted');
     header('Location: /my-listings.php');
     exit();
 }

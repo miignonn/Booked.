@@ -55,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
             }
             $order_id = $conn->insert_id;
         }
+        set_flash('success', 'Order placed! Complete your payment below.');
         header('Location: /pay.php?order_id=' . $order_id);
         exit();
     }

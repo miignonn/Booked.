@@ -77,6 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $img_stmt->execute();
             }
 
+            set_flash('success', 'Listing created successfully!');
             header('Location: /my-listings.php');
             exit();
         } else {

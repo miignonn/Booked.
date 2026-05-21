@@ -109,4 +109,11 @@ require_once __DIR__ . '/../config/db.php';
     </div> 
 </nav>
 
+<?php $flash = get_flash(); if ($flash):?>
+<div class="alert alert-<?= $flash['type'] ?> alert-dismissable fade show mt-3" role="alert">
+    <?= htmlspecialchars($flash['message']) ?>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+<?php endif; ?>
 <div class="container mt-4">
+
