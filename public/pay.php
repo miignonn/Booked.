@@ -13,7 +13,7 @@ $order_id = isset($_GET['order_id']) ? (int)$_GET['order_id'] : 0;
 if (!$order_id){
     header('Location: /checkout.php');
 }
-$paystackPublicKey = getenv['PAYSTACK_PUBLIC_KEY'];
+$paystackPublicKey = getenv('PAYSTACK_PUBLIC_KEY');
 
 //fetch order with listings title and buyer email
 //buyer_id session prevents buyer from loading someone else's order 
