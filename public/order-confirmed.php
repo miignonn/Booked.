@@ -1,6 +1,6 @@
 <?php 
-require_once '../includes/header.php';
-require_once '../includes/auth_check.php';
+require_once __DIR__ . '/../includes/auth_check.php';
+require_once __DIR__ .'/../config/db.php';
 
 $order_id = isset($_GET['order_id']) ? (int)$_GET['order_id'] : 0;
 
@@ -26,6 +26,8 @@ if (!$order){
     header('Location: /index.php');
     exit();
 }
+
+require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <!--- Step bar --->

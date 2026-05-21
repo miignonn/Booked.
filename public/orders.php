@@ -1,6 +1,6 @@
 <?php 
-require_once '../includes/header.php';
-require_once '../includes/auth_check.php';
+require_once __DIR__ .'/../includes/auth_check.php';
+require_once __DIR__ .'/../config/db.php';
 require_once __DIR__ .'/../includes/functions.php';
 
 $user_id = $_SESSION['user_id'];
@@ -55,6 +55,8 @@ ORDER BY orders.created_at DESC
 $selling_stmt->bind_param("i", $user_id);
 $selling_stmt->execute();
 $selling_orders = $selling_stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+require_once __DIR__ . '/../includes/header.php';
 ?>
 <h4 class="fw-bold mb-1">My Orders</h4>
 <p class="text-muted small mb-0">Track your buying and selling activity</p>

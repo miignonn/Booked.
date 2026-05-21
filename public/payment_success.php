@@ -1,8 +1,4 @@
-All checkpoints pass with no errors. So the full file is working correctly — the redirect to `index.php` was coming from the old debug version. 
 
-Now replace the entire file with the clean final version — no more debug lines:
-
-```php
 <?php
 session_start();
 require_once __DIR__ . '/../includes/auth_check.php';

@@ -1,6 +1,6 @@
 <?php
-require_once '../includes/header.php';
-require_once '../includes/auth_check.php';
+require_once __DIR__ .'/../includes/auth_check.php';
+require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ .'/../includes/functions.php';
 
 $error = '';
@@ -112,6 +112,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 }
+
+require_once __DIR__ . '/../includes/header.php';
 ?>
 
 

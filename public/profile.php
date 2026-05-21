@@ -1,6 +1,6 @@
 <?php 
-require_once '../includes/header.php';
-require_once '../includes/auth_check.php';
+require_once __DIR__ .'/../includes/auth_check.php';
+require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ .'/../includes/functions.php';
 
 $user_id = $_SESSION['user_id'];
@@ -75,6 +75,8 @@ if(empty($current_password) || empty($new_password) || empty($confirm_password))
         }
     }
 }
+
+require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <div class="row justify-content-center">

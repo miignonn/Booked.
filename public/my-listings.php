@@ -1,6 +1,6 @@
 <?php
-require_once '../includes/header.php';
-require_once '../includes/auth_check.php';
+require_once __DIR__. '/../includes/auth_check.php';
+require_once __DIR__ .'/../config/db.php';
 require_once __DIR__ .'/../includes/functions.php';
 
 $user_id = $_SESSION['user_id'];
@@ -38,6 +38,8 @@ while ($row = $count_result->fetch_assoc()) {
     $status_counts[$row['status']] = $row['count'];
 }
 $total = array_sum($status_counts);
+
+require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">

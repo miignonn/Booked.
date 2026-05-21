@@ -1,5 +1,4 @@
-<?php 
-require_once '../includes/header.php'; 
+<?php  
 require_once __DIR__ . '/../config/db.php';
 
 $sql = "SELECT listings.*, users.name AS seller_name 
@@ -9,6 +8,7 @@ WHERE listings.status = 'active'
 ORDER BY listings.created_at DESC";
 
 $result = $conn->query($sql);
+require_once __DIR__. '/../includes/header.php';
 ?>
 
 <div>

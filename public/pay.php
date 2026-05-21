@@ -45,8 +45,6 @@ if ($order['status'] !== 'pending'){
 $amoutnInCents = (int)($order['total_price'] * 100);
 ?>
 
-<?php require_once '../includes/header.php' ?>
-
 <div class="payment-page">
     <div class="payment-col">
 

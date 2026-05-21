@@ -113,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
         }
     }
 }
-require_once '../includes/header.php';
+require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <div class="row justify-content-center mt-5">
