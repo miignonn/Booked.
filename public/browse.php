@@ -1,5 +1,4 @@
 <?php
-require_once '../includes/header.php';
 require_once __DIR__ . '/../includes/functions.php';
 
 
@@ -80,6 +79,8 @@ $total = count($listings);
 
 //fetch categories for filter dropdown
 $categories = $conn->query("SELECT * FROM categories ORDER BY name ASC");
+
+require_once '../includes/header.php';
 
 ?>
 

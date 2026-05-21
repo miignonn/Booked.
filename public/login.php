@@ -1,5 +1,6 @@
 <?php
-require_once '../includes/header.php';
+session_start();
+require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ .'/../includes/functions.php';
 
 $error = '';
@@ -112,6 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
         }
     }
 }
+require_once '../includes/header.php';
 ?>
 
 <div class="row justify-content-center mt-5">
