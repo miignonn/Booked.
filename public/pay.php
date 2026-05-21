@@ -15,7 +15,7 @@ if (!$order_id){
 }
 
 $env = parse_ini_file(__DIR__ . '/../.env');
-$paystackPublicKey = $env['PAYSTACK_PUBLIC_KEY'];
+$paystackPublicKey = getenv['PAYSTACK_PUBLIC_KEY'];
 
 //fetch order with listings title and buyer email
 //buyer_id session prevents buyer from loading someone else's order 

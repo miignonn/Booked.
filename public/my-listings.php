@@ -110,7 +110,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <?php if($listing['status'] == 'sold'): ?>
                     <button class="btn btn-sm btn-outline-secondary" disabled>Edit</button>
                     <?php else: ?>
-                        <a href="/edit-listing.php?id=<? $listing['id']?>"
+                        <a href="/edit-listing.php?id=<?= $listing['id']?>"
                         class="btn btn-sm btn-outline-dark">Edit</a>
                         <?php endif; ?>
 
