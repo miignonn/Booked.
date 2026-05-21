@@ -35,7 +35,7 @@ require_once __DIR__. '/../includes/header.php';
     </div>
 
     <div class="right">
-        <img src="assets/images/logo.png" alt="" />
+        <img src="/assets/images/logo.png" alt="" />
     </div>
 
     <div class="bg-color"></div>
