@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once __DIR__ . '/../includes/auth_check.php';
 require_once __DIR__ . '/../config/db.php';
 
@@ -41,6 +40,8 @@ if ($order['status'] !== 'pending'){
 }
 
 $amoutnInCents = (int)($order['total_price'] * 100);
+
+require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <div class="payment-page">

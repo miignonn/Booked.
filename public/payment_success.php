@@ -1,13 +1,8 @@
 
 <?php
-session_start();
 require_once __DIR__ . '/../includes/auth_check.php';
 require_once __DIR__ . '/../config/db.php';
 
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
-}
 
 $reference = isset($_GET['reference']) ? trim($_GET['reference']) : '';
 $order_id  = isset($_GET['order_id'])  ? (int)$_GET['order_id']  : 0;
@@ -17,8 +12,7 @@ if (!$reference || !$order_id) {
     exit;
 }
 
-$env = parse_ini_file(__DIR__ . '/../.env');
-$paystackSecretKey = $env['PAYSTACK_SECRET_KEY'];
+$paystackSecretKey = getenv('PAYSTACK_SECRET_KEY');
 
 $curl = curl_init();
 curl_setopt_array($curl, [
@@ -64,4 +58,6 @@ $clear->execute();
 
 header("Location: order-confirmed.php?order_id=" . $order_id);
 exit;
+
+
 
