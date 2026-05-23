@@ -268,11 +268,10 @@ require_once __DIR__ . '/../includes/header.php';
 <script>
 
     function openFilters(){
-    document.getElementById('browse-drawer');
-    document.getElementById('browse-overlay');
-    drawer.style.cssText = 'display: flex !important; flex-direction: column;';
-    overlay.style.display = 'block';
-    document.body.style.overflow = 'hidden';
+    document.getElementById('browse-drawer').style.display = 'flex';
+    document.getElementById('browse-drawer').style.flexDirection = 'column';
+   document.getElemetById('browse-overlay').style.display = 'block';
+   document.body.style.overflow = 'hidden';
     }
 
     function closeFilter(){
