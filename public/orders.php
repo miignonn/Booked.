@@ -5,28 +5,6 @@ require_once __DIR__ .'/../includes/functions.php';
 
 $user_id = $_SESSION['user_id'];
 
-if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['mark_received'])){
-    verify_csrf();
-    $order_id = (int)$_POST['order_id'];
-    $stmt = $conn->prepare("UPDATE orders SET status = 'completed' WHERE id = ? AND buyer_id = ?");
-    $stmt->bind_param("ii", $order_id, $user_id);
-    $stmt->execute();
-    set_flash('success', 'Order status updated');
-    header('Location: /orders.php');
-    exit();
-} 
-
-if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirm_handover'])){
-    verify_csrf();
-    $order_id = (int)$_POST['order_id'];
-    $stmt = $conn->prepare("UPDATE orders SET status = 'handed_over' WHERE id = ? AND seller_id =?");
-    $stmt->bind_param("ii", $order_id, $user_id);
-    $stmt->execute();
-    set_flash('success', 'Order marked as complete.');
-    header('Location: /orders.php');
-    exit();
-}
-
 //orders as the buyer
 $buying_stmt = $conn->prepare("
 SELECT orders.*, listings.title, listings.image, 
@@ -107,15 +85,6 @@ require_once __DIR__ . '/../includes/header.php';
                     <span class="badge bg-<?= $order['status'] === 'completed' ? 'success' : ($order['status'] == 'handed_over' ? 'info' : 'warning text-dark') ?> mb-2">
                         <?= ucfirst(str_replace('_',' ', $order['status'])) ?>
                     </span>
-                    <?php if ($order['status'] == 'handed_over') : ?>
-                        <form method="POST" class="mt-1">
-                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
-                            <input type="hidden" name="order_id" value="<?= $order['id'] ?>">
-                            <button type="submit" name="mark_received" class="btn btn-dark btn-sm">
-                                Mark as Received
-                            </button>
-                        </form>
-                        <?php endif; ?>
                 </div>
             </div>
         <?php endforeach; ?>
@@ -157,15 +126,6 @@ require_once __DIR__ . '/../includes/header.php';
                     <span class="badge bg-<?= $order['status'] == 'completed' ? 'success' : ($order['status'] == 'handed_over' ? 'info' : 'warning text-dark') ?> mb-2">
                         <?= ucfirst(str_replace('_',' ', $order['status'])) ?>
                     </span>
-                    <?php if ($order['status'] == 'pending') :?>
-                        <form method="POST" class="mt-1">
-                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
-                            <input type="hidden" name="order_id" value="<?= $order['id'] ?>">
-                            <button type="submit" name="confirm_handover" class="btn btn-dark btn-sm">
-                                Confirm Handover
-                            </button>
-                        </form>
-                        <?php endif; ?>
                 </div>
             </div>
         <?php endforeach; ?>

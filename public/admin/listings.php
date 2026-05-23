@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } elseif ($action == 'set_status') {
         // Whitelist allowed statuses before updating
         $new_status      = $_POST['new_status'] ?? '';
-        $allowed_statuses = ['active', 'draft', 'sold', 'expired', 'flagged'];
+        $allowed_statuses = ['active', 'draft', 'sold', 'flagged'];
 
         if (in_array($new_status, $allowed_statuses, true)) {
             $stmt = $conn->prepare("UPDATE listings SET status = ? WHERE id = ?");
@@ -129,7 +129,6 @@ while ($row = $count_result->fetch_assoc()) {
         'active'  => ['label' => 'Active',          'icon' => 'bi-check-circle'],
         'sold'    => ['label' => 'Sold',             'icon' => 'bi-bag-check'],
         'draft'   => ['label' => 'Draft',            'icon' => 'bi-pencil'],
-        'expired' => ['label' => 'Expired',          'icon' => 'bi-clock'],
         'flagged' => ['label' => 'Flagged',          'icon' => 'bi-flag'],
     ];
     $total_all = array_sum($status_counts);
@@ -162,7 +161,6 @@ while ($row = $count_result->fetch_assoc()) {
         <option value="active"  <?= $filter_status == 'active'  ? 'selected' : '' ?>>Active</option>
         <option value="draft"    <?= $filter_status == 'draft'    ? 'selected' : '' ?>>Draft</option>
         <option value="sold" <?= $filter_status == 'sold' ? 'selected' : '' ?>>Sold</option>
-        <option value="expired" <?= $filter_status == 'expired' ? 'selected' : '' ?>>Expired</option>
         <option value="flagged" <?= $filter_status == 'flagged' ? 'selected' : '' ?>>Flagged</option>
     </select>
 
