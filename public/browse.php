@@ -295,7 +295,6 @@ function toggleSection(sectionId, iconId) {
 function toggleFilterSidebar() {
     const sidebar  = document.getElementById('filter-sidebar');
     const backdrop = document.getElementById('browse-backdrop');
-    sidebar.classList.toggle('d-none');
     sidebar.classList.toggle('browse-sidebar--open');
     backdrop.classList.toggle('browse-backdrop--visible');
     document.body.classList.toggle('browse-no-scroll');
