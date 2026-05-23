@@ -99,7 +99,7 @@ require_once __DIR__ . '/../includes/header.php';
 <div class="browse-layout">
  
     <!-- Filter Sidebar -->
-    <aside class="browse-sidebar" id="filter-sidebar">
+    <aside class="browse-sidebar d-none d-md-block" id="filter-sidebar">
  
         <!-- Mobile close button -->
         <div class="browse-sidebar__close d-md-none">
@@ -295,6 +295,7 @@ function toggleSection(sectionId, iconId) {
 function toggleFilterSidebar() {
     const sidebar  = document.getElementById('filter-sidebar');
     const backdrop = document.getElementById('browse-backdrop');
+    sidebar.classList.toggle('d-none');
     sidebar.classList.toggle('browse-sidebar--open');
     backdrop.classList.toggle('browse-backdrop--visible');
     document.body.classList.toggle('browse-no-scroll');
