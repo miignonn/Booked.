@@ -12,6 +12,16 @@ $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
 
+//if banned - delete account and log out
+if ($user['status'] === 'banned'){
+    $del = $conn->prepare("DELETE FROM users WHERE id = ?");
+    $del->bind_param("i", $user_id);
+    $del->execute();
+    session_destroy();
+    header('Location: /login.php?message=banned');
+    exit();
+}
+
 // handle password change
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['change_password'])){
 verify_csrf();
@@ -76,76 +86,130 @@ if(empty($current_password) || empty($new_password) || empty($confirm_password))
     }
 }
 
+//suspension details
+$is_suspended = $user['status'] === 'suspended';
+$suspended_until = null;
+$can_list = true;
+
+if ($is_suspended){
+    //find when most recent warning was issued via reports
+    $sus_stmt = $conn->prepare("
+    SELECT MAX(r.created_at) AS last_warned
+    FROM reports r
+    JOIN listings l ON r.listing_id = l.id
+    WHERE l.user_id = ? AND r.status = 'reviewed'
+    ");
+
+    $sus_stmt->bind_param("i", $user_id);
+    $sus_stmt->execute();
+    $sus_row = $sus_stmt->get_result()->fetch_assoc();
+    $last_warned = $sus_row['last warned'] ?? $user['created_at'];
+    $suspended_until = date('d M Y', strtotime($last_warned. ' + 30 days'));
+    $can_list = strtotime($last_warned. ' + 30 days') < time();
+}
+
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
-<div class="row justify-content-center">
-    <div class="col-md-6">
-
-        <!-- Avatar -->
-        <div class="text-center mb-4">
-            <div class="bg-dark rounded-circle d-inline-flex align-items-center justify-content-center text-white fw-bold mb-3"
-                 style="width:80px;height:80px;font-size:2rem;">
-                <?= strtoupper(substr($user['username'], 0, 1)) ?>
-            </div>
-            <h4 class="fw-bold mb-0"><?= htmlspecialchars($user['name']) ?></h4>
-            <p class="text-muted small">@<?= htmlspecialchars($user['username']) ?></p>
-            <p class="text-muted small">Member since <?= date('M Y', strtotime($user['created_at'])) ?></p>
-        </div>
-
-        <?php if ($error && !isset($_POST['change_password'])): ?>
-            <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
-        <?php endif; ?>
-        <?php if ($success && !isset($_POST['change_password'])): ?>
-            <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
-        <?php endif; ?>
-
-        <!-- Profile Form -->
-        <form method="POST">
-             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
-            <div class="mb-3">
-                <label class="form-label fw-bold">Full Name <span class="text-danger">*</span></label>
-                <input type="text" name="name" class="form-control"
-                    value="<?= htmlspecialchars($user['name']) ?>" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label fw-bold">Username <span class="text-danger">*</span></label>
-                <input type="text" name="username" class="form-control"
-                    value="<?= htmlspecialchars($user['username']) ?>" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label fw-bold">Email Address</label>
-                <input type="email" class="form-control" 
-                    value="<?= htmlspecialchars($user['email']) ?>" disabled>
-                <div class="form-text">Email cannot be changed.</div>
-            </div>
-            <div class="mb-3">
-                <label class="form-label fw-bold">Institution <span class="text-danger">*</span></label>
-                <input type="text" name="institution" class="form-control"
-                    value="<?= htmlspecialchars($user['institution'] ?? '') ?>" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label fw-bold">Phone Number <span class="text-danger">*</span></label>
-                <input type="text" name="phone" class="form-control"
-                    value="<?= htmlspecialchars($user['phone'] ?? '') ?>" required>
-            </div>
-            <button type="submit" class="btn btn-dark w-100">Save Changes</button>
-        </form>
-
-        <hr class="my-4">
-        <div class="d-flex justify-content-between align-items-center">
+div class="profile-page">
+ 
+    <!-- Warning banner -->
+    <?php if (!empty($user['warnings']) && $user['warnings'] > 0 && !$is_suspended): ?>
+        <div class="profile-warning-banner">
+            <i class="bi bi-exclamation-triangle-fill profile-warning-banner__icon"></i>
             <div>
-                <p class="fw-bold mb-0">Password</p>
-                <p class="text-muted small mb-0">Last changed: unknown</p>
+                <p class="profile-warning-banner__title">
+                    You have <?= (int)$user['warnings'] ?> warning<?= $user['warnings'] != 1 ? 's' : '' ?>
+                </p>
+                <p class="profile-warning-banner__text">
+                    One more warning will result in a 30-day suspension from creating listings.
+                </p>
             </div>
-            <button class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#passwordModal">
-                Change Password
-            </button>
         </div>
+    <?php endif; ?>
+ 
+    <!-- Suspended banner -->
+    <?php if ($is_suspended): ?>
+        <div class="profile-suspended-banner">
+            <i class="bi bi-slash-circle-fill me-2"></i>
+            <div>
+                <p class="profile-suspended-banner__title">Account suspended</p>
+                <p class="profile-suspended-banner__text">
+                    You cannot create or edit listings until <strong><?= $suspended_until ?></strong>.
+                    This suspension is due to <?= (int)$user['warnings'] ?> warning<?= $user['warnings'] != 1 ? 's' : '' ?> on your account.
+                </p>
+            </div>
+        </div>
+    <?php endif; ?>
+ 
+    <!-- Avatar -->
+    <div class="profile-avatar-wrap">
+        <div class="profile-avatar">
+            <?= strtoupper(substr($user['username'], 0, 1)) ?>
+        </div>
+        <h4 class="profile-name"><?= htmlspecialchars($user['name']) ?></h4>
+        <p class="profile-username">@<?= htmlspecialchars($user['username']) ?></p>
+        <p class="profile-since">Member since <?= date('M Y', strtotime($user['created_at'])) ?></p>
     </div>
+ 
+    <?php if ($error && !isset($_POST['change_password'])): ?>
+        <div class="alert alert-danger mb-3"><?= htmlspecialchars($error) ?></div>
+    <?php endif; ?>
+    <?php if ($success && !isset($_POST['change_password'])): ?>
+        <div class="alert alert-success mb-3"><?= htmlspecialchars($success) ?></div>
+    <?php endif; ?>
+ 
+    <!-- Profile form -->
+    <form method="POST" class="profile-form">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
+ 
+        <div class="profile-field">
+            <label class="profile-label">Full Name <span class="profile-required">*</span></label>
+            <input type="text" name="name" class="form-control"
+                   value="<?= htmlspecialchars($user['name']) ?>" required>
+        </div>
+        <div class="profile-field">
+            <label class="profile-label">Username <span class="profile-required">*</span></label>
+            <input type="text" name="username" class="form-control"
+                   value="<?= htmlspecialchars($user['username']) ?>" required>
+        </div>
+        <div class="profile-field">
+            <label class="profile-label">Email Address</label>
+            <input type="email" class="form-control"
+                   value="<?= htmlspecialchars($user['email']) ?>" disabled>
+            <p class="profile-field-hint">Email cannot be changed.</p>
+        </div>
+        <div class="profile-field">
+            <label class="profile-label">Institution <span class="profile-required">*</span></label>
+            <input type="text" name="institution" class="form-control"
+                   value="<?= htmlspecialchars($user['institution'] ?? '') ?>" required>
+        </div>
+        <div class="profile-field">
+            <label class="profile-label">Phone Number <span class="profile-required">*</span></label>
+            <input type="text" name="phone" class="form-control"
+                   value="<?= htmlspecialchars($user['phone'] ?? '') ?>" required>
+        </div>
+ 
+        <button type="submit" class="btn btn-dark w-100">Save Changes</button>
+    </form>
+ 
+    <hr class="profile-divider">
+ 
+    <!-- Password row -->
+    <div class="profile-password-row">
+        <div>
+            <p class="profile-password-label">Password</p>
+            <p class="profile-password-sub">Last changed: unknown</p>
+        </div>
+        <button class="btn btn-outline-dark btn-sm"
+                data-bs-toggle="modal" data-bs-target="#passwordModal">
+            Change Password
+        </button>
+    </div>
+ 
 </div>
-
-<!-- Password Modal -->
+ 
+<!-- Password modal -->
 <div class="modal fade" id="passwordModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-3">
@@ -163,27 +227,29 @@ require_once __DIR__ . '/../includes/header.php';
                 <form method="POST">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Current Password</label>
+                        <label class="profile-label">Current Password</label>
                         <input type="password" name="current_password" class="form-control">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">New Password</label>
+                        <label class="profile-label">New Password</label>
                         <input type="password" name="new_password" class="form-control">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Confirm New Password</label>
+                        <label class="profile-label">Confirm New Password</label>
                         <input type="password" name="confirm_password" class="form-control">
                     </div>
                     <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-outline-secondary w-100" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" name="change_password" class="btn btn-dark w-100">Update Password</button>
+                        <button type="button" class="btn btn-outline-secondary w-100"
+                                data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" name="change_password"
+                                class="btn btn-dark w-100">Update Password</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
-
+ 
 <?php if (isset($_POST['change_password']) && ($error || $success)): ?>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -191,5 +257,7 @@ require_once __DIR__ . '/../includes/header.php';
     });
 </script>
 <?php endif; ?>
+ 
+
 
 <?php require_once '../includes/footer.php'; ?>
