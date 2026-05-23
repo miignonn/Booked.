@@ -63,63 +63,63 @@ require_once __DIR__ . '/../includes/header.php';
     <p class="text-muted">Your order has been placed. Contact the seller to arrange collection.</p>
 </div>
 
-<div class="alert alert-warning mb-4">
-    <p class="fw-bold mb-1"><i class="bi bi-shield-exclamation"></i> Stay Safe</p>
-    <p class="small mb-0">Always meet in a public place on campus to collect your textbook. Never transfer money before seeing the book in person. Booked will never ask you for payment outside the platform.</p>
+<div class="safety-notice">
+    <p class="safety-notice__title"><i class="bi bi-shield-exclamation"></i> Stay Safe</p>
+    <p class="mb-0">Always meet in a public place on campus to collect your textbook. Never transfer money before seeing the book in person. Booked will never ask you for payment outside the platform.</p>
 </div>
 
-<div class="row g-4">
-
-    <!-- Order Details -->
-    <div class="col-md-6">
-        <div class="bg-light rounded-3 p-4">
-            <p class="text-muted small fw-bold mb-3 text-uppercase">Order Details</p>
-            <div class="d-flex justify-content-between border-bottom py-2">
-                <span class="text-muted">Order Number</span>
-                <span class="fw-bold">#<?= str_pad($order['id'], 5, '0', STR_PAD_LEFT) ?></span>
+<div class="confirmed-cols d-flex gap-4">
+ 
+    <!-- Order details -->
+    <div class="flex-fill">
+        <div class="summary-card">
+            <p class="summary-card__label">Order Details</p>
+            <div class="summary-row">
+                <span class="summary-row__key">Order Number</span>
+                <span class="summary-row__val">#<?= str_pad($order['id'], 5, '0', STR_PAD_LEFT) ?></span>
             </div>
-            <div class="d-flex justify-content-between border-bottom py-2">
-                <span class="text-muted">Date Placed</span>
-                <span class="fw-bold"><?= date('d M Y', strtotime($order['created_at'])) ?></span>
+            <div class="summary-row">
+                <span class="summary-row__key">Date Placed</span>
+                <span class="summary-row__val"><?= date('d M Y', strtotime($order['created_at'])) ?></span>
             </div>
-            <div class="d-flex justify-content-between border-bottom py-2">
-                <span class="text-muted">Book</span>
-                <span class="fw-bold"><?= htmlspecialchars($order['title']) ?></span>
+            <div class="summary-row">
+                <span class="summary-row__key">Book</span>
+                <span class="summary-row__val"><?= htmlspecialchars($order['title']) ?></span>
             </div>
-            <div class="d-flex justify-content-between py-2">
-                <span class="text-muted">Total Paid</span>
-                <span class="fw-bold">R<?= number_format($order['total_price'], 2) ?></span>
+            <div class="summary-row">
+                <span class="summary-row__key">Total Paid</span>
+                <span class="summary-row__val">R<?= number_format($order['total_price'], 2) ?></span>
             </div>
         </div>
     </div>
-
-    <!-- Collection Details -->
-    <div class="col-md-6">
-        <div class="bg-light rounded-3 p-4">
-            <p class="text-muted small fw-bold mb-3 text-uppercase">Collection Details</p>
-            <div class="d-flex justify-content-between border-bottom py-2">
-                <span class="text-muted">Campus</span>
-                <span class="fw-bold"><?= htmlspecialchars($order['campus']) ?></span>
+ 
+    <!-- Collection details -->
+    <div class="flex-fill">
+        <div class="summary-card">
+            <p class="summary-card__label">Collection Details</p>
+            <div class="summary-row">
+                <span class="summary-row__key">Campus</span>
+                <span class="summary-row__val"><?= htmlspecialchars($order['campus']) ?></span>
             </div>
-            <div class="d-flex justify-content-between border-bottom py-2">
-                <span class="text-muted">Preferred Time</span>
-                <span class="fw-bold"><?= date('d M Y H:i', strtotime($order['preferred_time'])) ?></span>
+            <div class="summary-row">
+                <span class="summary-row__key">Preferred Time</span>
+                <span class="summary-row__val"><?= date('d M Y H:i', strtotime($order['preferred_time'])) ?></span>
             </div>
-            <div class="d-flex justify-content-between border-bottom py-2">
-                <span class="text-muted">Seller</span>
-                <span class="fw-bold">@<?= htmlspecialchars($order['seller_username']) ?></span>
+            <div class="summary-row">
+                <span class="summary-row__key">Seller</span>
+                <span class="summary-row__val">@<?= htmlspecialchars($order['seller_username']) ?></span>
             </div>
-            <div class="d-flex justify-content-between py-2">
-                <span class="text-muted">Seller Email</span>
-                <span class="fw-bold"><?= htmlspecialchars($order['seller_email']) ?></span>
+            <div class="summary-row">
+                <span class="summary-row__key">Seller Email</span>
+                <span class="summary-row__val"><?= htmlspecialchars($order['seller_email']) ?></span>
             </div>
         </div>
     </div>
-
+ 
 </div>
-
+ 
 <div class="text-center mt-4">
     <a href="/browse.php" class="btn btn-dark">Continue Browsing</a>
 </div>
-
+ 
 <?php require_once '../includes/footer.php'; ?>

@@ -43,86 +43,85 @@ $total = array_sum($status_counts);
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<!-- Page header -->
+<div class="my-listings-header">
     <h4 class="fw-bold mb-0">My Listings</h4>
     <a href="/create-listing.php" class="btn btn-dark btn-sm">+ New Listing</a>
 </div>
-
-<div class="d-flex gap-2 mb-4 flex-wrap">
-    <a href="/my-listings.php" 
+ 
+<!-- Status tabs -->
+<div class="my-listings-tabs">
+    <a href="/my-listings.php"
        class="btn btn-sm <?= $filter === 'all' ? 'btn-dark' : 'btn-outline-secondary' ?>">
         All (<?= $total ?>)
     </a>
-    <a href="/my-listings.php?status=active" 
+    <a href="/my-listings.php?status=active"
        class="btn btn-sm <?= $filter === 'active' ? 'btn-dark' : 'btn-outline-secondary' ?>">
         Active (<?= $status_counts['active'] ?>)
     </a>
-    <a href="/my-listings.php?status=sold" 
+    <a href="/my-listings.php?status=sold"
        class="btn btn-sm <?= $filter === 'sold' ? 'btn-dark' : 'btn-outline-secondary' ?>">
         Sold (<?= $status_counts['sold'] ?>)
     </a>
-    <a href="/my-listings.php?status=draft" 
+    <a href="/my-listings.php?status=draft"
        class="btn btn-sm <?= $filter === 'draft' ? 'btn-dark' : 'btn-outline-secondary' ?>">
         Drafts (<?= $status_counts['draft'] ?>)
     </a>
 </div>
-
+ 
 <?php if (empty($listings)): ?>
     <p class="text-muted">No listings found. <a href="/create-listing.php">Create one!</a></p>
 <?php else: ?>
     <?php foreach ($listings as $listing): ?>
-        <div class="d-flex align-items-center gap-3 border rounded-3 p-3 mb-3">
-
-            <!-- Image -->
-            <div style="width:80px;height:80px;flex-shrink:0;">
+        <div class="my-listing-card">
+ 
+            <!-- Thumbnail -->
+            <div class="my-listing-card__thumb">
                 <?php if ($listing['image']): ?>
-                    <img src="/<?= htmlspecialchars($listing['image']) ?>" 
-                         class="rounded-2 w-100 h-100" style="object-fit:cover;">
+                    <img src="/<?= htmlspecialchars($listing['image']) ?>" alt="">
                 <?php else: ?>
-                    <div class="bg-light rounded-2 w-100 h-100 d-flex align-items-center justify-content-center">
-                        <i class="bi bi-book text-muted"></i>
-                    </div>
+                    <i class="bi bi-book text-muted"></i>
                 <?php endif; ?>
             </div>
-
+ 
             <!-- Info -->
-            <div class="flex-grow-1">
-                <h6 class="fw-bold mb-1"><?= htmlspecialchars($listing['title']) ?></h6>
-                <p class="text-muted small mb-1"><?= htmlspecialchars($listing['author']) ?></p>
-                <p class="fw-bold mb-0">R<?= number_format($listing['price'], 2) ?></p>
+            <div class="my-listing-card__info">
+                <p class="my-listing-card__title"><?= htmlspecialchars($listing['title']) ?></p>
+                <p class="my-listing-card__author"><?= htmlspecialchars($listing['author']) ?></p>
+                <p class="my-listing-card__price">R<?= number_format($listing['price'], 2) ?></p>
             </div>
-
-           
-            <div class="text-center" style="min-width:70px;">
-                <?php
-                $badge = match($listing['status']) {
-                    'active' => 'success',
-                    'draft'  => 'secondary',
-                    'sold'   => 'info',
-                    default  => 'secondary'
-                };
-                ?>
-                <span class="badge bg-<?= $badge ?>"><?= ucfirst($listing['status']) ?></span>
-            </div>
-
+ 
+            <!-- Status badge -->
+            <?php
+            $badge = match($listing['status']) {
+                'active' => 'success',
+                'draft'  => 'secondary',
+                'sold'   => 'info',
+                default  => 'secondary'
+            };
+            ?>
+            <span class="badge bg-<?= $badge ?> align-self-center">
+                <?= ucfirst($listing['status']) ?>
+            </span>
+ 
             <!-- Actions -->
-            <div class="d-flex gp-2">
-                <?php if($listing['status'] == 'sold'): ?>
+            <div class="my-listing-card__actions">
+                <?php if ($listing['status'] === 'sold'): ?>
                     <button class="btn btn-sm btn-outline-secondary" disabled>Edit</button>
-                    <?php else: ?>
-                        <a href="/edit-listing.php?id=<?= $listing['id']?>"
-                        class="btn btn-sm btn-outline-dark">Edit</a>
-                        <?php endif; ?>
-
-                        <button type="button" class="btn btn-sm btn-outline-danger"
-                        onclick="confirmDelete(<?= $listing['id'] ?>">Delete</button>
+                <?php else: ?>
+                    <a href="/edit-listing.php?id=<?= $listing['id'] ?>"
+                       class="btn btn-sm btn-outline-dark">Edit</a>
+                <?php endif; ?>
+ 
+                <button type="button" class="btn btn-sm btn-outline-danger"
+                        onclick="confirmDelete(<?= $listing['id'] ?>)">Delete</button>
             </div>
-
+ 
         </div>
     <?php endforeach; ?>
 <?php endif; ?>
-
-<!-- Delete Modal -->
+ 
+<!-- Delete confirmation modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-3">
@@ -134,8 +133,8 @@ require_once __DIR__ . '/../includes/header.php';
                     <input type="hidden" name="delete_id" id="delete-id-input">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
                     <div class="d-flex gap-2 justify-content-center mt-3">
-                        <button type="button" class="btn btn-outline-secondary" 
-                            data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-danger">Yes, Delete</button>
                     </div>
                 </form>
@@ -143,6 +142,7 @@ require_once __DIR__ . '/../includes/header.php';
         </div>
     </div>
 </div>
+ 
 
 <script>
 function confirmDelete(id) {

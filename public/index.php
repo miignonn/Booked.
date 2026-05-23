@@ -19,59 +19,47 @@ require_once __DIR__. '/../includes/header.php';
         </div>
     <?php endif; ?>
 
-    <header>
-        <div class="left">
-        <h1>Buy Smart</h1>
-        <h1>Sell Easy</h1>
-        <h1>Stay Booked.</h1>
-        <p class="sub-heading">Student Textbook Marketplace South Africa.
-        </p>
-
-        <div class="buttons">
-            <a href="/browse.php" class="btn btn-dark">Browse the shelves
-                <i class="bi bi-arrow-right"></i>
-            </a>
-        </div>
+<header class="hero">
+    <div class="hero__text">
+        <h1 class="hero__heading">Buy Smart<br>Sell Easy<br>Stay Booked.</h1>
+        <p class="hero__sub">The second-hand textbook marketplace for South African students.</p>
+        <a href="/browse.php" class="btn btn-dark">
+            Browse the shelves <i class="bi bi-arrow-right"></i>
+        </a>
     </div>
-
-    <div class="right">
-        <img src="/assets/images/logo.png" alt="" />
+    <div class="hero__image">
+        <img src="/assets/images/logo.png" alt="Booked illustration" />
     </div>
-
-    <div class="bg-color"></div>
-    
-    </header>
-
-
-    <h4 class="fw-bold mb-3">New Listings</h4>
-    <div class="listings-scroll d-flex gap-3 pb-3">
-        <?php if ($result && $result->num_rows > 0): ?>
-            <?php while ($listing = $result->fetch_assoc()): ?>
-                <div class="listing-card flex-shrink-0" onclick="window.location='/listing.php?id=<?= $listing['id'] ?>&from=home'">
-
-                    <div class="listing-img-wrap">
-                        <?php if ($listing['image']): ?>
-                            <img src="/<?= htmlspecialchars($listing['image']) ?>" alt="<?= htmlspecialchars($listing['title']) ?>">
-                        <?php else: ?>
-                            <div class="no-image">
-                                <i class="bi bi-book fs-1 text-muted"></i>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-
-                    <div class="listing-info">
-                        <p class="listing-title"><?= htmlspecialchars($listing['title']) ?></p>
-                        <p class="listing-author"><?= htmlspecialchars($listing['author']) ?></p>
-                        <p class="listing-price">R<?= number_format($listing['price'], 2) ?></p>
-                    </div>
-
+</header>
+ 
+<h4 class="fw-bold mb-3">New Listings</h4>
+<div class="listings-scroll">
+    <?php if ($result && $result->num_rows > 0): ?>
+        <?php while ($listing = $result->fetch_assoc()): ?>
+            <div class="listing-card" onclick="window.location='/listing.php?id=<?= $listing['id'] ?>&from=home'">
+ 
+                <div class="listing-card__image-wrap">
+                    <?php if ($listing['image']): ?>
+                        <img src="/<?= htmlspecialchars($listing['image']) ?>"
+                             alt="<?= htmlspecialchars($listing['title']) ?>">
+                    <?php else: ?>
+                        <div class="listing-card__no-image">
+                            <i class="bi bi-book fs-1 text-muted"></i>
+                        </div>
+                    <?php endif; ?>
                 </div>
-            <?php endwhile; ?>
-        <?php else: ?>
-            <p class="text-muted">No listings yet. Be the first to <a href="/create-listing.php">sell a book</a>!</p>
-        <?php endif; ?>
-    </div>
-
+ 
+                <div class="listing-card__info">
+                    <p class="listing-card__title"><?= htmlspecialchars($listing['title']) ?></p>
+                    <p class="listing-card__author"><?= htmlspecialchars($listing['author']) ?></p>
+                    <p class="listing-card__price">R<?= number_format($listing['price'], 2) ?></p>
+                </div>
+ 
+            </div>
+        <?php endwhile; ?>
+    <?php else: ?>
+        <p class="text-muted">No listings yet. Be the first to <a href="/create-listing.php">sell a book</a>!</p>
+    <?php endif; ?>
 </div>
 
 <?php require_once '../includes/footer.php'; ?>

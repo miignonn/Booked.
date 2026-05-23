@@ -94,62 +94,65 @@ require_once __DIR__ . '/../includes/header.php';
 
 <form method="POST">
     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
-<div class="row g-4">
 
-    <!-- LEFT: Collection Details -->
-    <div class="col-md-6">
-        <div class="bg-light rounded-3 p-4">
-            <p class="text-muted small fw-bold mb-4 text-uppercase">Collection Details</p>
-
+   <div class="cart-layout">
+ 
+        <!-- LEFT: Collection details -->
+        <div class="cart-section">
+            <p class="cart-section__label">Collection Details</p>
+ 
             <div class="mb-3">
                 <label class="form-label fw-bold">Full Name</label>
-                <input type="text" class="form-control" 
+                <input type="text" class="form-control"
                     value="<?= htmlspecialchars($user['name']) ?>" disabled>
             </div>
-
+ 
             <div class="mb-3">
                 <label class="form-label fw-bold">Student Email</label>
-                <input type="email" class="form-control" 
+                <input type="email" class="form-control"
                     value="<?= htmlspecialchars($user['email']) ?>" disabled>
             </div>
-
+ 
             <div class="mb-3">
-                <label class="form-label fw-bold">Collection Campus <span class="text-danger">*</span></label>
-                <input type="text" name="campus" class="form-control" 
+                <label class="form-label fw-bold">
+                    Collection Campus <span class="text-danger">*</span>
+                </label>
+                <input type="text" name="campus" class="form-control"
                     placeholder="e.g. Eduvos Pretoria" required>
             </div>
-
+ 
             <div class="mb-3">
-                <label class="form-label fw-bold">Preferred Collection Time <span class="text-danger">*</span></label>
+                <label class="form-label fw-bold">
+                    Preferred Collection Time <span class="text-danger">*</span>
+                </label>
                 <input type="datetime-local" name="preferred_time" class="form-control" required>
             </div>
         </div>
-    </div>
-
-    <!-- RIGHT: Order Summary -->
-    <div class="col-md-6">
-        <div class="bg-light rounded-3 p-4 mb-3">
-            <p class="text-muted small fw-bold mb-4 text-uppercase">Order Summary</p>
-
-            <?php foreach ($cart_items as $item): ?>
-                <div class="d-flex justify-content-between mb-2">
-                    <span class="text-muted"><?= htmlspecialchars($item['title']) ?></span>
-                    <span class="fw-bold">R<?= number_format($item['price'], 2) ?></span>
+ 
+        <!-- RIGHT: Order summary -->
+        <div>
+            <div class="cart-section mb-3">
+                <p class="cart-section__label">Order Summary</p>
+ 
+                <?php foreach ($cart_items as $item): ?>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted"><?= htmlspecialchars($item['title']) ?></span>
+                        <span class="fw-bold">R<?= number_format($item['price'], 2) ?></span>
+                    </div>
+                <?php endforeach; ?>
+ 
+                <hr>
+                <div class="d-flex justify-content-between">
+                    <span class="fw-bold">Total</span>
+                    <span class="fw-bold fs-5">R<?= number_format($total, 2) ?></span>
                 </div>
-            <?php endforeach; ?>
-
-            <hr>
-            <div class="d-flex justify-content-between">
-                <span class="fw-bold">Total</span>
-                <span class="fw-bold fs-5">R<?= number_format($total, 2) ?></span>
             </div>
+ 
+            <button type="submit" class="btn btn-dark w-100 mb-2">Place Order</button>
+            <a href="/cart.php" class="btn btn-outline-secondary w-100">Back to Cart</a>
         </div>
-
-        <button type="submit" class="btn btn-dark w-100 mb-2">Place Order</button>
-        <a href="/cart.php" class="btn btn-outline-secondary w-100">Back to Cart</a>
+ 
     </div>
-
-</div>
 </form>
 
 <?php require_once '../includes/footer.php'; ?>
