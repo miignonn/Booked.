@@ -208,12 +208,13 @@ require_once __DIR__ . '/../includes/header.php';
                            min="0" max="1000" step="50"
                            value="<?= $filter_price_max ?: 1000 ?>"
                            oninput="document.getElementById('price-max-val').innerText=this.value">
-                    <button type="submit" class="btn btn-dark btn-sm w-100 mt-2">Apply</button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-dark btn-sm w-100 mt-2">Apply</button>
                     <?php if (!empty(array_filter([$filter_institution, $filter_category, $filter_condition, $filter_edition, $filter_price_max]))): ?>
                       <a href="/browse.php" class="btn btn-outline-secondary btn-sm w-100 mt-2">Clear Filters</a>
                     <?php endif; ?>
-                </div>
-            </div>
         </form>
     </aside>
  

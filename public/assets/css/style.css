@@ -1480,10 +1480,12 @@ body.browse-no-scroll {
         left: -280px;
         width: 280px;
         height: 100vh;
+        max-height: 100dvh;
         background: white;
         z-index: 300;
-        overflow-y: auto;
-        padding: 20px 16px;
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+        padding: 20px 16px 40px;
         transition: left 0.25s ease;
         box-shadow: 4px 0 24px rgba(26, 23, 20, 0.12);
     }
