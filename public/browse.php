@@ -274,7 +274,7 @@ require_once __DIR__ . '/../includes/header.php';
    document.body.style.overflow = 'hidden';
     }
 
-    function closeFilter(){
+    function closeFilters(){
     document.getElementById('browse-drawer').style.display = 'none';
     document.getElementById('browse-overlay').style.display = 'none';
     document.body.style.overflow = '';
