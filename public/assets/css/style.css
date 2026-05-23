@@ -1333,9 +1333,10 @@ order-card__info {
  
 /* ── Sidebar ── */
 .browse-sidebar {
+    display: none;
     position: fixed;
     top: 0;
-    left: -280px;
+    left: 0;
     width: 280px;
     height: 100%;
     max-height: 100dvh;
@@ -1349,7 +1350,7 @@ order-card__info {
 }
 
 .browse-sidebar--open{
-    left: 0;
+    display: block;
 }
  
 .browse-filter-group {
@@ -1486,22 +1487,6 @@ body.browse-no-scroll {
 /* ── Browse mobile (@media) ── */
 @media (max-width: 768px) {
  
-    
-    .browse-sidebar {
-        position: fixed;
-        top: 0;
-        left: -280px;
-        width: 280px;
-        height: 100vh;
-        max-height: 100dvh;
-        background: white;
-        z-index: 300;
-        overflow-y: scroll;
-        -webkit-overflow-scrolling: touch;
-        padding: 20px 16px 40px;
-        transition: left 0.25s ease;
-        box-shadow: 4px 0 24px rgba(26, 23, 20, 0.12);
-    }
  
     .browse-sidebar--open {
         left: 0;
