@@ -84,8 +84,8 @@ $categories = $conn->query("SELECT * FROM categories ORDER BY name ASC");
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
-<!-- Mobile filter toggle button (hidden on desktop) -->
-<button class="browse-filter-toggle d-md-none mb-3"
+<!-- Mobile filter toggle button -->
+<button class="browse-filter-toggle"
         onclick="toggleFilterSidebar()" aria-label="Toggle filters">
     <i class="bi bi-sliders"></i> Filters
     <?php $active_count = count(array_filter([$filter_institution, $filter_category, $filter_condition, $filter_edition, $filter_price_max !== '']));
@@ -94,15 +94,15 @@ require_once __DIR__ . '/../includes/header.php';
     <?php endif; ?>
 </button>
  
-<div class="browse-backdrop d-md-none" id="browse-backdrop" onclick="toggleFilterSidebar()"></div>
+<div class="browse-backdrop" id="browse-backdrop" onclick="toggleFilterSidebar()"></div>
  
 <div class="browse-layout">
  
     <!-- Filter Sidebar -->
-    <aside class="browse-sidebar d-none d-md-block" id="filter-sidebar">
+    <aside class="browse-sidebar" id="filter-sidebar">
  
         <!-- Mobile close button -->
-        <div class="browse-sidebar__close d-md-none">
+        <div class="browse-sidebar__close">
             <span class="fw-bold">Filters</span>
             <button onclick="toggleFilterSidebar()" class="browse-sidebar__close-btn">
                 <i class="bi bi-x-lg"></i>

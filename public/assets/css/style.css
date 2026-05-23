@@ -1328,15 +1328,28 @@ order-card__info {
 ==================================*/
 
 .browse-layout {
-    display: flex;
-    gap: 32px;
-    align-items: flex-start;
+    display: block;
 }
  
 /* ── Sidebar ── */
 .browse-sidebar {
-    width: 240px;
-    flex-shrink: 0;
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100%;
+    max-height: 100dvh;
+    background: white;
+    z-index: 300;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    padding: 20px 16px 40px;
+    transition: left 0.25s ease;
+    box-shadow: 4px 0 24px rgba(26, 23, 20, 0.12);
+}
+
+.browse-sidebar--open{
+    left: 0;
 }
  
 .browse-filter-group {
