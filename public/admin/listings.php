@@ -1,6 +1,6 @@
 <?php
-require_once '../../includes/admin-header.php';
-
+require_once __DIR__ . '/../../config/db.php';
+require_once __DIR__ . '/../../includes/functions.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     verify_csrf();
@@ -93,6 +93,9 @@ $count_result  = $conn->query("SELECT status, COUNT(*) AS total FROM listings GR
 while ($row = $count_result->fetch_assoc()) {
     $status_counts[$row['status']] = (int)$row['total'];
 }
+
+require_once __DIR__ . '/../../includes/admin-header.php';
+
 
 ?>
 
@@ -248,7 +251,7 @@ while ($row = $count_result->fetch_assoc()) {
                     <div class="action-buttons">
 
                         <!---- Status change forms (only show options different from current) ---->
-                        <?php foreach (['active', 'draft', 'sold', 'expired', 'flagged'] as $s): ?>
+                        <?php foreach (['active', 'draft', 'sold', 'flagged'] as $s): ?>
                         <?php if ($s !== $l['status']): ?>
                             <form method="POST">
                                 <input type="hidden" name="csrf_token"  value="<?= htmlspecialchars(csrf_token()) ?>">

@@ -1,6 +1,7 @@
 <?php
-require_once '../../includes/admin-header.php';
- 
+require_once __DIR__ . '/../../config/db.php';
+require_once __DIR__ . '/../../includes/functions.php';
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     verify_csrf();
  
@@ -125,7 +126,8 @@ $count_result  = $conn->query("SELECT status, COUNT(*) AS total FROM reports GRO
 while ($row = $count_result->fetch_assoc()) {
     $status_counts[$row['status']] = (int)$row['total'];
 }
- 
+
+require_once __DIR__. '/../../includes/admin-header.php';
 ?>
 
 <main class="main-content">

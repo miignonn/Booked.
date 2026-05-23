@@ -110,8 +110,6 @@ if ($is_suspended){
 
 require_once __DIR__ . '/../includes/header.php';
 ?>
-
-div class="profile-page">
  
     <!-- Warning banner -->
     <?php if (!empty($user['warnings']) && $user['warnings'] > 0 && !$is_suspended): ?>
