@@ -857,7 +857,7 @@ color: #993C1D;
     object-fit: cover;
 }
 
-order-card__info {
+.order-card__info {
     flex: 1;
     min-width: 0;
 }
@@ -1031,6 +1031,354 @@ order-card__info {
  
 
 /* =============================================
+   9b. CART — empty state, count, summary rows,
+       sidebar, remove button, modal, condition badge
+================================================ */
+
+.cart__empty {
+    text-align: center;
+    padding: 48px 0;
+}
+
+.cart__empty-icon {
+    font-size: 2.5rem;
+    color: rgba(26, 23, 20, 0.3);
+    display: block;
+    margin-bottom: 12px;
+}
+
+.cart__empty-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin: 0 0 6px;
+}
+
+.cart__empty-sub {
+    color: rgba(26, 23, 20, 0.5);
+    font-size: 0.88rem;
+    margin: 0 0 20px;
+}
+
+.cart__count {
+    color: rgba(26, 23, 20, 0.5);
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+.cart-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cart-summary__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.cart-summary__label {
+    font-size: 0.85rem;
+    color: rgba(26, 23, 20, 0.55);
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: 12px;
+}
+
+.cart-summary__val {
+    font-weight: 600;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+.cart-summary__divider {
+    border: none;
+    border-top: 1px solid rgba(26, 23, 20, 0.1);
+    margin: 12px 0;
+}
+
+.cart-summary__total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cart-summary__total-label {
+    font-weight: 600;
+}
+
+.cart-summary__total-val {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.cart-item__remove {
+    background: none;
+    border: none;
+    color: #c0392b;
+    cursor: pointer;
+    padding: 0;
+    font-size: 1rem;
+    line-height: 1;
+    transition: opacity 0.15s;
+}
+
+.cart-item__remove:hover {
+    opacity: 0.7;
+}
+
+.cart-item__no-image {
+    color: rgba(26, 23, 20, 0.3);
+}
+
+/* Condition badges */
+.condition-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 2px 9px;
+    border-radius: 20px;
+}
+
+.condition-badge--success  { background: #D4EDDA; color: #2A6636; }
+.condition-badge--info     { background: #D1ECF1; color: #0C5460; }
+.condition-badge--warning  { background: #FEF3CD; color: #856404; }
+.condition-badge--danger   { background: #FAE0DC; color: #993C1D; }
+.condition-badge--secondary{ background: rgba(26,23,20,0.08); color: var(--near-black); }
+
+/* Cart remove modal */
+.cart-modal__body {
+    text-align: center;
+    padding: 28px 24px;
+}
+
+.cart-modal__icon {
+    font-size: 2rem;
+    color: #c0392b;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.cart-modal__title {
+    font-weight: 700;
+    font-size: 1rem;
+    margin: 0 0 6px;
+}
+
+.cart-modal__sub {
+    color: rgba(26, 23, 20, 0.5);
+    font-size: 0.88rem;
+    margin: 0 0 20px;
+}
+
+.cart-modal__actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+/* =============================================
+   9c. CHECKOUT — field, label, required marker,
+       error notice
+================================================ */
+
+.checkout-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 18px;
+}
+
+.checkout-label {
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--near-black);
+}
+
+.checkout-required {
+    color: var(--terracotta);
+}
+
+.form-error {
+    background: #FAE0DC;
+    border: 1px solid var(--terracotta-muted);
+    border-radius: 8px;
+    color: #993C1D;
+    font-size: 0.88rem;
+    padding: 10px 14px;
+    margin-bottom: 20px;
+}
+
+/* =============================================
+   9d. SHARED ACTION BUTTONS
+       (used across cart, checkout, confirmed, orders)
+================================================ */
+
+.btn-checkout {
+    display: block;
+    width: 100%;
+    padding: 13px;
+    background: var(--near-black);
+    color: var(--off-white);
+    border: none;
+    border-radius: 10px;
+    font-size: 0.93rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: background 0.15s ease;
+}
+
+.btn-checkout:hover {
+    background: rgba(26, 23, 20, 0.82);
+    color: var(--off-white);
+}
+
+.btn-browse {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    color: var(--near-black);
+    border: 1px solid rgba(26, 23, 20, 0.2);
+    border-radius: 10px;
+    font-size: 0.93rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.btn-browse:hover {
+    border-color: var(--near-black);
+    background: rgba(26, 23, 20, 0.04);
+    color: var(--near-black);
+}
+
+.btn-danger-action {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #c0392b;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.15s;
+}
+
+.btn-danger-action:hover {
+    opacity: 0.85;
+    color: #fff;
+}
+
+/* =============================================
+   9e. ORDERS PAGE — page header, empty state,
+       action button
+================================================ */
+
+.orders__title {
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin: 0 0 4px;
+}
+
+.orders__sub {
+    color: rgba(26, 23, 20, 0.5);
+    font-size: 0.85rem;
+    margin: 0 0 20px;
+}
+
+.orders__tabs {
+    display: flex;
+    gap: 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+}
+
+.orders__empty {
+    text-align: center;
+    padding: 48px 0;
+}
+
+.orders__empty-icon {
+    font-size: 2.5rem;
+    color: rgba(26, 23, 20, 0.3);
+    display: block;
+    margin-bottom: 12px;
+}
+
+.orders__empty-title {
+    font-weight: 700;
+    font-size: 1rem;
+    margin: 0 0 4px;
+}
+
+.orders__empty-sub {
+    color: rgba(26, 23, 20, 0.5);
+    font-size: 0.85rem;
+    margin: 0 0 20px;
+}
+
+.order-card__no-image {
+    color: rgba(26, 23, 20, 0.3);
+    font-size: 1.2rem;
+}
+
+.btn-order-action {
+    display: inline-block;
+    padding: 7px 14px;
+    background: var(--near-black);
+    color: var(--off-white);
+    border: none;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s;
+    white-space: nowrap;
+}
+
+.btn-order-action:hover {
+    background: rgba(26, 23, 20, 0.82);
+    color: var(--off-white);
+}
+
+.btn-order-cancel {
+    display: inline-block;
+    padding: 7px 14px;
+    background: transparent;
+    color: #993C1D;
+    border: 1px solid #993C1D;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+    margin-top: 6px;
+}
+
+.btn-order-cancel:hover {
+    background: #993C1D;
+    color: #fff;
+}
+
+.cart-modal__icon--cancel {
+    color: #993C1D;
+}
+
+/* =============================================
    10. MAIN WEBSITE (Summary & Payment Cards)
 ================================================ */
 
@@ -1127,17 +1475,63 @@ order-card__info {
     font-weight: 600;
     margin-bottom: 4px;
 }
- 
-/* Single-column payment page wrapper */
-.payment-page {
-    min-height: 60vh;
-    padding: 48px 0;
+
+.safety-notice__text {
+    margin: 0;
+    font-size: 0.88rem;
+    line-height: 1.5;
+}
+
+.safety-notice__link {
+    color: #856404;
+    font-weight: 600;
 }
  
-.payment-col {
-    max-width: 520px;
-    margin: 0 auto;
-    padding: 0 var(--page-px-mobile);
+/* Order confirmed page */
+.order-confirmed__hero {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.order-confirmed__check {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #f0f0f0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    margin-bottom: 12px;
+}
+
+.order-confirmed__title {
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin: 0 0 6px;
+}
+
+.order-confirmed__sub {
+    color: rgba(26, 23, 20, 0.5);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.confirmed-cols {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 8px;
+}
+
+.confirmed-cols .summary-card {
+    flex: 1;
+}
+
+.order-confirmed__actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 24px;
 }
  
 /* My Listings page */
@@ -1250,6 +1644,11 @@ order-card__info {
     
     .confirmed-cols {
         flex-direction: column;
+    }
+
+    .order-confirmed__actions {
+        flex-direction: column;
+        align-items: stretch;
     }
  
     
@@ -1649,7 +2048,3 @@ order-card__info {
     margin: 0;
     line-height: 1.5;
 }
- 
-
- 
- 

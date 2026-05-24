@@ -4,16 +4,13 @@ require_once __DIR__. '/../config/db.php';
 require_once __DIR__ .'/../includes/functions.php';
 
 $error = '';
-
 $user_id = $_SESSION['user_id'];
-//fetch user details for pre-filling
+ 
 $user_stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
 $user_stmt->bind_param("i", $user_id);
 $user_stmt->execute();
 $user = $user_stmt->get_result()->fetch_assoc();
-
-
-//fetch cart items
+ 
 $stmt = $conn->prepare("
 SELECT cart.id AS cart_id, listings.*, users.email AS seller_email
 FROM cart
@@ -21,43 +18,46 @@ JOIN listings ON cart.listing_id = listings.id
 JOIN users ON listings.user_id = users.id
 WHERE cart.user_id = ?
 ");
-
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $cart_items = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-$total = array_sum(array_column($cart_items,'price'));
-
-
+$total = array_sum(array_column($cart_items, 'price'));
+ 
 if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     verify_csrf();
     $campus = trim($_POST['campus']);
     $preferred_time = trim($_POST['preferred_time']);
-
-    //validate
+ 
     if(empty($campus) || empty($preferred_time)){
         $error = "Please fill in all required fields";
     } else {
-
-    $order_id = 0;
-        //loop through cart and create orders
+        $order_id = 0;
+ 
         foreach($cart_items as $item){
-            $seller_id = $item['user_id'];
-            $listing_id = $item['id'];
+            $seller_id    = $item['user_id'];
+            $listing_id   = $item['id'];
             $seller_email = $item['seller_email'];
-            $price = $item['price'];
-
-            $order_stmt = $conn->prepare("INSERT INTO orders (listing_id, buyer_id, seller_id, total_price, campus, preferred_time, seller_email, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')");
-            $order_stmt->bind_param("iiidsss", $listing_id, $user_id, $seller_id, $price, $campus, $preferred_time, $seller_email);
+            $price        = $item['price'];
+ 
+            $order_stmt = $conn->prepare("
+                INSERT INTO orders
+                (listing_id, buyer_id, seller_id, total_price, campus, preferred_time, seller_email, status)
+                VALUES (?, ?, ?, ?, ?, ?, ?, 'pending_payment')
+            ");
+            $order_stmt->bind_param("iiidss s", $listing_id, $user_id, $seller_id, $price, $campus, $preferred_time, $seller_email);
             $order_stmt->execute();
+ 
             if ($order_stmt->error){
                 $error = "Order failed: " . $order_stmt->error;
                 break;
             }
             $order_id = $conn->insert_id;
         }
-        set_flash('success', 'Order placed! Complete your payment below.');
-        header('Location: /pay.php?order_id=' . $order_id);
-        exit();
+ 
+        if (!$error) {
+            header('Location: /order-confirmed.php?order_id=' . $order_id);
+            exit();
+        }
     }
 }
 
@@ -83,73 +83,69 @@ require_once __DIR__ . '/../includes/header.php';
     <div class="step-divider"></div>
     <div class="step">
         <div class="step-circle step-circle--muted">3</div>
-        <span class="step-label step-label--muted">Payment</span>
-    </div>
-    <div class="step-divider"></div>
-    <div class="step">
-        <div class="step-circle step-circle--muted">4</div>
         <span class="step-label step-label--muted">Confirmed</span>
     </div>
 </div>
 
 <form method="POST">
     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
-
-   <div class="cart-layout">
+ 
+    <div class="cart-layout">
  
         <!-- LEFT: Collection details -->
         <div class="cart-section">
             <p class="cart-section__label">Collection Details</p>
  
-            <div class="mb-3">
-                <label class="form-label fw-bold">Full Name</label>
+            <div class="checkout-field">
+                <label class="checkout-label">Full Name</label>
                 <input type="text" class="form-control"
                     value="<?= htmlspecialchars($user['name']) ?>" disabled>
             </div>
  
-            <div class="mb-3">
-                <label class="form-label fw-bold">Student Email</label>
+            <div class="checkout-field">
+                <label class="checkout-label">Student Email</label>
                 <input type="email" class="form-control"
                     value="<?= htmlspecialchars($user['email']) ?>" disabled>
             </div>
  
-            <div class="mb-3">
-                <label class="form-label fw-bold">
-                    Collection Campus <span class="text-danger">*</span>
+            <div class="checkout-field">
+                <label class="checkout-label">
+                    Collection Campus <span class="checkout-required">*</span>
                 </label>
                 <input type="text" name="campus" class="form-control"
                     placeholder="e.g. Eduvos Pretoria" required>
             </div>
  
-            <div class="mb-3">
-                <label class="form-label fw-bold">
-                    Preferred Collection Time <span class="text-danger">*</span>
+            <div class="checkout-field">
+                <label class="checkout-label">
+                    Preferred Collection Time <span class="checkout-required">*</span>
                 </label>
                 <input type="datetime-local" name="preferred_time" class="form-control" required>
             </div>
         </div>
  
         <!-- RIGHT: Order summary -->
-        <div>
-            <div class="cart-section mb-3">
+        <div class="cart-sidebar">
+            <div class="cart-section">
                 <p class="cart-section__label">Order Summary</p>
  
                 <?php foreach ($cart_items as $item): ?>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted"><?= htmlspecialchars($item['title']) ?></span>
-                        <span class="fw-bold">R<?= number_format($item['price'], 2) ?></span>
+                    <div class="cart-summary__row">
+                        <span class="cart-summary__label"><?= htmlspecialchars($item['title']) ?></span>
+                        <span class="cart-summary__val">R<?= number_format($item['price'], 2) ?></span>
                     </div>
                 <?php endforeach; ?>
  
-                <hr>
-                <div class="d-flex justify-content-between">
-                    <span class="fw-bold">Total</span>
-                    <span class="fw-bold fs-5">R<?= number_format($total, 2) ?></span>
+                <hr class="cart-summary__divider">
+ 
+                <div class="cart-summary__total">
+                    <span class="cart-summary__total-label">Total</span>
+                    <span class="cart-summary__total-val">R<?= number_format($total, 2) ?></span>
                 </div>
             </div>
  
-            <button type="submit" class="btn btn-dark w-100 mb-2">Place Order</button>
-            <a href="/cart.php" class="btn btn-outline-secondary w-100">Back to Cart</a>
+            <button type="submit" class="btn-checkout">Place Order</button>
+            <a href="/cart.php" class="btn-browse">Back to Cart</a>
         </div>
  
     </div>

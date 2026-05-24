@@ -73,93 +73,90 @@ require_once __DIR__. '/../includes/header.php';
     <div class="step-divider"></div>
     <div class="step">
         <div class="step-circle step-circle--muted">3</div>
-        <span class="step-label step-label--muted">Payment</span>
-    </div>
-    <div class="step-divider"></div>
-    <div class="step">
-        <div class="step-circle step-circle--muted">4</div>
         <span class="step-label step-label--muted">Confirmed</span>
     </div>
 </div>
 
 
 <?php if (empty($cart_items)): ?>
-   <div class="text-center py-5">
-    <i class="bi bi-book fs-1 text-muted mb-3 d-block"></i>
-    <h5 class="fw-bold">Your shelf is empty</h5>
-    <p class="text-muted">Add some textbooks and get ready for the semester!</p>
-    <a href="/browse.php" class="btn btn-dark mt-2">Start Browsing</a>
-   </div>
-<?php else: ?>
-
-<p class="text-muted mb-4"><?= count($cart_items) ?> book<?= count($cart_items) > 1 ? 's' : '' ?> — review before checkout.</p>
-
-<div class="cart-layout">
  
-    <!-- LEFT: Cart items -->
-    <div class="cart-section">
-        <p class="cart-section__label">Books in your cart</p>
- 
-        <?php foreach ($cart_items as $item): ?>
-            <div class="cart-item">
- 
-                <div class="cart-item__thumb">
-                    <?php if ($item['image']): ?>
-                        <img src="/<?= htmlspecialchars($item['image']) ?>" alt="">
-                    <?php else: ?>
-                        <i class="bi bi-book text-muted"></i>
-                    <?php endif; ?>
-                </div>
- 
-                <div class="cart-item__info">
-                    <p class="cart-item__title"><?= htmlspecialchars($item['title']) ?></p>
-                    <p class="cart-item__author"><?= htmlspecialchars($item['author']) ?></p>
-                    <span class="badge bg-<?= match($item['condition']) {
-                        'new'      => 'success',
-                        'like new' => 'success',
-                        'good'     => 'info',
-                        'fair'     => 'warning',
-                        'poor'     => 'danger',
-                        default    => 'secondary'
-                    } ?>"><?= ucfirst($item['condition']) ?></span>
-                </div>
- 
-                <div class="cart-item__price-col">
-                    <p class="cart-item__price">R<?= number_format($item['price'], 2) ?></p>
-                    <button onclick="confirmRemove(<?= $item['cart_id'] ?>)"
-                            class="btn btn-link text-danger p-0">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </div>
- 
-            </div>
-        <?php endforeach; ?>
+    <div class="cart__empty">
+        <i class="bi bi-book cart__empty-icon"></i>
+        <h5 class="cart__empty-title">Your shelf is empty</h5>
+        <p class="cart__empty-sub">Add some textbooks and get ready for the semester!</p>
+        <a href="/browse.php" class="btn-checkout">Start Browsing</a>
     </div>
  
-    <!-- RIGHT: Order summary -->
-    <div>
-        <div class="cart-section mb-3">
-            <p class="cart-section__label">Order Summary</p>
+<?php else: ?>
+ 
+    <p class="cart__count"><?= count($cart_items) ?> book<?= count($cart_items) > 1 ? 's' : '' ?> — review before checkout.</p>
+ 
+    <div class="cart-layout">
+ 
+        <!-- left: Cart items -->
+        <div class="cart-section">
+            <p class="cart-section__label">Books in your cart</p>
  
             <?php foreach ($cart_items as $item): ?>
-                <div class="d-flex justify-content-between mb-2">
-                    <span class="text-muted small"><?= htmlspecialchars($item['title']) ?></span>
-                    <span class="fw-bold small">R<?= number_format($item['price'], 2) ?></span>
+                <div class="cart-item">
+ 
+                    <div class="cart-item__thumb">
+                        <?php if ($item['image']): ?>
+                            <img src="/<?= htmlspecialchars($item['image']) ?>" alt="">
+                        <?php else: ?>
+                            <i class="bi bi-book cart-item__no-image"></i>
+                        <?php endif; ?>
+                    </div>
+ 
+                    <div class="cart-item__info">
+                        <p class="cart-item__title"><?= htmlspecialchars($item['title']) ?></p>
+                        <p class="cart-item__author"><?= htmlspecialchars($item['author']) ?></p>
+                        <span class="condition-badge condition-badge--<?= match($item['condition']) {
+                            'new'      => 'success',
+                            'like new' => 'success',
+                            'good'     => 'info',
+                            'fair'     => 'warning',
+                            'poor'     => 'danger',
+                            default    => 'secondary'
+                        } ?>"><?= ucfirst($item['condition']) ?></span>
+                    </div>
+ 
+                    <div class="cart-item__price-col">
+                        <p class="cart-item__price">R<?= number_format($item['price'], 2) ?></p>
+                        <button onclick="confirmRemove(<?= $item['cart_id'] ?>)" class="cart-item__remove">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+ 
                 </div>
             <?php endforeach; ?>
- 
-            <hr>
-            <div class="d-flex justify-content-between">
-                <span class="fw-bold">Total</span>
-                <span class="fw-bold fs-5">R<?= number_format($total, 2) ?></span>
-            </div>
         </div>
  
-        <a href="/checkout.php" class="btn btn-dark w-100 mb-2">Proceed to Checkout</a>
-        <a href="/browse.php" class="btn btn-outline-secondary w-100">Continue Browsing</a>
-    </div>
+        <!-- Right: Order summary -->
+        <div class="cart-sidebar">
+            <div class="cart-section">
+                <p class="cart-section__label">Order Summary</p>
  
-</div>
+                <?php foreach ($cart_items as $item): ?>
+                    <div class="cart-summary__row">
+                        <span class="cart-summary__label"><?= htmlspecialchars($item['title']) ?></span>
+                        <span class="cart-summary__val">R<?= number_format($item['price'], 2) ?></span>
+                    </div>
+                <?php endforeach; ?>
+ 
+                <hr class="cart-summary__divider">
+ 
+                <div class="cart-summary__total">
+                    <span class="cart-summary__total-label">Total</span>
+                    <span class="cart-summary__total-val">R<?= number_format($total, 2) ?></span>
+                </div>
+            </div>
+ 
+            <a href="/checkout.php" class="btn-checkout">Proceed to Checkout</a>
+            <a href="/browse.php" class="btn-browse">Continue Browsing</a>
+        </div>
+ 
+    </div>
  
 <?php endif; ?>
  
@@ -167,14 +164,13 @@ require_once __DIR__. '/../includes/header.php';
 <div class="modal fade" id="removeModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-3">
-            <div class="modal-body text-center p-4">
-                <i class="bi bi-trash fs-1 text-danger"></i>
-                <h5 class="fw-bold mt-3">Remove this book?</h5>
-                <p class="text-muted">It will be removed from your cart.</p>
-                <div class="d-flex gap-2 justify-content-center mt-3">
-                    <button type="button" class="btn btn-outline-secondary"
-                        data-bs-dismiss="modal">Cancel</button>
-                    <a id="remove-link" href="#" class="btn btn-danger">Yes, Remove</a>
+            <div class="cart-modal__body">
+                <i class="bi bi-trash cart-modal__icon"></i>
+                <h5 class="cart-modal__title">Remove this book?</h5>
+                <p class="cart-modal__sub">It will be removed from your cart.</p>
+                <div class="cart-modal__actions">
+                    <button type="button" class="btn-browse" data-bs-dismiss="modal">Cancel</button>
+                    <a id="remove-link" href="#" class="btn-danger-action">Yes, Remove</a>
                 </div>
             </div>
         </div>
