@@ -57,6 +57,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
             $lock = $conn->prepare("UPDATE listings SET status = 'pending' WHERE id = ?");
             $lock->bind_param("i", $listing_id);
             $lock->execute();
+
+            // remove from cart
+            $clear = $conn->prepare("DELETE FROM cart WHERE listing_id = ? AND user_id = ?");
+            $clear->bind_param("ii", $listing_id, $user_id);
+            $clear->execute();
         }
 
         if (!$error) {
