@@ -25,6 +25,23 @@ if ($listing['status'] == 'sold') {
     exit();
 }
 
+//block suspended/banned users
+$user_stmt = $conn->prepare("SELECT status FROM users WHERE id = ?");
+$user_stmt->bind_param("i", $_SESSION['user_id']);
+$user_stmt->execute();
+$current_user = $user_stmt->get_result()->fetch_assoc();
+
+if($current_user['status'] === 'suspended'){
+    set_flash('danger', 'Your account is suspended. You cannot edit listings for 30 days.');
+    header('Location: /my-listings.php');
+    exit();
+}
+
+if ($current_user['status'] === 'banned'){
+    session_destroy();
+    header('Location: /login.php?message=banned');
+    exit();
+}
 // fetch categories
 $categories = $conn->query("SELECT * FROM categories ORDER BY name ASC");
 

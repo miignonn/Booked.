@@ -6,14 +6,26 @@ require_once __DIR__ .'/../includes/functions.php';
 $user_id = $_SESSION['user_id'];
 $filter = isset($_GET['status']) ? $_GET['status'] : 'all';
 
-// handle delete FIRST before any output
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_id'])) {
+//handle delete - block if listing is sold
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_id'])){
     verify_csrf();
     $delete_id = (int)$_POST['delete_id'];
-    $del = $conn->prepare("DELETE FROM listings WHERE id = ? AND user_id = ?");
-    $del->bind_param("ii", $delete_id, $user_id);
-    $del->execute();
-    set_flash('warning', 'Listing deleted');
+
+    $check = $conn->prepare("SELECT status FROM listings WHERE id = ? AND user_id = ?");
+    $check->bind_param("ii", $delete_id, $user_id);
+    $check->execute();
+    $check_listing = $check->get_result()->fetch_assoc();
+
+    if (!$check_listing){
+        set_flash('danger', 'Listing not found');
+    } elseif ($check_listing['status'] === 'sold'){
+        set_flash('danger', 'Sold listings cannot be deleted.');
+    } else {
+       $del = $conn->prepare("DELETE FROM listings WHERE id = ? AND user_id = ?");
+        $del->bind_param("ii", $delete_id, $user_id);
+        $del->execute();
+        set_flash('warning', 'Listing deleted successfully.'); 
+    }
     header('Location: /my-listings.php');
     exit();
 }
@@ -105,18 +117,16 @@ require_once __DIR__ . '/../includes/header.php';
             </span>
  
             <!-- Actions -->
-            <div class="my-listing-card__actions">
-                <?php if ($listing['status'] === 'sold'): ?>
-                    <button class="btn btn-sm btn-outline-secondary" disabled>Edit</button>
-                <?php else: ?>
-                    <a href="/edit-listing.php?id=<?= $listing['id'] ?>"
-                       class="btn btn-sm btn-outline-dark">Edit</a>
-                <?php endif; ?>
- 
+            <?php if ($listing['status'] === 'sold'): ?>
+                <button class="btn btn-sm btn-outline-secondary" disabled>Edit</button>
+                <button class="btn btn-sm btn-outline-danger" 
+                 onclick="alert('Sold listings cannot be deleted.')">Delete</button>
+            <?php else: ?>
+                <a href="/edit-listing.php?id=<?= $listing['id'] ?>"
+                class="btn btn-sm btn-outline-dark">Edit</a>
                 <button type="button" class="btn btn-sm btn-outline-danger"
-                        onclick="confirmDelete(<?= $listing['id'] ?>)">Delete</button>
-            </div>
- 
+                 onclick="confirmDelete(<?= $listing['id'] ?>)">Delete</button>
+            <?php endif; ?>
         </div>
     <?php endforeach; ?>
 <?php endif; ?>

@@ -11,26 +11,31 @@ $allowed_domains = [
     '.ac.za',
     'vossie.net',
     'student.up.ac.za',
+    'unisa.ac.za',
     'tuks.co.za',
-    'myuct.ac.za',
+    'uct.ac.za',
+    'ufh.ac.za',
+    'ufs.ac.za',
+    'ukzn.ac.za',
+    'ul.ac.za',
+    'nwu.ac.za',
     'wits.ac.za',
     'sun.ac.za',
-    'dut4life.ac.za',
-    'mylife.unisa.ac.za',
-    'stu.ukzn.ac.za'
-];
+    'up.ac.za',
+    'ru.ac.za',
+    'uj.ac.za'
+    ];
 
 // LOGIN LOGIC
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     verify_csrf();
     $login_input = trim($_POST['login_input']);
-    $password = $_POST['password'];
+    $password    = $_POST['password'];
 
     if (empty($login_input) || empty($password)) {
-        $error = "Please fill in all fields.";
+        $error      = "Please fill in all fields.";
         $active_tab = 'login';
     } else {
-        // check if input is email or username
         if (str_contains($login_input, '@')) {
             $stmt = $conn->prepare("SELECT id, name, username, role, status, password FROM users WHERE email = ?");
         } else {
@@ -38,28 +43,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
         }
         $stmt->bind_param("s", $login_input);
         $stmt->execute();
-        $result = $stmt->get_result();
-        $user = $result->fetch_assoc();
+        $user = $stmt->get_result()->fetch_assoc();
 
         if ($user && password_verify($password, $user['password'])) {
-            if ($user['status'] === 'banned' || $user['status'] === 'suspended') {
-                $error = "Your account has been suspended.";
+
+            // Auto-unsuspend after 30 days
+            if ($user['status'] === 'suspended') {
+                $sus_stmt = $conn->prepare("
+                    SELECT MAX(r.created_at) AS last_warned
+                    FROM reports r
+                    JOIN listings l ON r.listing_id = l.id
+                    WHERE l.user_id = ? AND r.status = 'reviewed'
+                ");
+                $sus_stmt->bind_param("i", $user['id']);
+                $sus_stmt->execute();
+                $sus_row     = $sus_stmt->get_result()->fetch_assoc();
+                $last_warned = $sus_row['last_warned'] ?? $user['created_at'];
+
+                if (strtotime($last_warned . ' + 30 days') < time()) {
+                    $unsuspend = $conn->prepare("UPDATE users SET status = 'active' WHERE id = ?");
+                    $unsuspend->bind_param("i", $user['id']);
+                    $unsuspend->execute();
+                    $user['status'] = 'active';
+                }
+            }
+
+            if ($user['status'] === 'banned') {
+                $error      = "Your account has been permanently banned.";
+                $active_tab = 'login';
+            } elseif ($user['status'] === 'suspended') {
+                $error      = "Your account has been suspended for 30 days.";
                 $active_tab = 'login';
             } else {
                 session_regenerate_id(true);
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['name'] = $user['name'];
+                $_SESSION['user_id']  = $user['id'];
+                $_SESSION['name']     = $user['name'];
                 $_SESSION['username'] = $user['username'];
-                $_SESSION['role'] = $user['role'];
+                $_SESSION['role']     = $user['role'];
                 header('Location: /index.php');
                 exit();
             }
+
         } else {
-            $error = "Invalid email/username or password.";
+            $error      = "Invalid email/username or password.";
             $active_tab = 'login';
         }
     }
 }
+
+
 
 // REGISTER LOGIC
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
