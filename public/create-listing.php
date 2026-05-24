@@ -3,26 +3,23 @@ require_once __DIR__ . '/../includes/auth_check.php';
 require_once __DIR__ .'/../config/db.php';
 require_once __DIR__ .'/../includes/functions.php';
 
-//block suspended/banned users
+// block suspended/banned users
 $user_stmt = $conn->prepare("SELECT status FROM users WHERE id = ?");
 $user_stmt->bind_param("i", $_SESSION['user_id']);
 $user_stmt->execute();
 $current_user = $user_stmt->get_result()->fetch_assoc();
 
-if($current_user['status'] === 'suspended'){
-    set_flash('danger', 'Your account is suspended. You cannto create listings for 30 days.');
+if ($current_user['status'] === 'suspended') {
+    set_flash('danger', 'Your account is suspended. You cannot create listings for 30 days.');
     header('Location: /my-listings.php');
     exit();
 }
 
-if ($current_user['status'] === 'banned'){
+if ($current_user['status'] === 'banned') {
     session_destroy();
     header('Location: /login.php?message=banned');
     exit();
 }
-
-
-
 
 $error = '';
 $categories = $conn->query("SELECT * FROM categories ORDER BY name ASC");
@@ -31,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     verify_csrf();
     $title       = trim($_POST['title']);
     $author      = trim($_POST['author']);
-    $isbn        = trim($_POST['isbn']);
+    $edition     = trim($_POST['edition']);
     $institution = trim($_POST['institution']);
     $description = trim($_POST['description']);
     $price       = trim($_POST['price']);
@@ -39,7 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $category_id = trim($_POST['category_id']);
     $status      = trim($_POST['status']);
     $user_id     = $_SESSION['user_id'];
-
 
     if (empty($title) || empty($price) || empty($condition) || empty($category_id)) {
         $error = "Please fill in all required fields.";
@@ -82,11 +78,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if (empty($error)) {
-        $stmt = $conn->prepare("INSERT INTO listings 
-            (user_id, category_id, title, author, isbn, institution, description, price, `condition`, status, image) 
+        $stmt = $conn->prepare("INSERT INTO listings
+            (user_id, category_id, title, author, edition, institution, description, price, `condition`, status, image)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("iisssssdsss",
-            $user_id, $category_id, $title, $author, $isbn,
+            $user_id, $category_id, $title, $author, $edition,
             $institution, $description, $price, $condition, $status, $primary_image);
 
         if ($stmt->execute()) {
@@ -109,150 +105,155 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 require_once __DIR__ .'/../includes/header.php';
 ?>
 
-<?php if($error): ?>
-    <div class="alert alert-danger"><?=  htmlspecialchars($error) ?></div>
-    <?php endif; ?>
+<?php if ($error): ?>
+    <div class="form-error"><?= htmlspecialchars($error) ?></div>
+<?php endif; ?>
 
-    <div>
-    <form method="POST" enctype="multipart/form-data">
-         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
-        <div class="row">
+<form method="POST" enctype="multipart/form-data" class="create-listing-form">
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
 
-        <div class="col-md-6">
+    <div class="create-listing-grid">
 
-        <!-- Image Upload -->
-<div class="border rounded-3 p-4 text-center mb-3" id="upload-box">
-    <i class="bi bi-cloud-upload fs-2 text-muted"></i>
-    <p class="fw-bold mt-2">Upload Book Photo</p>
-    <p class="text-muted small">Up to 4 • PNG or JPG</p>
-    <input type="file" name="images[]" id="images" class="form-control mt-2"
-    accept="image/*" multiple onchange="previewImages(this)">
-    <div id="image-preview" class="d-flex flex-wrap gap-2 mt-3"></div>
-</div>
+        <!-- LEFT column -->
+        <div class="create-listing-col">
 
-<!-- Photo Tips — outside the upload box -->
-<div class="bg-light rounded-3 p-3 mb-3">
-    <p class="fw-bold small mb-1"><i class="bi bi-camera"></i> Photo Tips</p>
-    <ul class="text-muted small mb-0">
-        <li>Place the book on a flat, clean surface.</li>
-        <li>Make sure the cover is clearly visible.</li>
-        <li>Use natural lighting.</li>
-        <li>Include photos of any damage or wear.</li>
-    </ul>
-</div>
-
-            <div class="mb-3">
-                <label class="form-label fw-bold">Condition<span class="text-danger">*</span></label>
-                <select name="condition" class="form-select" required>
-                    <option value="">Select condition</option>
-                    <option value="new" <?= (isset($condition) && $condition === 'new') ? 'selected' : '' ?>>New</option>
-                    <option value="like new" <?= (isset($condition) && $condition === 'like new') ? 'selected' : '' ?>>Like New</option>
-                    <option value="good" <?= (isset($condition) && $condition === 'good') ? 'selected' : '' ?>>Good - Minimal Wear</option>
-                    <option value="fair" <?= (isset($condition) && $condition === 'fair') ? 'selected' : '' ?>>Fair - Some Wear</option>
-                    <option value="poor"<?= (isset($condition) && $condition === 'poor') ? 'selected' : '' ?>>Poor - Heavy Wear</option>
-                 </select>
+            <!-- Image upload -->
+            <div class="upload-box" id="upload-box">
+                <i class="bi bi-cloud-upload upload-box__icon"></i>
+                <p class="upload-box__title">Upload Book Photo</p>
+                <p class="upload-box__hint">Up to 4 &bull; PNG or JPG</p>
+                <input type="file" name="images[]" id="images" class="upload-box__input"
+                       accept="image/*" multiple onchange="previewImages(this)">
+                <div id="image-preview" class="upload-box__preview"></div>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label fw-bold">Asking Price <span class="text-danger">*</span></label>
-                <div class="input-group">
-                    <span class="input-group-text">R</span>
+            <!-- Photo tips -->
+            <div class="photo-tips">
+                <p class="photo-tips__title"><i class="bi bi-camera"></i> Photo Tips</p>
+                <ul class="photo-tips__list">
+                    <li>Place the book on a flat, clean surface.</li>
+                    <li>Make sure the cover is clearly visible.</li>
+                    <li>Use natural lighting.</li>
+                    <li>Include photos of any damage or wear.</li>
+                </ul>
+            </div>
+
+            <!-- Condition -->
+            <div class="listing-field">
+                <label class="listing-label">Condition <span class="listing-required">*</span></label>
+                <select name="condition" class="form-select" required>
+                    <option value="">Select condition</option>
+                    <option value="new"      <?= (isset($condition) && $condition === 'new')      ? 'selected' : '' ?>>New</option>
+                    <option value="like new" <?= (isset($condition) && $condition === 'like new') ? 'selected' : '' ?>>Like New</option>
+                    <option value="good"     <?= (isset($condition) && $condition === 'good')     ? 'selected' : '' ?>>Good - Minimal Wear</option>
+                    <option value="fair"     <?= (isset($condition) && $condition === 'fair')     ? 'selected' : '' ?>>Fair - Some Wear</option>
+                    <option value="poor"     <?= (isset($condition) && $condition === 'poor')     ? 'selected' : '' ?>>Poor - Heavy Wear</option>
+                </select>
+            </div>
+
+            <!-- Price -->
+            <div class="listing-field">
+                <label class="listing-label">Asking Price <span class="listing-required">*</span></label>
+                <div class="listing-price-wrap">
+                    <span class="listing-price-prefix">R</span>
                     <input type="number" name="price" class="form-control"
-                    value="<?= isset($price) ? htmlspecialchars($price) : '' ?>"
-                    placeholder="0.00"
-                    required>
+                           value="<?= isset($price) ? htmlspecialchars($price) : '' ?>"
+                           placeholder="0.00" required>
                 </div>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label fw-bold">Description</label>
+            <!-- Description -->
+            <div class="listing-field">
+                <label class="listing-label">Description</label>
                 <textarea name="description" class="form-control" rows="4"
-                placeholder="Describe the book's condition, any highlights, missing pages etc."> <?= isset($description) ? htmlspecialchars($description) : '' ?>
-            </textarea>
+                          placeholder="Describe the book's condition, any highlights, missing pages etc."><?= isset($description) ? htmlspecialchars($description) : '' ?></textarea>
             </div>
 
-         </div>
-
-         <div class="col-md-6">
-
-         <div class="mb-3">
-            <label class="form-label fw-bold">Book Title <span class="text-danger">*</span></label>
-            <input type="text" name="title" class="form-control"
-            value="<?= isset($title) ? htmlspecialchars($title) : '' ?>"
-            placeholder="e.g. Database System Concepts" required>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label fw-bold">Author(s) <span class="text-danger">*</span></label>
-            <input type="text" name="author" class="form-control" 
-             value="<?= isset($author) ? htmlspecialchars($author) : '' ?>"
-             placeholder="e.g. Williams, Koch" required>
-        </div>
+        <!-- RIGHT column -->
+        <div class="create-listing-col">
 
-        <div class="mb-3">
-            <label class="form-label fw-bold">ISBN <span class="text-danger">*</span></label>
-            <input type="text" name="isbn" class="form-control" 
-            value="<?= isset($isbn) ? htmlspecialchars($isbn) : '' ?>"
-            placeholder="e.g. 977-" required>
-        </div>
+            <!-- Title -->
+            <div class="listing-field">
+                <label class="listing-label">Book Title <span class="listing-required">*</span></label>
+                <input type="text" name="title" class="form-control"
+                       value="<?= isset($title) ? htmlspecialchars($title) : '' ?>"
+                       placeholder="e.g. Database System Concepts" required>
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label fw-bold">Subject/Faculty <span class="text-danger">*</span></label>
-            <select name="category_id" class="form-select" required>
-    <option value="">Select faculty</option>
-    <?php while ($cat = $categories->fetch_assoc()): ?>
-        <option value="<?= $cat['id'] ?>" <?= (isset($category_id) && $category_id == $cat['id']) ? 'selected' : '' ?>>
-            <?= htmlspecialchars($cat['name']) ?>
-        </option>
-    <?php endwhile; ?>
-</select>
-        </div>
+            <!-- Author -->
+            <div class="listing-field">
+                <label class="listing-label">Author(s) <span class="listing-required">*</span></label>
+                <input type="text" name="author" class="form-control"
+                       value="<?= isset($author) ? htmlspecialchars($author) : '' ?>"
+                       placeholder="e.g. Williams, Koch" required>
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label fw-bold">Institution <span class="text-danger">*</span></label>
-            <input type="text" name="institution" class="form-control" 
-            value="<?= isset($institution) ? htmlspecialchars($institution) : '' ?>"
-            placeholder="e.g. Eduvos" required>
-        </div>
-        
-        <input type="hidden" name="status" id="status" value="available">
-    <div class="d-flex flex-column gap-2 mt-2">
-    <button type="submit" class="btn btn-dark w-100"
-        onclick="document.getElementById('status').value='available'">
-        Publish Listing
-    </button>
-    <button type="submit" class="btn btn-outline-dark w-100"
-        onclick="document.getElementById('status').value='draft'">
-        Save as Draft
-    </button>
-</div>
-        
+            <!-- Edition -->
+            <div class="listing-field">
+                <label class="listing-label">Edition<span class="listing-required">*</span></label>
+                <input type="text" name="edition" class="form-control"
+                       value="<?= isset($edition) ? htmlspecialchars($edition) : '' ?>"
+                       placeholder="e.g. 3rd">
+            </div>
+
+            <!-- Faculty -->
+            <div class="listing-field">
+                <label class="listing-label">Subject/Faculty <span class="listing-required">*</span></label>
+                <select name="category_id" class="form-select" required>
+                    <option value="">Select faculty</option>
+                    <?php while ($cat = $categories->fetch_assoc()): ?>
+                        <option value="<?= $cat['id'] ?>" <?= (isset($category_id) && $category_id == $cat['id']) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($cat['name']) ?>
+                        </option>
+                    <?php endwhile; ?>
+                </select>
+            </div>
+
+            <!-- Institution -->
+            <div class="listing-field">
+                <label class="listing-label">Institution <span class="listing-required">*</span></label>
+                <input type="text" name="institution" class="form-control"
+                       value="<?= isset($institution) ? htmlspecialchars($institution) : '' ?>"
+                       placeholder="e.g. Eduvos" required>
+            </div>
+
+            <!-- Submit buttons -->
+            <input type="hidden" name="status" id="status" value="available">
+            <div class="listing-actions">
+                <button type="submit" class="btn-checkout"
+                        onclick="document.getElementById('status').value='available'">
+                    Publish Listing
+                </button>
+                <button type="submit" class="btn-browse"
+                        onclick="document.getElementById('status').value='draft'">
+                    Save as Draft
+                </button>
+            </div>
 
         </div>
-        </div>
-    </form>
     </div>
+</form>
 
-
-    <script>
-        function previewImages(input) {
+<script>
+function previewImages(input) {
     const preview = document.getElementById('image-preview');
     preview.innerHTML = '';
     const files = Array.from(input.files).slice(0, 4);
-    files.forEach((file, index) => {
+    files.forEach(file => {
         const reader = new FileReader();
         reader.onload = e => {
             const wrapper = document.createElement('div');
-            wrapper.style.cssText = 'position:relative;display:inline-block';
+            wrapper.className = 'upload-box__thumb';
 
             const img = document.createElement('img');
             img.src = e.target.result;
-            img.style.cssText = 'width:80px;height:80px;object-fit:cover;border-radius:8px;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.15)';
 
             const btn = document.createElement('button');
             btn.innerHTML = '×';
             btn.type = 'button';
-            btn.style.cssText = 'position:absolute;top:-6px;right:-6px;background:black;color:white;border:none;border-radius:50%;width:20px;height:20px;font-size:14px;line-height:1;cursor:pointer;padding:0';
+            btn.className = 'upload-box__remove';
             btn.onclick = () => wrapper.remove();
 
             wrapper.appendChild(img);
@@ -262,6 +263,6 @@ require_once __DIR__ .'/../includes/header.php';
         reader.readAsDataURL(file);
     });
 }
-    </script>
+</script>
 
-    <?php require_once '../includes/footer.php'; ?>
+<?php require_once '../includes/footer.php'; ?>
