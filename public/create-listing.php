@@ -215,10 +215,10 @@ require_once __DIR__ .'/../includes/header.php';
             placeholder="e.g. Eduvos" required>
         </div>
         
-        <input type="hidden" name="status" id="status" value="active">
+        <input type="hidden" name="status" id="status" value="available">
     <div class="d-flex flex-column gap-2 mt-2">
     <button type="submit" class="btn btn-dark w-100"
-        onclick="document.getElementById('status').value='active'">
+        onclick="document.getElementById('status').value='available'">
         Publish Listing
     </button>
     <button type="submit" class="btn btn-outline-dark w-100"
