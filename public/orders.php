@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_order'])) {
     // only buyer can cancel, only before handover
     $stmt = $conn->prepare("
         UPDATE orders SET status = 'cancelled'
-        WHERE id = ? AND buyer_id = ? AND status IN ('pending_payment', 'pending')
+        WHERE id = ? AND buyer_id = ? AND status = 'pending'
     ");
     $stmt->bind_param("ii", $order_id, $user_id);
     $stmt->execute();
@@ -96,12 +96,11 @@ require_once __DIR__ . '/../includes/header.php';
 
 function status_badge(string $status): string {
     return match($status) {
-        'completed'       => 'success',
-        'handed_over'     => 'info',
-        'pending'         => 'warning text-dark',
-        'pending_payment' => 'secondary',
-        'cancelled'       => 'danger',
-        default           => 'secondary',
+        'completed'   => 'success',
+        'handed_over' => 'info',
+        'pending'     => 'warning text-dark',
+        'cancelled'   => 'danger',
+        default       => 'secondary',
     };
 }
 ?>
@@ -164,7 +163,7 @@ function status_badge(string $status): string {
                         </form>
                     <?php endif; ?>
 
-                    <?php if (in_array($order['status'], ['pending_payment', 'pending'])): ?>
+                    <?php if ($order['status'] === 'pending'): ?>
                         <button type="button" class="btn-order-cancel"
                                 onclick="confirmCancel(<?= $order['id'] ?>)">
                             Cancel Order

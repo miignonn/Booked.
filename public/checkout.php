@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
             $order_stmt = $conn->prepare("
                 INSERT INTO orders
                 (listing_id, buyer_id, seller_id, total_price, campus, preferred_time, seller_email, status)
-                VALUES (?, ?, ?, ?, ?, ?, ?, 'pending_payment')
+                VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')
             ");
             $order_stmt->bind_param("iiidsss", $listing_id, $user_id, $seller_id, $price, $campus, $preferred_time, $seller_email);
             $order_stmt->execute();
