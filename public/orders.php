@@ -5,62 +5,78 @@ require_once __DIR__ .'/../includes/functions.php';
 
 $user_id = $_SESSION['user_id'];
 
-//seller confirms they handed the book over
-if ($_SERVER['REQUEST_METHOD'] ===  'POST' && isset($_POST['confirm_handover'])){
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_handover'])) {
     verify_csrf();
-    $oder_id = (int)$_POST['order_id'];
-
+    $order_id = (int)$_POST['order_id'];
     $stmt = $conn->prepare("
-    UPDATE orders SET status = 'handed_over'
-    WHERE id = ? AND seller_id = ? AND status = 'pending'
+        UPDATE orders SET status = 'handed_over'
+        WHERE id = ? AND seller_id = ? AND status = 'pending'
     ");
-
     $stmt->bind_param("ii", $order_id, $user_id);
     $stmt->execute();
-    
     header('Location: /orders.php?tab=selling');
     exit();
 }
 
-//buyer confirms they received the book
-if ($_SERVER['REQUEST_METHOD'] ===' POST' && isset($_POST['mark_received'])){
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mark_received'])) {
+    verify_csrf();
+    $order_id = (int)$_POST['order_id'];
+    $stmt = $conn->prepare("
+        UPDATE orders SET status = 'completed'
+        WHERE id = ? AND buyer_id = ? AND status = 'handed_over'
+    ");
+    $stmt->bind_param("ii", $order_id, $user_id);
+    $stmt->execute();
+    $sold = $conn->prepare("
+        UPDATE listings SET status = 'sold'
+        WHERE id = (SELECT listing_id FROM orders WHERE id = ?)
+    ");
+    $sold->bind_param("i", $order_id);
+    $sold->execute();
+    header('Location: /orders.php?tab=buying');
+    exit();
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_order'])) {
     verify_csrf();
     $order_id = (int)$_POST['order_id'];
 
-    //update order to completed
+    // only buyer can cancel, only before handover
     $stmt = $conn->prepare("
-    UPDATE orders SET status = 'completed'
-    WHERE id = ? AND buyer_id = ? AND status = 'handed_over'
+        UPDATE orders SET status = 'cancelled'
+        WHERE id = ? AND buyer_id = ? AND status IN ('pending_payment', 'pending')
     ");
     $stmt->bind_param("ii", $order_id, $user_id);
     $stmt->execute();
 
-    $sold = $conn->prepare("
-    UPDATE lsitings SET status = 'sold'
-    WHERE id = (SELECT listing_id FROM orders WHERE id = ?)
-    ");
-    $sold->bind_param("i", $order_id);
+    // restore listing to available so seller can get another buyer
+    if ($stmt->affected_rows > 0) {
+        $restore = $conn->prepare("
+            UPDATE listings SET status = 'available'
+            WHERE id = (SELECT listing_id FROM orders WHERE id = ?)
+        ");
+        $restore->bind_param("i", $order_id);
+        $restore->execute();
+    }
+
     header('Location: /orders.php?tab=buying');
     exit();
-} 
+}
 
-//fetch orders as buyer
 $buying_stmt = $conn->prepare("
-SELECT orders.*, listings.title, listings.image, 
-users.username AS seller_username, users.email AS seller_email
+SELECT orders.*, listings.title, listings.image,
+users.username AS seller_username, users.email AS seller_email,
+users.institution AS seller_institution
 FROM orders
 JOIN listings ON orders.listing_id = listings.id
 JOIN users ON orders.seller_id = users.id
 WHERE orders.buyer_id = ?
 ORDER BY orders.created_at DESC
 ");
-
 $buying_stmt->bind_param("i", $user_id);
 $buying_stmt->execute();
 $buying_orders = $buying_stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
-
-//fetch orders as the seller
 $selling_stmt = $conn->prepare("
 SELECT orders.*, listings.title, listings.image,
 users.username AS buyer_username, users.email AS buyer_email
@@ -70,7 +86,6 @@ JOIN users ON orders.buyer_id = users.id
 WHERE orders.seller_id = ?
 ORDER BY orders.created_at DESC
 ");
-
 $selling_stmt->bind_param("i", $user_id);
 $selling_stmt->execute();
 $selling_orders = $selling_stmt->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -79,35 +94,33 @@ $active_tab = isset($_GET['tab']) && $_GET['tab'] === 'selling' ? 'selling' : 'b
 
 require_once __DIR__ . '/../includes/header.php';
 
-function status_badge(string $status): string{
- return match($status){
-    'completed' => 'success',
-    'handed_over'     => 'info',
-    'pending'         => 'warning text-dark',
-    'pending_payment' => 'secondary',
-    'cancelled'       => 'danger',
-    default           => 'secondary',
- };
+function status_badge(string $status): string {
+    return match($status) {
+        'completed'       => 'success',
+        'handed_over'     => 'info',
+        'pending'         => 'warning text-dark',
+        'pending_payment' => 'secondary',
+        'cancelled'       => 'danger',
+        default           => 'secondary',
+    };
 }
-
-
 ?>
+
 <h4 class="orders__title">My Orders</h4>
 <p class="orders__sub">Track your buying and selling activity</p>
 
 <div class="orders__tabs">
     <button class="order-tab <?= $active_tab === 'buying' ? 'active' : '' ?>"
-    onclick="switchTab('buying', this)">
-    Bought <pan class="order-tab-count"><?= count($buying_orders) ?></span>
-</button>
-<button class="order-tab <?= $active_tab === 'selling' ? 'active' : '' ?>"
-    onclick="switchTab('selling', this)">
-    Sold <span class="order-tab-count"><?= count($selling_orders) ?></span>
-</button>
+            onclick="switchTab('buying', this)">
+        Bought <span class="order-tab-count"><?= count($buying_orders) ?></span>
+    </button>
+    <button class="order-tab <?= $active_tab === 'selling' ? 'active' : '' ?>"
+            onclick="switchTab('selling', this)">
+        Sold <span class="order-tab-count"><?= count($selling_orders) ?></span>
+    </button>
 </div>
 
-
-<!--- Buying Panel -----> 
+<!-- Buying Panel -->
 <div id="buying" class="order-panel" <?= $active_tab === 'selling' ? 'style="display:none;"' : '' ?>>
     <?php if (empty($buying_orders)): ?>
         <div class="orders__empty">
@@ -119,7 +132,7 @@ function status_badge(string $status): string{
     <?php else: ?>
         <?php foreach ($buying_orders as $order): ?>
             <div class="order-card">
- 
+
                 <div class="order-card__thumb">
                     <?php if ($order['image']): ?>
                         <img src="/<?= htmlspecialchars($order['image']) ?>" alt="">
@@ -127,14 +140,15 @@ function status_badge(string $status): string{
                         <i class="bi bi-book order-card__no-image"></i>
                     <?php endif; ?>
                 </div>
- 
+
                 <div class="order-card__info">
                     <p class="order-card__title"><?= htmlspecialchars($order['title']) ?></p>
-                    <p class="order-card__meta">Seller: @<?= htmlspecialchars($order['seller_username']) ?> &nbsp;·&nbsp; <?= htmlspecialchars($order['campus']) ?></p>
-                    <p class="order-card__meta"><?= date('d M Y', strtotime($order['created_at'])) ?> &nbsp;·&nbsp; Collect: <?= date('d M, H:i', strtotime($order['preferred_time'])) ?></p>
+                    <p class="order-card__meta">Seller: @<?= htmlspecialchars($order['seller_username']) ?> &nbsp;·&nbsp; <?= htmlspecialchars($order['seller_institution']) ?></p>
+                    <p class="order-card__meta">Collection: <?= htmlspecialchars($order['campus']) ?> &nbsp;·&nbsp; <?= date('d M, H:i', strtotime($order['preferred_time'])) ?></p>
+                    <p class="order-card__meta"><?= date('d M Y', strtotime($order['created_at'])) ?></p>
                     <p class="order-card__meta"><i class="bi bi-envelope"></i> <?= htmlspecialchars($order['seller_email']) ?></p>
                 </div>
- 
+
                 <div class="order-card__price-col">
                     <p class="order-card__price">R<?= number_format($order['total_price'], 2) ?></p>
                     <span class="badge bg-<?= status_badge($order['status']) ?> mb-2">
@@ -149,13 +163,20 @@ function status_badge(string $status): string{
                             </button>
                         </form>
                     <?php endif; ?>
+
+                    <?php if (in_array($order['status'], ['pending_payment', 'pending'])): ?>
+                        <button type="button" class="btn-order-cancel"
+                                onclick="confirmCancel(<?= $order['id'] ?>)">
+                            Cancel Order
+                        </button>
+                    <?php endif; ?>
                 </div>
- 
+
             </div>
         <?php endforeach; ?>
     <?php endif; ?>
 </div>
- 
+
 <!-- Selling Panel -->
 <div id="selling" class="order-panel" <?= $active_tab === 'buying' ? 'style="display:none;"' : '' ?>>
     <?php if (empty($selling_orders)): ?>
@@ -168,7 +189,7 @@ function status_badge(string $status): string{
     <?php else: ?>
         <?php foreach ($selling_orders as $order): ?>
             <div class="order-card">
- 
+
                 <div class="order-card__thumb">
                     <?php if ($order['image']): ?>
                         <img src="/<?= htmlspecialchars($order['image']) ?>" alt="">
@@ -176,14 +197,14 @@ function status_badge(string $status): string{
                         <i class="bi bi-book order-card__no-image"></i>
                     <?php endif; ?>
                 </div>
- 
+
                 <div class="order-card__info">
                     <p class="order-card__title"><?= htmlspecialchars($order['title']) ?></p>
                     <p class="order-card__meta">Buyer: @<?= htmlspecialchars($order['buyer_username']) ?> &nbsp;·&nbsp; <?= htmlspecialchars($order['campus']) ?></p>
                     <p class="order-card__meta"><?= date('d M Y', strtotime($order['created_at'])) ?> &nbsp;·&nbsp; Collect: <?= date('d M, H:i', strtotime($order['preferred_time'])) ?></p>
                     <p class="order-card__meta"><i class="bi bi-envelope"></i> <?= htmlspecialchars($order['buyer_email']) ?></p>
                 </div>
- 
+
                 <div class="order-card__price-col">
                     <p class="order-card__price">R<?= number_format($order['total_price'], 2) ?></p>
                     <span class="badge bg-<?= status_badge($order['status']) ?> mb-2">
@@ -199,13 +220,39 @@ function status_badge(string $status): string{
                         </form>
                     <?php endif; ?>
                 </div>
- 
+
             </div>
         <?php endforeach; ?>
     <?php endif; ?>
 </div>
 
+<!-- Cancel confirmation modal -->
+<div class="modal fade" id="cancelModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-3">
+            <div class="cart-modal__body">
+                <i class="bi bi-x-circle cart-modal__icon cart-modal__icon--cancel"></i>
+                <h5 class="cart-modal__title">Cancel this order?</h5>
+                <p class="cart-modal__sub">The listing will be made available again for other buyers.</p>
+                <form method="POST">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
+                    <input type="hidden" name="order_id" id="cancel-order-id" value="">
+                    <div class="cart-modal__actions">
+                        <button type="button" class="btn-browse" data-bs-dismiss="modal">Keep Order</button>
+                        <button type="submit" name="cancel_order" class="btn-danger-action">Yes, Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+function confirmCancel(orderId) {
+    document.getElementById('cancel-order-id').value = orderId;
+    new bootstrap.Modal(document.getElementById('cancelModal')).show();
+}
+
 function switchTab(id, el) {
     document.querySelectorAll('.order-panel').forEach(p => p.style.display = 'none');
     document.querySelectorAll('.order-tab').forEach(t => t.classList.remove('active'));

@@ -12,7 +12,7 @@ $filter_edition = isset($_GET['edition']) ? trim($_GET['edition']) : '';
 $sort = isset($_GET['sort']) ? trim($_GET['sort']) : '';
 
 //build query dynamically
-$where = ["listings.status = 'active'"];
+$where = ["listings.status = 'available'"];
 $params = [];
 $types = '';
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
@@ -109,7 +109,7 @@ require_once __DIR__ . '/../includes/header.php';
             </div>
             <div id="institution-options" class="d-none">
                 <?php
-                $institutions = $conn->query("SELECT DISTINCT institution FROM listings WHERE status='active' AND institution IS NOT NULL ORDER BY institution ASC");
+                $institutions = $conn->query("SELECT DISTINCT institution FROM listings WHERE status='available' AND institution IS NOT NULL ORDER BY institution ASC");
                 while ($inst = $institutions->fetch_assoc()):
                 ?>
                     <div class="form-check mb-1">
@@ -270,7 +270,7 @@ require_once __DIR__ . '/../includes/header.php';
     function openFilters(){
     document.getElementById('browse-drawer').style.display = 'flex';
     document.getElementById('browse-drawer').style.flexDirection = 'column';
-   document.getElemetById('browse-overlay').style.display = 'block';
+   document.getElementById('browse-overlay').style.display = 'block';
    document.body.style.overflow = 'hidden';
     }
 
@@ -290,5 +290,3 @@ require_once __DIR__ . '/../includes/header.php';
 
 </script>
 <?php require_once '../includes/footer.php' ?>
-
-
