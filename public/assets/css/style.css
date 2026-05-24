@@ -1607,6 +1607,270 @@ color: #993C1D;
     flex-shrink: 0;
 }
 /*===============================
+    15. MAIN WEBSITE (Listing Page)
+==================================*/
+
+.listing-page {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+}
+
+/* Media column */
+.listing-page__main-image {
+    width: 100%;
+    max-height: 480px;
+    object-fit: cover;
+    border-radius: 12px;
+    display: block;
+}
+
+.listing-page__thumbs {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.listing-page__thumb {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.15s;
+}
+
+.listing-page__thumb:hover {
+    border-color: var(--near-black);
+}
+
+.listing-page__no-image {
+    width: 100%;
+    height: 480px;
+    background: #f0f0f0;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: rgba(26,23,20,0.3);
+}
+
+/* Seller info */
+.listing-page__seller {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.listing-page__seller-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--near-black);
+    color: var(--off-white);
+    font-size: 1.1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.listing-page__seller-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin: 0 0 2px;
+}
+
+.listing-page__seller-inst {
+    font-size: 0.82rem;
+    color: rgba(26,23,20,0.5);
+    margin: 0;
+}
+
+/* Details column */
+.listing-page__category {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(26,23,20,0.45);
+    margin: 0 0 6px;
+}
+
+.listing-page__title {
+    font-weight: 700;
+    font-size: 1.6rem;
+    margin: 0 0 4px;
+    line-height: 1.2;
+}
+
+.listing-page__author {
+    color: rgba(26,23,20,0.5);
+    font-size: 0.95rem;
+    margin: 0 0 16px;
+}
+
+.listing-page__price {
+    font-weight: 700;
+    font-size: 1.8rem;
+    margin: 0 0 24px;
+    color: var(--near-black);
+}
+
+/* Specs table */
+.listing-page__specs {
+    margin-bottom: 20px;
+}
+
+.listing-page__spec-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(26,23,20,0.08);
+    font-size: 0.9rem;
+}
+
+.listing-page__spec-row--last {
+    border-bottom: none;
+}
+
+.listing-page__spec-key {
+    color: rgba(26,23,20,0.5);
+}
+
+.listing-page__spec-val {
+    font-weight: 600;
+    color: var(--near-black);
+}
+
+.listing-page__description {
+    color: rgba(26,23,20,0.6);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+/* Alerts */
+.listing-page__alert {
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.88rem;
+    margin-bottom: 16px;
+}
+
+.listing-page__alert--success {
+    background: #D4EDDA;
+    color: #2A6636;
+}
+
+.listing-page__alert--danger {
+    background: #FAE0DC;
+    color: #993C1D;
+}
+
+/* Guest block */
+.listing-page__guest {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    background: var(--near-black);
+    color: var(--off-white);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 16px;
+}
+
+.listing-page__guest-icon {
+    font-size: 1.8rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.listing-page__guest-title {
+    font-weight: 700;
+    margin: 0 0 4px;
+    font-size: 0.95rem;
+}
+
+.listing-page__guest-sub {
+    font-size: 0.82rem;
+    opacity: 0.7;
+    margin: 0 0 12px;
+}
+
+.listing-page__guest-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.listing-page__guest-actions .btn-checkout {
+    background: var(--off-white);
+    color: var(--near-black);
+}
+
+.listing-page__guest-actions .btn-browse {
+    border-color: rgba(247,243,236,0.4);
+    color: var(--off-white);
+}
+
+/* Report button */
+.listing-page__report-btn {
+    display: block;
+    width: 100%;
+    background: none;
+    border: none;
+    color: rgba(26,23,20,0.4);
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 10px 0;
+    margin-top: 8px;
+    text-align: center;
+    transition: color 0.15s;
+}
+
+.listing-page__report-btn:hover {
+    color: var(--terracotta);
+}
+
+.listing-page__report-hint {
+    font-size: 0.85rem;
+    color: rgba(26,23,20,0.5);
+    margin-bottom: 16px;
+}
+
+.listing-page__report-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 16px;
+}
+
+/* Add to cart button spacing */
+.listing-page__details .btn-checkout {
+    width: 100%;
+    margin-top: 16px;
+}
+
+@media (max-width: 768px) {
+    .listing-page {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .listing-page__no-image {
+        height: 280px;
+    }
+}
+
+/*===============================
     14. MAIN WEBSITE (Create Listing)
 ==================================*/
 
