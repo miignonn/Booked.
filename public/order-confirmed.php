@@ -53,12 +53,12 @@ require_once __DIR__ . '/../includes/header.php';
         <i class="bi bi-check-lg"></i>
     </div>
     <h4 class="order-confirmed__title">You're all booked!</h4>
-    <p class="order-confirmed__sub">Your order has been placed. Contact the seller to arrange collection.</p>
+    <p class="order-confirmed__sub">Your order is confirmed. Show up at the agreed time and place to collect and pay.</p>
 </div>
  
 <div class="safety-notice">
     <p class="safety-notice__title"><i class="bi bi-shield-exclamation"></i> Stay Safe</p>
-    <p class="safety-notice__text">Always meet in a public place on campus to collect your textbook. Only pay once you have the book in hand — never transfer money upfront. Once you've received your book, mark your order as received in <a href="/orders.php" class="safety-notice__link">My Orders</a> to complete the transaction.</p>
+    <p class="safety-notice__text">Always meet in a public place on campus to collect your textbook. Only pay once you have the book in hand. <br> Once you've received your book, mark your order as received in <a href="/orders.php" class="safety-notice__link">My Orders</a> to complete the transaction.</p>
 </div>
  
 <div class="confirmed-cols">
