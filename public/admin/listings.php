@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } elseif ($action == 'set_status') {
         // Whitelist allowed statuses before updating
         $new_status      = $_POST['new_status'] ?? '';
-        $allowed_statuses = ['active', 'draft', 'sold', 'flagged'];
+        $allowed_statuses = ['available', 'pending', 'draft', 'sold', 'flagged'];
 
         if (in_array($new_status, $allowed_statuses, true)) {
             $stmt = $conn->prepare("UPDATE listings SET status = ? WHERE id = ?");
@@ -128,11 +128,12 @@ require_once __DIR__ . '/../../includes/admin-header.php';
 <div class="stat-grid stat-grid-3 mb-4">
     <?php
     $strip_stats = [
-        ''        => ['label' => 'Total Listings', 'icon' => 'bi-collection'],
-        'active'  => ['label' => 'Active',          'icon' => 'bi-check-circle'],
-        'sold'    => ['label' => 'Sold',             'icon' => 'bi-bag-check'],
-        'draft'   => ['label' => 'Draft',            'icon' => 'bi-pencil'],
-        'flagged' => ['label' => 'Flagged',          'icon' => 'bi-flag'],
+        ''          => ['label' => 'Total Listings', 'icon' => 'bi-collection'],
+        'available' => ['label' => 'Available',      'icon' => 'bi-check-circle'],
+        'pending'   => ['label' => 'Pending',         'icon' => 'bi-clock-history'],
+        'sold'      => ['label' => 'Sold',             'icon' => 'bi-bag-check'],
+        'draft'     => ['label' => 'Draft',            'icon' => 'bi-pencil'],
+        'flagged'   => ['label' => 'Flagged',          'icon' => 'bi-flag'],
     ];
     $total_all = array_sum($status_counts);
     foreach ($strip_stats as $key => $meta):
@@ -161,10 +162,11 @@ require_once __DIR__ . '/../../includes/admin-header.php';
     <!---- Filter by Status ---->
     <select name="status" class="admin-select" onchange="this.form.submit()">
         <option value="">All Statuses</option>
-        <option value="active"  <?= $filter_status == 'active'  ? 'selected' : '' ?>>Active</option>
-        <option value="draft"    <?= $filter_status == 'draft'    ? 'selected' : '' ?>>Draft</option>
-        <option value="sold" <?= $filter_status == 'sold' ? 'selected' : '' ?>>Sold</option>
-        <option value="flagged" <?= $filter_status == 'flagged' ? 'selected' : '' ?>>Flagged</option>
+        <option value="available" <?= $filter_status == 'available' ? 'selected' : '' ?>>Available</option>
+        <option value="pending"   <?= $filter_status == 'pending'   ? 'selected' : '' ?>>Pending</option>
+        <option value="draft"     <?= $filter_status == 'draft'     ? 'selected' : '' ?>>Draft</option>
+        <option value="sold"      <?= $filter_status == 'sold'      ? 'selected' : '' ?>>Sold</option>
+        <option value="flagged"   <?= $filter_status == 'flagged'   ? 'selected' : '' ?>>Flagged</option>
     </select>
 
     <button type="submit" class="admin-btn admin-btn--dark">Search</button>
@@ -233,14 +235,13 @@ require_once __DIR__ . '/../../includes/admin-header.php';
                 <!---- Status badge ---->
                 <td>
                     <span class="admin-badge <?= match($l['status']) {
-                        'active'  => 'badge-success',
-                        'sold'    => 'badge-dark',
-                        'pending' => 'badge-warning',
-                        'removed' => 'badge-danger',
-                        default   => 'badge-light'
-                    } ?>">
-                        <?= ucfirst($l['status']) ?>
-                    </span>
+                        'available' => 'badge-success',
+                        'pending'   => 'badge-warning',
+                        'sold'      => 'badge-dark',
+                        'flagged'   => 'badge-danger',
+                        'draft'     => 'badge-light',
+                        default     => 'badge-light'
+                    } ?>"><?= ucfirst($l['status']) ?></span>
                 </td>
 
                 <!---- Date listed ---->
@@ -251,7 +252,7 @@ require_once __DIR__ . '/../../includes/admin-header.php';
                     <div class="action-buttons">
 
                         <!---- Status change forms (only show options different from current) ---->
-                        <?php foreach (['active', 'draft', 'sold', 'flagged'] as $s): ?>
+                        <?php foreach (['available', 'pending', 'draft', 'sold', 'flagged'] as $s): ?>
                         <?php if ($s !== $l['status']): ?>
                             <form method="POST">
                                 <input type="hidden" name="csrf_token"  value="<?= htmlspecialchars(csrf_token()) ?>">

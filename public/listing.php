@@ -54,7 +54,7 @@ categories.name AS category_name
 FROM listings
 JOIN users ON listings.user_id = users.id
 JOIN categories ON listings.category_id = categories.id
-WHERE listings.id = ? AND listings.status = 'active'
+WHERE listings.id = ? AND listings.status IN ('available', 'pending')
 ");
 
 $stmt->bind_param("i", $id);
@@ -228,8 +228,8 @@ require_once __DIR__ . '/../includes/header.php';
                             <option value="Suspected scam">Suspected spam</option>
                             <option value="Incorrect Information">Incorrect information</option>
                             <option value="Inappropriate content">Inappropriate content</option>
-                            <option value="Already sold">Already sold/unavailable</option>
-                            <option value="Duplicate Listing">Duplicate listing</option>
+                            <option value="Already sold">Duplicate Listing</option>
+                            <option value="Duplicate Listing">Price does not match item condition</option>
                             <option value="Other">Other</option>
 
                         </select>
@@ -249,4 +249,3 @@ require_once __DIR__ . '/../includes/header.php';
         
 
 <?php require_once '../includes/footer.php'; ?>
-

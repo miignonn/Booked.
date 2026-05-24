@@ -5,7 +5,7 @@ require_once '../../includes/admin-header.php';
 $total_users = $conn->query("SELECT COUNT(*) as count FROM users")->fetch_assoc()['count'];
 
 //total active listings
-$active_listings = $conn->query("SELECT COUNT(*) as count FROM listings WHERE status='active'")->fetch_assoc()['count'];
+$active_listings = $conn->query("SELECT COUNT(*) as count FROM listings WHERE status='available'")->fetch_assoc()['count'];
 
 //total completed orders
 $completed_sales = $conn->query("SELECT COUNT(*) as count FROM orders WHERE status='completed'")->fetch_assoc()['count'];
@@ -272,4 +272,3 @@ LIMIT 5
  </main>
 
 <?php require_once '../../includes/admin-footer.php'; ?>
-

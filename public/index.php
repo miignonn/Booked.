@@ -4,7 +4,7 @@ require_once __DIR__ . '/../config/db.php';
 $sql = "SELECT listings.*, users.name AS seller_name 
 FROM listings
 JOIN users ON listings.user_id = users.id 
-WHERE listings.status = 'active'
+WHERE listings.status = 'available'
 ORDER BY listings.created_at DESC";
 
 $result = $conn->query($sql);

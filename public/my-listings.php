@@ -46,7 +46,7 @@ $counts = $conn->prepare("SELECT status, COUNT(*) as count FROM listings WHERE u
 $counts->bind_param("i", $user_id);
 $counts->execute();
 $count_result = $counts->get_result();
-$status_counts = ['active' => 0, 'draft' => 0, 'sold' => 0];
+$status_counts = ['available' => 0, 'draft' => 0, 'sold' => 0, 'pending' => 0];
 while ($row = $count_result->fetch_assoc()) {
     $status_counts[$row['status']] = $row['count'];
 }
@@ -67,9 +67,9 @@ require_once __DIR__ . '/../includes/header.php';
        class="btn btn-sm <?= $filter === 'all' ? 'btn-dark' : 'btn-outline-secondary' ?>">
         All (<?= $total ?>)
     </a>
-    <a href="/my-listings.php?status=active"
-       class="btn btn-sm <?= $filter === 'active' ? 'btn-dark' : 'btn-outline-secondary' ?>">
-        Active (<?= $status_counts['active'] ?>)
+    <a href="/my-listings.php?status=available"
+       class="btn btn-sm <?= $filter === 'available' ? 'btn-dark' : 'btn-outline-secondary' ?>">
+        Active (<?= $status_counts['available'] ?>)
     </a>
     <a href="/my-listings.php?status=sold"
        class="btn btn-sm <?= $filter === 'sold' ? 'btn-dark' : 'btn-outline-secondary' ?>">
@@ -106,10 +106,11 @@ require_once __DIR__ . '/../includes/header.php';
             <!-- Status badge -->
             <?php
             $badge = match($listing['status']) {
-                'active' => 'success',
-                'draft'  => 'secondary',
-                'sold'   => 'info',
-                default  => 'secondary'
+                'available' => 'success',
+                'pending'   => 'warning',
+                'draft'     => 'secondary',
+                'sold'      => 'info',
+                default     => 'secondary'
             };
             ?>
             <span class="badge bg-<?= $badge ?> align-self-center">
@@ -117,10 +118,10 @@ require_once __DIR__ . '/../includes/header.php';
             </span>
  
             <!-- Actions -->
-            <?php if ($listing['status'] === 'sold'): ?>
+            <?php if ($listing['status'] === 'sold' || $listing['status'] === 'pending'): ?>
                 <button class="btn btn-sm btn-outline-secondary" disabled>Edit</button>
-                <button class="btn btn-sm btn-outline-danger" 
-                 onclick="alert('Sold listings cannot be deleted.')">Delete</button>
+                <button class="btn btn-sm btn-outline-danger"
+                 onclick="alert('<?= $listing['status'] === 'sold' ? 'Sold' : 'Pending' ?> listings cannot be deleted.')">Delete</button>
             <?php else: ?>
                 <a href="/edit-listing.php?id=<?= $listing['id'] ?>"
                 class="btn btn-sm btn-outline-dark">Edit</a>
