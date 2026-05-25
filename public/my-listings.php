@@ -112,12 +112,16 @@ require_once __DIR__ . '/../includes/header.php';
                 'sold'      => 'info',
                 default     => 'secondary'
             };
+            $is_suspended = isset($_SESSION['status']) && $_SESSION['status'] === 'suspended';
             ?>
             <span class="badge bg-<?= $badge ?> align-self-center">
                 <?= ucfirst($listing['status']) ?>
             </span>
  
             <!-- Actions -->
+             <?php if($is_suspended && $listing['status'] === 'available'):?>
+                <span class="badge bg-danger align-self-center">Hidden</span>
+            <?php endif; ?>
             <?php if ($listing['status'] === 'sold' || $listing['status'] === 'pending'): ?>
                 <button class="btn btn-sm btn-outline-secondary" disabled>Edit</button>
                 <button class="btn btn-sm btn-outline-danger"
