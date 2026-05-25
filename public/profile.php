@@ -107,10 +107,12 @@ if ($is_suspended){
     $suspended_until = date('d M Y', strtotime($last_warned. ' + 30 days'));
     $can_list = strtotime($last_warned. ' + 30 days') < time();
 }
+require_once __DIR__ . '/../includes/header.php'; 
 
-require_once __DIR__ . '/../includes/header.php';
 ?>
- 
+
+<div class="profile-page">
+
     <!-- Warning banner -->
     <?php if (!empty($user['warnings']) && $user['warnings'] > 0 && !$is_suspended): ?>
         <div class="profile-warning-banner">
@@ -125,21 +127,20 @@ require_once __DIR__ . '/../includes/header.php';
             </div>
         </div>
     <?php endif; ?>
- 
+
     <!-- Suspended banner -->
     <?php if ($is_suspended): ?>
         <div class="profile-suspended-banner">
-            <i class="bi bi-slash-circle-fill me-2"></i>
             <div>
                 <p class="profile-suspended-banner__title">Account suspended</p>
                 <p class="profile-suspended-banner__text">
                     You cannot create or edit listings until <strong><?= $suspended_until ?></strong>.
-                    You account was suspended due to <?= (int)$user['warnings'] ?> warning<?= $user['warnings'] != 1 ? 's' : '' ?> 
+                    Your account was suspended due to <?= (int)$user['warnings'] ?> warning<?= $user['warnings'] != 1 ? 's' : '' ?>.
                 </p>
             </div>
         </div>
     <?php endif; ?>
- 
+
     <!-- Avatar -->
     <div class="profile-avatar-wrap">
         <div class="profile-avatar">
@@ -149,70 +150,70 @@ require_once __DIR__ . '/../includes/header.php';
         <p class="profile-username">@<?= htmlspecialchars($user['username']) ?></p>
         <p class="profile-since">Member since <?= date('M Y', strtotime($user['created_at'])) ?></p>
     </div>
- 
+
     <?php if ($error && !isset($_POST['change_password'])): ?>
         <div class="alert alert-danger mb-3"><?= htmlspecialchars($error) ?></div>
     <?php endif; ?>
     <?php if ($success && !isset($_POST['change_password'])): ?>
         <div class="alert alert-success mb-3"><?= htmlspecialchars($success) ?></div>
     <?php endif; ?>
- 
+
     <!-- Profile form -->
     <form method="POST" class="profile-form">
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
- 
+
         <div class="listing-field-row">
-    <div class="profile-field">
-        <label class="profile-label">Full Name <span class="profile-required">*</span></label>
-        <input type="text" name="name" class="form-control"
-               value="<?= htmlspecialchars($user['name']) ?>" required>
-    </div>
-    <div class="profile-field">
-        <label class="profile-label">Username <span class="profile-required">*</span></label>
-        <input type="text" name="username" class="form-control"
-               value="<?= htmlspecialchars($user['username']) ?>" required>
-    </div>
-</div>
+            <div class="profile-field">
+                <label class="profile-label">Full Name <span class="profile-required">*</span></label>
+                <input type="text" name="name" class="form-control"
+                       value="<?= htmlspecialchars($user['name']) ?>" required>
+            </div>
+            <div class="profile-field">
+                <label class="profile-label">Username <span class="profile-required">*</span></label>
+                <input type="text" name="username" class="form-control"
+                       value="<?= htmlspecialchars($user['username']) ?>" required>
+            </div>
+        </div>
 
-<div class="profile-field">
-    <label class="profile-label">Email Address</label>
-    <input type="email" class="form-control"
-           value="<?= htmlspecialchars($user['email']) ?>" disabled>
-    <p class="profile-field-hint">Email cannot be changed.</p>
-</div>
+        <div class="profile-field">
+            <label class="profile-label">Email Address</label>
+            <input type="email" class="form-control"
+                   value="<?= htmlspecialchars($user['email']) ?>" disabled>
+            <p class="profile-field-hint">Email cannot be changed.</p>
+        </div>
 
-<div class="listing-field-row">
-    <div class="profile-field">
-        <label class="profile-label">Institution <span class="profile-required">*</span></label>
-        <input type="text" name="institution" class="form-control"
-               value="<?= htmlspecialchars($user['institution'] ?? '') ?>" required>
-    </div>
-    <div class="profile-field">
-        <label class="profile-label">Phone Number <span class="profile-required">*</span></label>
-        <input type="text" name="phone" class="form-control"
-               value="<?= htmlspecialchars($user['phone'] ?? '') ?>" required>
-    </div>
-</div>
- 
-        <button type="submit" class="btn btn-dark w-100">Save Changes</button>
+        <div class="listing-field-row">
+            <div class="profile-field">
+                <label class="profile-label">Institution <span class="profile-required">*</span></label>
+                <input type="text" name="institution" class="form-control"
+                       value="<?= htmlspecialchars($user['institution'] ?? '') ?>" required>
+            </div>
+            <div class="profile-field">
+                <label class="profile-label">Phone Number <span class="profile-required">*</span></label>
+                <input type="text" name="phone" class="form-control"
+                       value="<?= htmlspecialchars($user['phone'] ?? '') ?>" required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-checkout">Save Changes</button>
     </form>
- 
+
     <hr class="profile-divider">
- 
+
     <!-- Password row -->
     <div class="profile-password-row">
         <div>
             <p class="profile-password-label">Password</p>
             <p class="profile-password-sub">Last changed: <?= $user['password_changed_at'] ? date('d M Y', strtotime($user['password_changed_at'])) : 'Never' ?></p>
         </div>
-        <button class="btn btn-outline-dark btn-sm"
+        <button class="btn-browse" style="width:auto; padding: 8px 16px;"
                 data-bs-toggle="modal" data-bs-target="#passwordModal">
             Change Password
         </button>
     </div>
- 
+
 </div>
- 
+
 <!-- Password modal -->
 <div class="modal fade" id="passwordModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
