@@ -10,6 +10,8 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 require_once __DIR__ . '/../config/db.php';
 
+if (isset($_SESSION['user_id'])) refresh_user_status($conn);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -37,9 +37,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
         $active_tab = 'login';
     } else {
         if (str_contains($login_input, '@')) {
-            $stmt = $conn->prepare("SELECT id, name, username, role, status, password, created_at FROM users WHERE email = ?");
+            $stmt = $conn->prepare("SELECT id, name, username, role, status, password, created_at, suspended_at FROM users WHERE email = ?");
         } else {
-            $stmt = $conn->prepare("SELECT id, name, username, role, status, password, created_at FROM users WHERE username = ?");
+            $stmt = $conn->prepare("SELECT id, name, username, role, status, password, created_at, suspended_at FROM users WHERE username = ?");
         }
         $stmt->bind_param("s", $login_input);
         $stmt->execute();
@@ -48,20 +48,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
         if ($user && password_verify($password, $user['password'])) {
 
             //auto-unsuspend after 30 days
-            if ($user['status'] === 'suspended') {
-                $sus_stmt = $conn->prepare("
-                    SELECT MAX(r.created_at) AS last_warned
-                    FROM reports r
-                    JOIN listings l ON r.listing_id = l.id
-                    WHERE l.user_id = ? AND r.status = 'reviewed'
-                ");
-                $sus_stmt->bind_param("i", $user['id']);
-                $sus_stmt->execute();
-                $sus_row     = $sus_stmt->get_result()->fetch_assoc();
-                $last_warned = $sus_row['last_warned'] ?? $user['created_at'];
-
-                if (strtotime($last_warned . ' + 30 days') < time()) {
-                    $unsuspend = $conn->prepare("UPDATE users SET status = 'active' WHERE id = ?");
+            if($user['status'] === 'suspended'){
+                $suspended_at = $user['suspended_at'] ?? $user['created_at'];
+                if (strtotime($suspended_at . ' + 30 days') < time()){
+                    $unsuspend = $conn->prepare("UPDATE users SET status = 'active', suspended_at = NULL WHERE id = ?");
                     $unsuspend->bind_param("i", $user['id']);
                     $unsuspend->execute();
                     $user['status'] = 'active';

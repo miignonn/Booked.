@@ -65,4 +65,15 @@ function pagination_links(int $total, int $per_page, int $current_page, string $
     $html .= '</div>';
     return $html;
 }
+
+function refresh_user_status(mysqli $conn): void{
+    if (!isset($_SESSION['user_id'])) return;
+    $stmt = $conn->prepare("SELECT status FROM users WHERE id = ?");
+    $stmt->bind_param("i", $_SESSION['user_id']);
+    $stmt->execute();
+    $row = $stmt->get_result()->fetch_assoc();
+    if ($row){
+        $_SESSION['status'] = $row['status'];
+    }
+}
 ?>
