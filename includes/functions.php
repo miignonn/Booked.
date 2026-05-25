@@ -23,7 +23,7 @@ function set_flash(string $type, string $message) : void {
 }
 
 function get_flash() : ?array{
-    if (isset($_SESSION['flahs'])) {
+    if (isset($_SESSION['flash'])) {
         $flash = $_SESSION ['flash'];
         unset($_SESSION['flash']);
         return $flash;
