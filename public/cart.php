@@ -24,7 +24,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['listing_id'])){
         $insert->bind_param("ii", $user_id, $listing_id);
         $insert->execute();
     }
-    set_flash('succes', 'Item added to cart!');
+    set_flash('success', 'Item added to cart!');
     header('Location: /listing.php?id=' . $listing_id . '&added=1');
     exit();
 }
@@ -99,6 +99,12 @@ require_once __DIR__. '/../includes/header.php';
  
             <?php foreach ($cart_items as $item): ?>
                 <div class="cart-item">
+
+                <?php if ($item['status'] !== 'available'):?>
+                    <div class="form-error cart-item__unavailable">
+                        This listing is no longer available and cannot be checked out.
+                    </div>
+                <?php endif; ?>
  
                     <div class="cart-item__thumb">
                         <?php if ($item['image']): ?>
@@ -152,7 +158,14 @@ require_once __DIR__. '/../includes/header.php';
                 </div>
             </div>
  
-            <a href="/checkout.php" class="btn-checkout">Proceed to Checkout</a>
+            <?php $has_unavailable = array_filter($cart_items, fn($i) => $i['status'] !== 'available'); ?>
+            <?php if ($has_unavailable): ?>
+               <button class="btn-checkout btn-checkout--disabled" disabled>
+                 Remove unavailable items first
+                </button>
+            <?php else: ?>
+                <a href="/checkout.php" class="btn-checkout">Proceed to Checkout</a>
+            <?php endif; ?>
             <a href="/browse.php" class="btn-browse">Continue Browsing</a>
         </div>
  
