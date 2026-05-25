@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     verify_csrf();
     $title       = trim($_POST['title']);
     $author      = trim($_POST['author']);
-    $isbn        = trim($_POST['isbn']);
+    $edition        = trim($_POST['edition']);
     $institution = trim($_POST['institution']);
     $description = trim($_POST['description']);
     $price       = trim($_POST['price']);
@@ -106,12 +106,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (empty($error)) {
         $stmt = $conn->prepare("UPDATE listings 
-            SET title = ?, author = ?, isbn = ?, institution = ?, 
+            SET title = ?, author = ?, edition = ?, institution = ?, 
                 description = ?, price = ?, `condition` = ?, 
                 category_id = ?, status = ?, image = ?
             WHERE id = ? AND user_id = ?");
         $stmt->bind_param("sssssdssssii",
-            $title, $author, $isbn, $institution,
+            $title, $author, $edition, $institution,
             $description, $price, $condition,
             $category_id, $status, $primary_image,
             $id, $_SESSION['user_id']);
@@ -213,9 +213,9 @@ require_once __DIR__ . '/../includes/header.php';
 
             <!-- ISBN -->
             <div class="mb-3">
-                <label class="form-label fw-bold">ISBN</label>
-                <input type="text" name="isbn" class="form-control" 
-                    value="<?= htmlspecialchars($listing['isbn']) ?>">
+                <label class="form-label fw-bold">Edition</label>
+                <input type="text" name="edition" class="form-control" 
+                    value="<?= htmlspecialchars($listing['edition']) ?? '' ?>">
             </div>
 
             <!-- Category -->
@@ -261,7 +261,7 @@ require_once __DIR__ . '/../includes/header.php';
 
 <script>
     function previewImages(input){
-        const preview = document.getElementbyId('image-preview');
+        const preview = document.getElementById('image-preview');
             preview.innerHTML = '';
             const files = Array.from(input.files). slice(0,4);
             files.forEach(file => {
