@@ -31,4 +31,38 @@ function get_flash() : ?array{
 
     return null;
 }
+
+//Pagination
+//returns current page from URL
+function get_page(int $default = 1) : int {
+    $page = isset($_GET['page']) ? (int)$_GET['page'] : $default;
+    return max(1, $page);
+}
+
+//returns limit and offset for query
+function paginate(int $page, int $per_page = 20) : array{
+    return [
+        'limit' => $per_page,
+        'offset' => ($page -1) * $per_page,
+    ];
+}
+
+//render pagination links
+function pagination_links(int $total, int $per_page, int $current_page, string $base_url): string {
+    $total_pages = (int)ceil($total / $per_page);
+    if ($total_pages <= 1) return '';
+
+    // preserve existing query params except page
+    $params = $_GET;
+    unset($params['page']);
+    $query = $params ? '&' . http_build_query($params) : '';
+
+    $html = '<div class="pagination-wrap">';
+    for ($i = 1; $i <= $total_pages; $i++) {
+        $active = $i === $current_page ? 'pagination-link--active' : '';
+        $html .= "<a href=\"{$base_url}?page={$i}{$query}\" class=\"pagination-link {$active}\">{$i}</a>";
+    }
+    $html .= '</div>';
+    return $html;
+}
 ?>

@@ -2335,7 +2335,7 @@ color: #993C1D;
  
  
 /* ============================================================
-   13. PROFILE PAGE
+   14. PROFILE PAGE
 ============================================================ */
  
 .profile-page {
@@ -2494,7 +2494,7 @@ color: #993C1D;
 }
 
 /*========================================
-14. Create/Edit Listing
+15. Create/Edit Listing
 =========================================*/
 .listing-field-row{
     display: grid;
@@ -2515,3 +2515,46 @@ color: #993C1D;
     margin-top: 8px;
 }
 
+/*=========================
+  16. PAGINATION
+===========================*/
+
+.pagination-wrap {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 32px;
+    flex-wrap: wrap;
+}
+
+.pagination-link{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--near-black);
+    text-decoration: none;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.pagination-link:hover {
+    background: rgba(26, 23, 20, 0.06);
+    border-color: rgba(26, 23, 20, 0.3);
+    color: var(--near-black);
+}
+
+.pagination-link--active {
+    background: var(--near-black);
+    color: var(--off-white);
+    border-color: var(--near-black);
+}
+
+.pagination-link--active:hover {
+    background: var(--near-black);
+    color: var(--off-white);
+}

@@ -62,21 +62,42 @@ $order = match($sort){
     default => 'listings.created_at DESC'
 };
 
+// count total for pagination
+$count_sql = "SELECT COUNT(*) as total
+              FROM listings
+              JOIN users ON listings.user_id = users.id
+              JOIN categories ON listings.category_id = categories.id
+              WHERE " . implode(' AND ', $where);
+
+$count_stmt = $conn->prepare($count_sql);
+if (!empty($params)) {
+    $count_stmt->bind_param($types, ...$params);
+}
+$count_stmt->execute();
+$total = (int)$count_stmt->get_result()->fetch_assoc()['total'];
+
+// pagination
+$per_page = 20;
+$page     = get_page();
+$pag      = paginate($page, $per_page);
+
 $sql = "SELECT listings.*, users.username AS seller_username, categories.name AS category_name
         FROM listings
         JOIN users ON listings.user_id = users.id
         JOIN categories ON listings.category_id = categories.id
         WHERE " . implode(' AND ', $where) . "
-        ORDER BY $order";
+        ORDER BY $order
+        LIMIT ? OFFSET ?";
+
+$paginated_params = array_merge($params, [$pag['limit'], $pag['offset']]);
+$paginated_types  = $types . 'ii';
 
 $stmt = $conn->prepare($sql);
-if (!empty($params)){
-    $stmt->bind_param($types, ...$params);
+if (!empty($paginated_params)) {
+    $stmt->bind_param($paginated_types, ...$paginated_params);
 }
-
 $stmt->execute();
 $listings = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-$total = count($listings);
 
 //fetch categories for filter dropdown
 $categories = $conn->query("SELECT * FROM categories ORDER BY name ASC");
@@ -262,6 +283,8 @@ require_once __DIR__ . '/../includes/header.php';
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
+
+    <?= pagination_links($total, $per_page, $page, '/browse.php') ?>
  
 </div>
  
