@@ -18,6 +18,17 @@ require_once __DIR__. '/../includes/header.php';
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     <?php endif; ?>
+    
+<?php if (isset($_SESSION['status']) && $_SESSION['status'] === 'suspended'): ?>
+    <div class="alert alert-dismissible fade show profile-suspended-banner" role="alert">
+        <i class="profile-warning-banner__icon"></i>
+        <div>
+            <p class="profile-suspended-banner__title">Your account has been suspended for 30 days.</p>
+            <p class="profile-suspended-banner__text">You can browse and view listings, but you cannot create or edit listings until your suspension is lifted.</p>
+        </div>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php endif; ?>
 
 <header class="hero">
     <div class="hero__text">

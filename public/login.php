@@ -37,9 +37,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
         $active_tab = 'login';
     } else {
         if (str_contains($login_input, '@')) {
-            $stmt = $conn->prepare("SELECT id, name, username, role, status, password FROM users WHERE email = ?");
+            $stmt = $conn->prepare("SELECT id, name, username, role, status, password, created_at FROM users WHERE email = ?");
         } else {
-            $stmt = $conn->prepare("SELECT id, name, username, role, status, password FROM users WHERE username = ?");
+            $stmt = $conn->prepare("SELECT id, name, username, role, status, password, created_at FROM users WHERE username = ?");
         }
         $stmt->bind_param("s", $login_input);
         $stmt->execute();
@@ -71,15 +71,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
             if ($user['status'] === 'banned') {
                 $error      = "Your account has been permanently banned.";
                 $active_tab = 'login';
-            } elseif ($user['status'] === 'suspended') {
-                $error      = "Your account has been suspended for 30 days.";
-                $active_tab = 'login';
-            } else {
+            }  else {
                 session_regenerate_id(true);
                 $_SESSION['user_id']  = $user['id'];
                 $_SESSION['name']     = $user['name'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['role']     = $user['role'];
+                $_SESSION['status'] = $user['status'];
                 header('Location: /index.php');
                 exit();
             }
@@ -90,8 +88,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
         }
     }
 }
-
-
 
 // REGISTER LOGIC
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
