@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $user = $stmt->get_result()->fetch_assoc();
  
                 if ($user['warnings'] >= 2) {
-                    $stmt = $conn->prepare("UPDATE users SET status = 'suspended' WHERE id = ?");
+                    $stmt = $conn->prepare("UPDATE users SET status = 'suspended', suspended_at = NOW() WHERE id = ?");
                     $stmt->bind_param("i", $user_id);
                     $stmt->execute();
                     $action_success = "User warned and automatically suspended (2+ warnings).";
@@ -150,7 +150,7 @@ require_once __DIR__. '/../../includes/admin-header.php';
 <?php endif; ?>
 
 <!--- Status summary strip ----> 
-<div class="stat-grid stat-grid-3 mb-4">
+<div class="stat-grid stat-grid-4 mb-4">
     <?php
     $strip_stats = [
         ''        => ['label' => 'Total', 'icon' => 'bi-flag'],
@@ -244,7 +244,7 @@ require_once __DIR__. '/../../includes/admin-header.php';
 
                 <!--- Status Badge --->
                 <td>
-                    <span class="admin-badge <? match ($r['status']){
+                    <span class="admin-badge <?= match ($r['status']){
                         'pending'   => 'badge-warning',
                         'reviewed'  => 'badge-success',
                         'dismissed' => 'badge-light',

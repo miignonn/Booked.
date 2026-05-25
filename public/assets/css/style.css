@@ -337,6 +337,9 @@ transition: transform 0.2s ease;
     grid-template-columns: repeat(3, minmax(0, 340px));
     justify-content: center;
 }
+.stat-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
 
 .stat-card{
     background: var(--card-bg);
