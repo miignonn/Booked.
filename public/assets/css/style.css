@@ -329,12 +329,13 @@ transition: transform 0.2s ease;
 /*----- Stat Cards -----*/
 .stat-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 12px;
 }
 /*----- Secondary Grid -----*/
 .stat-grid-3{
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 340px));
+    justify-content: center;
 }
 
 .stat-card{
@@ -396,7 +397,7 @@ a.stat-card.stat-card--active:hover {
 /*----- Recent Activity Tables -----*/
 .admin-tables-grid{
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 20px;
 }
 
@@ -437,7 +438,6 @@ a.stat-card.stat-card--active:hover {
     width: 100%;
     border-collapse: collapse;
     font-size: 13px;
-    min-width: 900px;
 }
 
 .admin-table th:last-child,
