@@ -52,7 +52,7 @@ if ($filter_status) {
 $sql = "
     SELECT
         o.id, o.total_price, o.campus, o.preferred_time,
-        o.seller_email, o.created_at, o.status, o.paystack_reference,
+        o.seller_email, o.created_at, o.status,
         l.title         AS listing_title,
         l.author        AS listing_author,
         l.price         AS listing_price,
@@ -184,7 +184,6 @@ require_once __DIR__ . '/../../includes/admin-header.php';
                 <!---- Order ID ---->
                 <td>
                     <p class="table-main-text">#<?= $o['id'] ?></p>
-                    <p class="table-sub-text"><?= $o['paystack_reference'] ? htmlspecialchars($o['paystack_reference']) : 'No ref' ?></p>
                 </td>
 
                 <!---- Listing ---->
@@ -247,7 +246,6 @@ require_once __DIR__ . '/../../includes/admin-header.php';
                             data-seller-phone="<?= htmlspecialchars($o['seller_phone'] ?? '—', ENT_QUOTES) ?>"
                             data-campus="<?= htmlspecialchars($o['campus'] ?? '—', ENT_QUOTES) ?>"
                             data-preferred-time="<?= htmlspecialchars($o['preferred_time'] ?? '—', ENT_QUOTES) ?>"
-                            data-paystack="<?= htmlspecialchars($o['paystack_reference'] ?? 'N/A', ENT_QUOTES) ?>"
                             data-total="<?= number_format((float)$o['total_price'], 2) ?>"
                             data-status="<?= htmlspecialchars(ucfirst(str_replace('_', ' ', $o['status'])), ENT_QUOTES) ?>"
                             data-date="<?= date('d M Y', strtotime($o['created_at'])) ?>">
@@ -349,7 +347,6 @@ require_once __DIR__ . '/../../includes/admin-header.php';
                         <p class="stat-label mb-2">Payment</p>
                         <div class="admin-table-card p-3">
                             <p class="table-sub-text mb-1">Total: <strong>R<span id="modal-total"></span></strong></p>
-                            <p class="table-sub-text mb-1">Paystack ref: <span id="modal-paystack"></span></p>
                             <p class="table-sub-text mb-0">Status: <span id="modal-status"></span></p>
                         </div>
                     </div>
@@ -383,7 +380,6 @@ require_once __DIR__ . '/../../includes/admin-header.php';
         document.getElementById('modal-seller-phone').textContent      = btn.dataset.sellerPhone;
         document.getElementById('modal-campus').textContent            = btn.dataset.campus;
         document.getElementById('modal-preferred-time').textContent    = btn.dataset.preferredTime;
-        document.getElementById('modal-paystack').textContent          = btn.dataset.paystack;
         document.getElementById('modal-total').textContent             = btn.dataset.total;
         document.getElementById('modal-status').textContent            = btn.dataset.status;
         document.getElementById('modal-date').textContent              = btn.dataset.date;
