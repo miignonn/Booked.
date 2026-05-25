@@ -2488,3 +2488,26 @@ color: #993C1D;
     margin: 0;
     line-height: 1.5;
 }
+
+/*========================================
+14. Create/Edit Listing
+=========================================*/
+.listing-field-row{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+@media (max-width: 768px) {
+    .create-listing-grid [style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+.upload-box__current {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-top: 8px;
+}
+

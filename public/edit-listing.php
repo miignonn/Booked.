@@ -141,91 +141,97 @@ require_once __DIR__ . '/../includes/header.php';
 <?php if($error): ?>
     <div class="alert alert-danger"><?=  htmlspecialchars($error) ?></div>
     <?php endif; ?>
+<form method="POST" enctype="multipart/form-data" class="create-listing-form">
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
 
-   
-<form method="POST" enctype="multipart/form-data">
-     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
-    <div class="row">
-        <div class="col-md-6">
+    <div class="create-listing-grid">
 
-            <!-- Image Upload -->
-            <div class="border rounded-3 p-4 text-center mb-3">
-                <i class="bi bi-cloud-upload fs-2 text-muted"></i>
-                <p class="fw-bold mt-2">Replace Photos</p>
-                <p class="text-muted small">Leave empty to keep existing photos</p>
-                <input type="file" name="images[]" class="form-control mt-2"
-                    accept="image/*" multiple onchange="previewImages(this)">
-                <div id="image-preview" class="d-flex flex-wrap gap-2 mt-3"></div>
+        <!-- LEFT column -->
+        <div class="create-listing-col">
+
+            <!-- Image upload -->
+            <div class="upload-box">
+                <i class="bi bi-cloud-upload upload-box__icon"></i>
+                <p class="upload-box__title">Replace Photos</p>
+                <p class="upload-box__hint">Leave empty to keep existing photos</p>
+                <input type="file" name="images[]" id="images" class="upload-box__input"
+                    accept="image/*" multiple required onchange="previewImages(this)">
+                <div id="image-preview" class="upload-box__preview"></div>
 
                 <?php if ($listing['image']): ?>
-                    <p class="text-muted small mt-2">Current image:</p>
-                    <img src="/<?= htmlspecialchars($listing['image']) ?>" 
-                         style="width:80px;height:80px;object-fit:cover;border-radius:8px;">
+                    <p class="upload-box__hint" style="margin-top:12px;">Current image:</p>
+                    <img src="/<?= htmlspecialchars($listing['image']) ?>"
+                         class="upload-box__current">
                 <?php endif; ?>
             </div>
 
             <!-- Condition -->
-            <div class="mb-3">
-                <label class="form-label fw-bold">Condition <span class="text-danger">*</span></label>
+            <div class="listing-field">
+                <label class="listing-label">Condition <span class="listing-required">*</span></label>
                 <select name="condition" class="form-select" required>
                     <option value="">Select condition</option>
-                    <option value="new" <?= $listing['condition'] === 'new' ? 'selected' : '' ?>>New</option>
-                    <option value="like new" <?= $listing['condition'] === 'like new' ? 'selected' : '' ?>>Like New</option>
-                    <option value="good" <?= $listing['condition'] === 'good' ? 'selected' : '' ?>>Good - Minimal Wear</option>
-                    <option value="fair" <?= $listing['condition'] === 'fair' ? 'selected' : '' ?>>Fair - Some Wear</option>
-                    <option value="poor" <?= $listing['condition'] === 'poor' ? 'selected' : '' ?>>Poor - Heavy Wear</option>
+                    <option value="new"      <?= (isset($condition) && $condition === 'new')      ? 'selected' : '' ?>>New</option>
+                    <option value="like new" <?= (isset($condition) && $condition === 'like new') ? 'selected' : '' ?>>Like New</option>
+                    <option value="good"     <?= (isset($condition) && $condition === 'good')     ? 'selected' : '' ?>>Good - Minimal Wear</option>
+                    <option value="fair"     <?= (isset($condition) && $condition === 'fair')     ? 'selected' : '' ?>>Fair - Some Wear</option>
+                    <option value="poor"     <?= (isset($condition) && $condition === 'poor')     ? 'selected' : '' ?>>Poor - Heavy Wear</option>
                 </select>
             </div>
 
             <!-- Price -->
-            <div class="mb-3">
-                <label class="form-label fw-bold">Asking Price <span class="text-danger">*</span></label>
-                <div class="input-group">
-                    <span class="input-group-text">R</span>
-                    <input type="text" name="price" class="form-control" 
-                        value="<?= htmlspecialchars($listing['price']) ?>" required>
+            <div class="listing-field">
+                <label class="listing-label">Asking Price <span class="listing-required">*</span></label>
+                <div class="listing-price-wrap">
+                    <span class="listing-price-prefix">R</span>
+                    <input type="number" name="price" class="form-control"
+                           value="<?= isset($price) ? htmlspecialchars($price) : '' ?>"
+                           placeholder="0.00" required>
                 </div>
             </div>
 
             <!-- Description -->
-            <div class="mb-3">
-                <label class="form-label fw-bold">Description</label>
-                <textarea name="description" class="form-control" rows="4"><?= htmlspecialchars($listing['description']) ?></textarea>
+            <div class="listing-field">
+                <label class="listing-label">Description</label>
+                <textarea name="description" class="form-control" rows="4"
+                          placeholder="Describe the book's condition, any highlights, missing pages etc."><?= isset($description) ? htmlspecialchars($description) : '' ?></textarea>
             </div>
 
         </div>
 
-        <div class="col-md-6">
+        <!-- RIGHT column -->
+        <div class="create-listing-col">
 
             <!-- Title -->
-            <div class="mb-3">
-                <label class="form-label fw-bold">Book Title <span class="text-danger">*</span></label>
-                <input type="text" name="title" class="form-control" 
-                    value="<?= htmlspecialchars($listing['title']) ?>" required>
+            <div class="listing-field">
+                <label class="listing-label">Book Title <span class="listing-required">*</span></label>
+                <input type="text" name="title" class="form-control"
+                       value="<?= isset($title) ? htmlspecialchars($title) : '' ?>"
+                       placeholder="e.g. Database System Concepts" required>
+            </div>
+            
+            <!--- Author & Edition ---> 
+            <div class="listing-field-row">
+                <div class="listing-field">
+                    <label class="listing-label">Author(s) <span class="listing-required">*</span></label>
+                    <input type="text" name="author" class="form-control"
+                    value="<?= isset($author) ? htmlspecialchars($author) : '' ?>"
+                    placeholder="Silberschatz, Korth and Sudarshan" required>
+                </div>
+                <div class="listing-field">
+                    <label class="listing-label">Edition <span class="listing-required">*</span></label>
+                    <input type="text" name="edition" class="form-control" 
+                    value="<?= isset($edition) ? htmlspecialchars($edition) : '' ?>"
+                    placeholder="e.g. 3rd" required>
+                </div>
             </div>
 
-            <!-- Author -->
-            <div class="mb-3">
-                <label class="form-label fw-bold">Author(s)</label>
-                <input type="text" name="author" class="form-control" 
-                    value="<?= htmlspecialchars($listing['author']) ?>">
-            </div>
-
-            <!-- ISBN -->
-            <div class="mb-3">
-                <label class="form-label fw-bold">Edition</label>
-                <input type="text" name="edition" class="form-control" 
-                    value="<?= htmlspecialchars($listing['edition']) ?? '' ?>">
-            </div>
-
-            <!-- Category -->
-            <div class="mb-3">
-                <label class="form-label fw-bold">Subject / Faculty <span class="text-danger">*</span></label>
+            <!-- Faculty -->
+            <div class="listing-field">
+                <label class="listing-label">Subject/Faculty <span class="listing-required">*</span></label>
                 <select name="category_id" class="form-select" required>
                     <option value="">Select faculty</option>
                     <?php while ($cat = $categories->fetch_assoc()): ?>
-                        <option value="<?= $cat['id'] ?>" 
-                            <?= $listing['category_id'] == $cat['id'] ? 'selected' : '' ?>>
+                        <option value="<?= $cat['id'] ?>" <?= (isset($category_id) && $category_id == $cat['id']) ? 'selected' : '' ?>>
                             <?= htmlspecialchars($cat['name']) ?>
                         </option>
                     <?php endwhile; ?>
@@ -233,28 +239,26 @@ require_once __DIR__ . '/../includes/header.php';
             </div>
 
             <!-- Institution -->
-            <div class="mb-3">
-                <label class="form-label fw-bold">Institution</label>
-                <input type="text" name="institution" class="form-control" 
-                    value="<?= htmlspecialchars($listing['institution']) ?>">
+            <div class="listing-field">
+                <label class="listing-label">Institution <span class="listing-required">*</span></label>
+                <input type="text" name="institution" class="form-control"
+                       value="<?= isset($institution) ? htmlspecialchars($institution) : '' ?>"
+                       placeholder="e.g. Eduvos" required>
             </div>
 
-            <!-- Status -->
-            <input type="hidden" name="status" id="status" value="active">
-              <div class="d-flex flex-column gap-2 mt-2">
-                <button type="submit" class="btn btn-dark w-100"
-                 onclick="document.getElementById('status').value='active'">
-                 Publish Listing
+            <!-- Submit buttons -->
+            <input type="hidden" name="status" id="status" value="available">
+            <div class="listing-actions">
+                <button type="submit" class="btn-checkout"
+                        onclick="document.getElementById('status').value='available'">
+                    Publish Listing
                 </button>
-               <button type="submit" class="btn btn-outline-dark w-100"
-                onclick="document.getElementById('status').value='draft'">
-                Save as Draft
-               </button>
-             </div>
+                <button type="submit" class="btn-browse"
+                        onclick="document.getElementById('status').value='draft'">
+                    Save as Draft
+                </button>
+            </div>
 
-             
-
- 
         </div>
     </div>
 </form>

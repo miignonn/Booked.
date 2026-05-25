@@ -39,7 +39,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (empty($title) || empty($price) || empty($condition) || empty($category_id)) {
         $error = "Please fill in all required fields.";
-    } elseif (!is_numeric($price) || $price <= 0) {
+
+    } elseif(empty(array_filter($_FILES['images']['name']))){
+        $error = "Please upload at least one photo";
+    }
+    elseif (!is_numeric($price) || $price <= 0) {
         $error = "Please enter a valid price.";
     }
 
@@ -123,7 +127,7 @@ require_once __DIR__ .'/../includes/header.php';
                 <p class="upload-box__title">Upload Book Photo</p>
                 <p class="upload-box__hint">Up to 4 &bull; PNG or JPG</p>
                 <input type="file" name="images[]" id="images" class="upload-box__input"
-                       accept="image/*" multiple onchange="previewImages(this)">
+                       accept="image/*" multiple required onchange="previewImages(this)">
                 <div id="image-preview" class="upload-box__preview"></div>
             </div>
 
@@ -181,21 +185,21 @@ require_once __DIR__ .'/../includes/header.php';
                        value="<?= isset($title) ? htmlspecialchars($title) : '' ?>"
                        placeholder="e.g. Database System Concepts" required>
             </div>
-
-            <!-- Author -->
-            <div class="listing-field">
-                <label class="listing-label">Author(s) <span class="listing-required">*</span></label>
-                <input type="text" name="author" class="form-control"
-                       value="<?= isset($author) ? htmlspecialchars($author) : '' ?>"
-                       placeholder="e.g. Williams, Koch" required>
-            </div>
-
-            <!-- Edition -->
-            <div class="listing-field">
-                <label class="listing-label">Edition<span class="listing-required">*</span></label>
-                <input type="text" name="edition" class="form-control"
-                       value="<?= isset($edition) ? htmlspecialchars($edition) : '' ?>"
-                       placeholder="e.g. 3rd">
+            
+            <!--- Author & Edition ---> 
+            <div class="listing-field-row">
+                <div class="listing-field">
+                    <label class="listing-label">Author(s) <span class="listing-required">*</span></label>
+                    <input type="text" name="author" class="form-control"
+                    value="<?= isset($author) ? htmlspecialchars($author) : '' ?>"
+                    placeholder="Silberschatz, Korth and Sudarshan" required>
+                </div>
+                <div class="listing-field">
+                    <label class="listing-label">Edition <span class="listing-required">*</span></label>
+                    <input type="text" name="edition" class="form-control" 
+                    value="<?= isset($edition) ? htmlspecialchars($edition) : '' ?>"
+                    placeholder="e.g. 3rd" required>
+                </div>
             </div>
 
             <!-- Faculty -->
