@@ -40,7 +40,7 @@ if(empty($current_password) || empty($new_password) || empty($confirm_password))
     $error = "Current password is incorrect.";
 } else {
     $hashed = password_hash($new_password, PASSWORD_DEFAULT);
-    $stmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+    $stmt = $conn->prepare("UPDATE users SET password = ?, password_changed_at = NOW() WHERE id = ?");
     $stmt->bind_param("si", $hashed, $user_id);
     if ($stmt->execute()){
         $success = "Password updated successfully!";
@@ -103,7 +103,7 @@ if ($is_suspended){
     $sus_stmt->bind_param("i", $user_id);
     $sus_stmt->execute();
     $sus_row = $sus_stmt->get_result()->fetch_assoc();
-    $last_warned = $sus_row['last warned'] ?? $user['created_at'];
+    $last_warned = $sus_row['last_warned'] ?? $user['created_at'];
     $suspended_until = date('d M Y', strtotime($last_warned. ' + 30 days'));
     $can_list = strtotime($last_warned. ' + 30 days') < time();
 }
@@ -134,7 +134,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <p class="profile-suspended-banner__title">Account suspended</p>
                 <p class="profile-suspended-banner__text">
                     You cannot create or edit listings until <strong><?= $suspended_until ?></strong>.
-                    This suspension is due to <?= (int)$user['warnings'] ?> warning<?= $user['warnings'] != 1 ? 's' : '' ?> on your account.
+                    You account was suspended due to <?= (int)$user['warnings'] ?> warning<?= $user['warnings'] != 1 ? 's' : '' ?> 
                 </p>
             </div>
         </div>
@@ -161,32 +161,38 @@ require_once __DIR__ . '/../includes/header.php';
     <form method="POST" class="profile-form">
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
  
-        <div class="profile-field">
-            <label class="profile-label">Full Name <span class="profile-required">*</span></label>
-            <input type="text" name="name" class="form-control"
-                   value="<?= htmlspecialchars($user['name']) ?>" required>
-        </div>
-        <div class="profile-field">
-            <label class="profile-label">Username <span class="profile-required">*</span></label>
-            <input type="text" name="username" class="form-control"
-                   value="<?= htmlspecialchars($user['username']) ?>" required>
-        </div>
-        <div class="profile-field">
-            <label class="profile-label">Email Address</label>
-            <input type="email" class="form-control"
-                   value="<?= htmlspecialchars($user['email']) ?>" disabled>
-            <p class="profile-field-hint">Email cannot be changed.</p>
-        </div>
-        <div class="profile-field">
-            <label class="profile-label">Institution <span class="profile-required">*</span></label>
-            <input type="text" name="institution" class="form-control"
-                   value="<?= htmlspecialchars($user['institution'] ?? '') ?>" required>
-        </div>
-        <div class="profile-field">
-            <label class="profile-label">Phone Number <span class="profile-required">*</span></label>
-            <input type="text" name="phone" class="form-control"
-                   value="<?= htmlspecialchars($user['phone'] ?? '') ?>" required>
-        </div>
+        <div class="listing-field-row">
+    <div class="profile-field">
+        <label class="profile-label">Full Name <span class="profile-required">*</span></label>
+        <input type="text" name="name" class="form-control"
+               value="<?= htmlspecialchars($user['name']) ?>" required>
+    </div>
+    <div class="profile-field">
+        <label class="profile-label">Username <span class="profile-required">*</span></label>
+        <input type="text" name="username" class="form-control"
+               value="<?= htmlspecialchars($user['username']) ?>" required>
+    </div>
+</div>
+
+<div class="profile-field">
+    <label class="profile-label">Email Address</label>
+    <input type="email" class="form-control"
+           value="<?= htmlspecialchars($user['email']) ?>" disabled>
+    <p class="profile-field-hint">Email cannot be changed.</p>
+</div>
+
+<div class="listing-field-row">
+    <div class="profile-field">
+        <label class="profile-label">Institution <span class="profile-required">*</span></label>
+        <input type="text" name="institution" class="form-control"
+               value="<?= htmlspecialchars($user['institution'] ?? '') ?>" required>
+    </div>
+    <div class="profile-field">
+        <label class="profile-label">Phone Number <span class="profile-required">*</span></label>
+        <input type="text" name="phone" class="form-control"
+               value="<?= htmlspecialchars($user['phone'] ?? '') ?>" required>
+    </div>
+</div>
  
         <button type="submit" class="btn btn-dark w-100">Save Changes</button>
     </form>
@@ -197,7 +203,7 @@ require_once __DIR__ . '/../includes/header.php';
     <div class="profile-password-row">
         <div>
             <p class="profile-password-label">Password</p>
-            <p class="profile-password-sub">Last changed: unknown</p>
+            <p class="profile-password-sub">Last changed: <?= $user['password_changed_at'] ? date('d M Y', strtotime($user['password_changed_at'])) : 'Never' ?></p>
         </div>
         <button class="btn btn-outline-dark btn-sm"
                 data-bs-toggle="modal" data-bs-target="#passwordModal">

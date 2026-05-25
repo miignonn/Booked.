@@ -16,7 +16,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
     if ($action == 'suspend'){
         //set user status to suspend (can no longer log in)
-        $stmt = $conn->prepare("UPDATE users SET status = 'suspended' WHERE id = ?");
+        $stmt = $conn->prepare("UPDATE users SET status = 'suspended', warnings = warnings + 1 WHERE id = ?");
         $stmt->bind_param("i", $target_id);
         $stmt->execute();
         $action_success = "User suspended sucessfully";
