@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
 
         if ($user && password_verify($password, $user['password'])) {
 
-            // Auto-unsuspend after 30 days
+            //auto-unsuspend after 30 days
             if ($user['status'] === 'suspended') {
                 $sus_stmt = $conn->prepare("
                     SELECT MAX(r.created_at) AS last_warned
