@@ -5,6 +5,7 @@ $sql = "SELECT listings.*, users.name AS seller_name
 FROM listings
 JOIN users ON listings.user_id = users.id 
 WHERE listings.status = 'available'
+AND users.status != 'suspended'
 ORDER BY listings.created_at DESC";
 
 $result = $conn->query($sql);

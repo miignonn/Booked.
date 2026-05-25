@@ -12,7 +12,7 @@ $filter_edition = isset($_GET['edition']) ? trim($_GET['edition']) : '';
 $sort = isset($_GET['sort']) ? trim($_GET['sort']) : '';
 
 //build query dynamically
-$where = ["listings.status = 'available'"];
+$where = ["listings.status = 'available'", "users.status != 'suspended'"];
 $params = [];
 $types = '';
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
