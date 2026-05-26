@@ -21,101 +21,103 @@ if (isset($_SESSION['user_id'])) refresh_user_status($conn);
     <title>Booked</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Arapey:ital@0;1&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Taviraj:ital,wght@0,300;0,400;1,300;1,400&family=Rasa:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
     <link href="/assets/css/style.css" rel="stylesheet">
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
-    <div class="container">
-        <a class="navbar-brand fw-bold" href="/index.php">
-            Booked.
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
+<nav class="site-nav">
+    <div class="site-nav__inner">
+ 
+        <a class="site-nav__logo" href="/index.php">Booked.</a>
+ 
+        <div class="site-nav__links">
+            <a class="site-nav__link" href="/index.php">Home</a>
+            <a class="site-nav__link" href="/browse.php">Browse</a>
+ 
+            <?php if (isset($_SESSION['user_id'])): ?>
+ 
+                <?php if ($_SESSION['role'] === 'admin'): ?>
+                    <a class="site-nav__link site-nav__link--admin" href="/admin/dashboard.php">
+                        <i class="bi bi-shield-lock"></i> Admin
+                    </a>
+                <?php endif; ?>
+ 
+                <a class="site-nav__link" href="/cart.php">
+                    <i class="bi bi-bag"></i>
+                    <?php
+                    $cart_count = $conn->prepare("SELECT COUNT(*) as count FROM cart WHERE user_id = ?");
+                    $cart_count->bind_param("i", $_SESSION['user_id']);
+                    $cart_count->execute();
+                    $count = $cart_count->get_result()->fetch_assoc()['count'];
+                    if ($count > 0) echo '<span class="site-nav__badge">' . $count . '</span>';
+                    ?>
+                </a>
+ 
+                <div class="site-nav__dropdown">
+                    <button class="site-nav__avatar" id="navDropdownBtn">
+                        <?= strtoupper(substr($_SESSION['username'] ?? $_SESSION['name'], 0, 1)) ?>
+                    </button>
+                    <div class="site-nav__dropdown-menu" id="navDropdownMenu">
+                        <a href="/profile.php" class="site-nav__dropdown-item">
+                            <i class="bi bi-person"></i> Profile
+                        </a>
+                        <a href="/orders.php" class="site-nav__dropdown-item">
+                            <i class="bi bi-bag"></i> My Orders
+                        </a>
+                        <a href="/my-listings.php" class="site-nav__dropdown-item">
+                            <i class="bi bi-list-ul"></i> My Listings
+                        </a>
+                        <a href="/create-listing.php" class="site-nav__dropdown-item">
+                            <i class="bi bi-plus-circle"></i> Create Listing
+                        </a>
+                        <div class="site-nav__dropdown-divider"></div>
+                        <a href="/logout.php" class="site-nav__dropdown-item site-nav__dropdown-item--danger">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </a>
+                    </div>
+                </div>
+ 
+            <?php else: ?>
+                <a class="site-nav__link" href="/login.php">Login</a>
+                <a class="site-nav__btn" href="/login.php?tab=register">Register</a>
+            <?php endif; ?>
+        </div>
+ 
+        <button class="site-nav__hamburger" id="navHamburger" aria-label="Menu">
+            <i class="bi bi-list"></i>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-    <a class="nav-link" href="/index.php">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/browse.php">Browse</a>
-                </li>
-                <?php if (isset($_SESSION['user_id'])): ?>
-                
-    <?php if ($_SESSION['role'] === 'admin'): ?>
-        <li class="nav-item">
-            <a class="nav-link text-warning" href="/admin/dashboard.php">
-                <i class="bi bi-shield-lock"></i> Admin
-            </a>
-        </li>
-    <?php endif; ?>
-
-    <li class="nav-item">
-    <a class="nav-link" href="/cart.php">
-        <i class="bi bi-cart"></i>
-        <?php
-        if (isset($_SESSION['user_id'])) {
-            $cart_count = $conn->prepare("SELECT COUNT(*) as count FROM cart WHERE user_id = ?");
-            $cart_count->bind_param("i", $_SESSION['user_id']);
-            $cart_count->execute();
-            $count = $cart_count->get_result()->fetch_assoc()['count'];
-            if ($count > 0) echo '<span class="badge bg-dark">' . $count . '</span>';
-        }
-        ?>
-    </a>
-</li>
-    
-    
-    <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" 
-           href="#" role="button" data-bs-toggle="dropdown">
-            <div class="bg-dark rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
-                 style="width:32px;height:32px;font-size:0.85rem;">
-                <?= strtoupper(substr($_SESSION['username'] ?? $_SESSION['name'], 0, 1)) ?>
-            </div>
-            <?= htmlspecialchars($_SESSION['username'] ?? $_SESSION['name']) ?>
-        </a>
-        <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="/profile.php">
-                <i class="bi bi-person"></i> Profile
-            </a></li>
-            <li><a class="dropdown-item" href="/orders.php">
-                <i class="bi bi-bag"></i> My Orders
-            </a></li>
-            <li><a class="dropdown-item" href="/my-listings.php">
-                <i class="bi bi-list-ul"></i> My Listings
-            </a></li>
-            <li><a class="dropdown-item" href="/create-listing.php">
-                 <i class="bi bi-plus-circle"></i> Create Listing
-            </a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item text-danger" href="/logout.php">
-                <i class="bi bi-box-arrow-right"></i> Logout
-            </a></li>
-        </ul>
-    </li>
-
-<?php else: ?>
-    <li class="nav-item">
-        <a class="nav-link" href="/login.php">Login</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="/login.php?tab=register">Register</a>
-    </li>
-<?php endif; ?>
-                   
-                 
-            </ul>
-        </div> 
-    </div> 
+    </div>
+ 
+    <!-- Mobile menu -->
+    <div class="site-nav__mobile" id="navMobile">
+        <a class="site-nav__mobile-link" href="/index.php">Home</a>
+        <a class="site-nav__mobile-link" href="/browse.php">Browse</a>
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <a class="site-nav__mobile-link" href="/cart.php">Cart</a>
+            <a class="site-nav__mobile-link" href="/profile.php">Profile</a>
+            <a class="site-nav__mobile-link" href="/orders.php">My Orders</a>
+            <a class="site-nav__mobile-link" href="/my-listings.php">My Listings</a>
+            <a class="site-nav__mobile-link" href="/create-listing.php">Create Listing</a>
+            <a class="site-nav__mobile-link site-nav__mobile-link--danger" href="/logout.php">Logout</a>
+        <?php else: ?>
+            <a class="site-nav__mobile-link" href="/login.php">Login</a>
+            <a class="site-nav__mobile-link" href="/login.php?tab=register">Register</a>
+        <?php endif; ?>
+    </div>
 </nav>
-
-<?php $flash = get_flash(); if ($flash):?>
-<div class="alert alert-<?= $flash['type'] ?> alert-dismissible fade show mt-3" role="alert">
+ 
+<?php $flash = get_flash(); if ($flash): ?>
+<div class="flash-alert flash-alert--<?= $flash['type'] ?>" role="alert">
     <?= htmlspecialchars($flash['message']) ?>
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <button class="flash-alert__close" onclick="this.parentElement.remove()">×</button>
 </div>
 <?php endif; ?>
-<div class="container mt-4">
+ 
+ 
+    
+    
+                   
+                 
+           
 
