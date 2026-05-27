@@ -553,7 +553,7 @@ a { color: inherit; }
 
 .b-empty {
     color: rgba(28,20,16,0.45);
-    font-size: 0.88rem;
+    font-size: 1rem;
 }
 
 /* ============================================================
@@ -977,8 +977,17 @@ a { color: inherit; }
     top: 80px;
     border-right: 0.5px solid var(--border);
     padding-right: 2rem;
+    padding-top: 4.5rem;
     min-width: 0;
 
+}
+
+.browse-sidebar .b-btn--primary,
+.browse-sidebar .b-btn--outline{
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-top: 0.75rem;
 }
 
 .browse-sidebar__title{
@@ -998,11 +1007,11 @@ a { color: inherit; }
 }
 
 .browse-overlay {
-    display: none !important;
+    display: none ;
 }
 
 .browse-drawer {
-    display: none !important;
+    display: none;
 }
 
 .browse-drawer__head {
@@ -1024,13 +1033,21 @@ a { color: inherit; }
     line-height: 1;
 }
 
+.browse-drawer .b-btn--primary,
+.browse-drawer .b-btn--outline{
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-top: 0.75rem;
+}
+
 .browse-filter-group {
-    border-bottom: 1px solid var(--border);
+    border-bottom: 0.5px solid var(--border);
     padding-bottom: 1rem;
     margin-bottom: 1rem;
 }
 
-.browse-filter-group__header {
+-group__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1055,9 +1072,9 @@ a { color: inherit; }
 .browse-listings__header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     gap: 12px;
-    margin-bottom: 1.5px;
+    margin-bottom: 1.5rem;
     padding-bottom: 1rem;
     border-bottom: 0.5px solid var(--border);
     flex-wrap: wrap;
@@ -1073,6 +1090,59 @@ a { color: inherit; }
 
 .browse-search-form {width: 220px;}
 
+.browse-search-input{
+     background: #ffffff;
+    border: 0.5px solid var(--border);
+    border-radius: 0;
+    padding: 0.85rem 1rem;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--near-black);
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+    box-shadow: none;
+}
+
+.browse-search-input:focus{
+    border-color: var(--near-black);
+    box-shadow: none;
+}
+
+.browse-search-input::placeholder{
+    color:var(--near-black);
+    opacity: 0.25;
+}
+
+.browse-search-icon{
+    padding: 0.85rem 1rem;
+    background: #ffffff;
+    border: 0.5px solid var(--border);
+    border-left: none;
+    color: var(--near-black);
+    opacity: 0.45;
+}
+
+.browse-sort-select {
+ background: #ffffff;
+    border: 0.5px solid var(--border);
+    border-radius: 0;
+    padding: 0.85rem 1rem;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--near-black);
+    outline: none;
+    transition: border-color 0.15s;
+    box-shadow: none;
+    cursor: pointer;
+    width: auto;
+}
+
+.browse-sort-select:focus{
+    border-color: var(--near-black);
+    box-shadow: none;
+}
+
 .browse-listings__title {
     font-family: var(--font-serif);
     font-size: 2rem;
@@ -1083,20 +1153,46 @@ a { color: inherit; }
 
 .browse-listings__count {
     font-family: var(--font-body);
-    font-size: 0.82rem;
+    font-size: 1rem;
     color: var(--near-black);
     opacity: 0.45;
     margin: 0;
 }
-.browse-search-form { width: 200px; }
-.browse-sort-select  { width: auto; }
 
 .browse-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+input[type="range"]{
+    accent-color: var(--highlight);
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
     background: var(--border);
-    border: 0.5px solid var(--border);
+    border-radius: 0;
+    outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--highlight);
+    cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--highlight);
+    cursor: pointer;
+    border: none;
 }
 
 .browse-grid .listing-card { width: 100%; flex-shrink: unset; }
@@ -2029,7 +2125,7 @@ a { color: inherit; }
     .my-listing-card__actions { width: 100%; justify-content: flex-end; }
     .create-listing-grid { grid-template-columns: 1fr; }
     .listing-field-row { grid-template-columns: 1fr; }
-    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem;}
     .stat-grid-3 { grid-template-columns: repeat(2, 1fr); justify-content: unset; }
     .browse-layout{ grid-template-columns: 1fr;}
     .browse-sidebar {display: none;}
@@ -2041,14 +2137,39 @@ a { color: inherit; }
         border: 1px solid var(--border);
         padding: 8px 14px;
         font-size: 14px;
-        font-weight: 500;
         cursor: pointer;
         color: var(--near-black);
+        margin-top: 1.5rem;
         margin-bottom: 1rem;
     }
-    .browse-drawer { display: none; } 
-    .browse-overlay { display: none; } 
-    .browse-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+    
+    .browse-sidebar {display: none;}
+    .browse-layout {grid-template-columns: 1fr; padding-top: 0;}
+    .browse-drawer { 
+        display: none; 
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 80vw;
+        max-width: 320px;
+        height: 100vh;
+        background: var(--page);
+        z-index: 500;
+        padding: 1.5rem;
+        overflow-y: auto;
+        box-shadow: 4px 24px rgba(26, 23, 20, 0.12);
+    } 
+
+    .browse-drawer--open {display: flex !important; flex-direction: column;}
+    .browse-overlay {
+        display: none; 
+        position: fixed;
+        inset: 0;
+        background: rgba(26, 23, 20, 0.4);
+        z-index: 499;
+    } 
+    .browse-overlay--open {display: block !important};
+    .browse-grid { grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
     .browse-search-form { width: 100%; }
     .browse-listings__header { flex-direction: column; align-items: flex-start; }
     .browse-listings__controls { width: 100%; }

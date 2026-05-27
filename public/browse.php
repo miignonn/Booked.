@@ -93,7 +93,7 @@ require_once __DIR__ . '/../includes/header.php';
 
 <div class="page-wrap">  
 <!-- Mobile filter toggle -->
-<button class="browse-filter-toggle mb-3" onclick="openFilters()">
+<button type="button" class="browse-filter-toggle mb-3" onclick="openFilters()">
     <i class="bi bi-sliders"></i> Filters
 </button>
 
@@ -104,7 +104,7 @@ require_once __DIR__ . '/../includes/header.php';
 <div class="browse-drawer" id="browse-drawer">
     <div class="browse-drawer__head">
         <span class="fw-bold">Filters</span>
-        <button onclick="closeFilters()" class="browse-drawer__close">
+        <button type="button" onclick="closeFilters()" class="browse-drawer__close">
             <i class="bi bi-x-lg"></i>
         </button>
     </div>
@@ -201,8 +201,8 @@ require_once __DIR__ . '/../includes/header.php';
             </div>
         </div>
 
-        <button type="submit" class="btn btn-dark btn-sm w-100 mt-3">Apply</button>
-        <a href="/browse.php" class="btn btn-outline-secondary btn-sm w-100 mt-2">Clear Filters</a>
+        <button type="submit" class="b-btn--primary">Apply</button>
+        <a href="/browse.php" class="b-btn--outline">Clear Filters</a>
     </form>
 </div>
 
@@ -306,43 +306,42 @@ require_once __DIR__ . '/../includes/header.php';
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-dark btn-sm w-100 mt-3">Apply</button>
-            <a href="/browse.php" class="btn btn-outline-secondary btn-sm w-100 mt-2">Clear Filters</a>
+            <button type="submit" class="b-btn b-btn--primary w-100 mt-3">Apply</button>
+            <a href="/browse.php" class="b-btn b-btn--outline w-100 mt-2">Clear Filters</a>
         </form>
     </aside>
 
     <!-- Listings -->
     <div class="browse-listings">
-        <div class="browse-listings__header">
-            <div>
-                <h2 class="browse-listings__title">All Listings</h2>
-                <p class="browse-listings__count">
-                    <?= $total ?> books available
-                    <?php if ($search): ?>
-                        for "<strong><?= htmlspecialchars($search) ?></strong>"
-                    <?php endif; ?>
-                </p>
-            </div>
-            <div class="browse-listings__controls">
-                <form method="GET" class="browse-search-form">
-                    <div class="input-group">
-                        <input type="text" name="search" class="form-control form-control-sm"
-                               placeholder="Search title or author"
-                               value="<?= htmlspecialchars($search) ?>">
-                        <span class="input-group-text bg-light border-light">
-                            <i class="bi bi-search"></i>
-                        </span>
-                    </div>
-                </form>
-                <select class="form-select form-select-sm browse-sort-select"
-                        onchange="window.location='?sort='+this.value+'&<?= http_build_query(array_filter(['institution' => $filter_institution, 'category' => $filter_category, 'condition' => $filter_condition, 'edition' => $filter_edition, 'price_max' => $filter_price_max])) ?>'">
-                    <option value="newest"    <?= $sort === 'newest'     ? 'selected' : '' ?>>Newest</option>
-                    <option value="price_asc" <?= $sort === 'price_asc'  ? 'selected' : '' ?>>Price: Low–High</option>
-                    <option value="price_desc"<?= $sort === 'price_desc' ? 'selected' : '' ?>>Price: High–Low</option>
-                </select>
-            </div>
+    <div class="browse-listings__header">
+        <div>
+            <h2 class="browse-listings__title">All Listings</h2>
+            <p class="browse-listings__count">
+                <?= $total ?> books available
+                <?php if ($search): ?>
+                    for "<strong><?= htmlspecialchars($search) ?></strong>"
+                <?php endif; ?>
+            </p>
         </div>
-
+        <div class="browse-listings__controls">
+            <form method="GET" class="browse-search-form">
+                <div style="display:flex; align-items:stretch;">
+                    <input type="text" name="search" class="browse-search-input"
+                           placeholder="Search title or author"
+                           value="<?= htmlspecialchars($search) ?>">
+                    <span class="browse-search-icon">
+                        <i class="bi bi-search"></i>
+                    </span>
+                </div>
+            </form>
+            <select class="browse-sort-select"
+                    onchange="window.location='?sort='+this.value+'&<?= http_build_query(array_filter(['institution' => $filter_institution, 'category' => $filter_category, 'condition' => $filter_condition, 'edition' => $filter_edition, 'price_max' => $filter_price_max])) ?>'">
+                <option value="newest"     <?= $sort === 'newest'     ? 'selected' : '' ?>>Newest</option>
+                <option value="price_asc"  <?= $sort === 'price_asc'  ? 'selected' : '' ?>>Price: Low–High</option>
+                <option value="price_desc" <?= $sort === 'price_desc' ? 'selected' : '' ?>>Price: High–Low</option>
+            </select>
+        </div>
+    </div>
         <?php if (empty($listings)): ?>
             <p class="b-empty mt-3">No listings found matching your filters.</p>
         <?php else: ?>
@@ -388,15 +387,14 @@ require_once __DIR__ . '/../includes/header.php';
 
 <script>
 function openFilters() {
-    document.getElementById('browse-drawer').style.display = 'flex';
-    document.getElementById('browse-drawer').style.flexDirection = 'column';
-    document.getElementById('browse-overlay').style.display = 'block';
+    document.getElementById('browse-drawer').classList.add('browse-drawer--open');
+    document.getElementById('browse-overlay').classList.add('browse-overlay--open');
     document.body.style.overflow = 'hidden';
 }
 
 function closeFilters() {
-    document.getElementById('browse-drawer').style.display = 'none';
-    document.getElementById('browse-overlay').style.display = 'none';
+    document.getElementById('browse-drawer').classList.remove('browse-drawer--open');
+    document.getElementById('browse-overlay').classList.remove('browse-overlay--open');
     document.body.style.overflow = '';
 }
 
