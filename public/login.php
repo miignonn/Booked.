@@ -133,108 +133,129 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
 }
 require_once __DIR__ . '/../includes/header.php';
 ?>
+</div><!-- close page-wrap from header -->
 
-<div class="row justify-content-center mt-5">
-    <div class="col-md-5 col-lg-4">
+<div class="auth-wrap">
+    <h1 class="auth-wrap__logo">Booked.</h1>
+    <p class="auth-wrap__sub">South Africa's Student Textbook Marketplace</p>
 
-        <div class="text-center mb-4">
-            <h1 class="fw-bold">Booked.</h1>
-            <p class="text-muted">Student textbook marketplace South Africa.</p>
-        </div>
-
-        <ul class="nav nav-pills nav-fill bg-light rounded-pill p-1 mb-4">
-            <li class="nav-item">
-                <a class="nav-link rounded-pill <?= $active_tab === 'login' ? 'active bg-dark text-white' : 'text-muted' ?>" href="#" onclick="showTab('login', this)">Login</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link rounded-pill <?= $active_tab === 'register' ? 'active bg-dark text-white' : 'text-muted' ?>" href="#" onclick="showTab('register', this)">Register</a>
-            </li>
-        </ul>
-
-        <!-- Alerts -->
-        <?php if ($error): ?>
-            <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
-        <?php endif; ?>
-        <?php if ($success): ?>
-            <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
-        <?php endif; ?>
-
-        <!-- LOGIN FORM -->
-        <div id="login-form" class="<?= $active_tab === 'login' ? '' : 'd-none' ?>">
-            <form method="POST">
-                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
-                <div class="mb-3">
-                    <label class="form-label">Email or Username</label>
-                    <input type="text" name="login_input" class="form-control" placeholder="Email or username" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Password</label>
-                    <input type="password" name="password" class="form-control" placeholder="Enter password" required>
-                </div>
-                <div class="d-flex justify-content-end mb-3">
-                    <a href="#" class="text-muted small">Forgot Password?</a>
-                </div>
-                <button type="submit" name="login" class="btn btn-dark w-100">Login</button>
-                <p class="text-center text-muted small mt-3">
-                    <i class="bi bi-check-circle-fill text-success"></i> Only verified university emails accepted.
-                </p>
-            </form>
-        </div>
-
-        <!-- REGISTER FORM -->
-        <div id="register-form" class="<?= $active_tab === 'register' ? '' : 'd-none' ?>">
-            <form method="POST">
-                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
-                <div class="mb-3">
-                    <label class="form-label">Full Name <span class="text-danger">*</span></label>
-                    <input type="text" name="name" class="form-control" placeholder="Your full name" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Username <span class="text-danger">*</span></label>
-                    <input type="text" name="username" class="form-control" placeholder="e.g. booked123" autocomplete="off" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Email Address <span class="text-danger">*</span></label>
-                    <input type="email" name="email" class="form-control" placeholder="example@institution.ac.za" autocomplete="off" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Institution</label>
-                    <input type="text" name="institution" class="form-control" placeholder="e.g. Eduvos">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Phone Number</label>
-                    <input type="text" name="phone" class="form-control" placeholder="e.g. 082 123 4567">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Password <span class="text-danger">*</span></label>
-                    <input type="password" name="password" class="form-control" placeholder="At least 6 characters" autocomplete="new-password" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Confirm Password <span class="text-danger">*</span></label>
-                    <input type="password" name="confirm_password" class="form-control" placeholder="Repeat your password" autocomplete="new-password" required>
-                </div>
-                <button type="submit" name="register" class="btn btn-dark w-100">Register</button>
-                <p class="text-center text-muted small mt-3">
-                    <i class="bi bi-check-circle-fill text-success"></i> Only verified university emails accepted.
-                </p>
-            </form>
-        </div>
-
+    <div class="auth-tabs">
+        <a class="auth-tab <?= $active_tab === 'login' ? 'active' : '' ?>"
+           href="#" onclick="showTab('login', this)">Login</a>
+        <a class="auth-tab <?= $active_tab === 'register' ? 'active' : '' ?>"
+           href="#" onclick="showTab('register', this)">Register</a>
     </div>
+
+    <?php if ($error): ?>
+        <div class="flash-alert flash-alert--danger">
+            <?= htmlspecialchars($error) ?>
+        </div>
+    <?php endif; ?>
+    <?php if ($success): ?>
+        <div class="flash-alert flash-alert--success">
+            <?= htmlspecialchars($success) ?>
+        </div>
+    <?php endif; ?>
+
+    <!-- LOGIN FORM -->
+    <div id="login-form" class="<?= $active_tab === 'login' ? '' : 'd-none' ?>">
+        <form method="POST">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
+            <div class="auth-field">
+                <label class="b-eyebrow">Email or Username</label>
+                <input type="text" name="login_input" class="auth-input"
+                       placeholder="Email or username" required>
+            </div>
+            <div class="auth-field">
+                <label class="b-eyebrow">Password</label>
+                <input type="password" name="password" class="auth-input"
+                       placeholder="Enter password" required>
+            </div>
+            <button type="submit" name="login" class="b-btn b-btn--primary w-100">Login</button>
+            <p class="auth-note">
+                <i class="bi bi-check-circle-fill"></i>
+                Only university emails accepted.
+            </p>
+        </form>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="register-form" class="<?= $active_tab === 'register' ? '' : 'd-none' ?>">
+        <form method="POST">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
+            <div class="auth-field">
+                <label class="b-eyebrow">Full Name <span class="auth-required">*</span></label>
+                <input type="text" name="name" class="auth-input"
+                       placeholder="Your full name" required>
+            </div>
+            <div class="auth-field">
+                <label class="b-eyebrow">Username <span class="auth-required">*</span></label>
+                <input type="text" name="username" class="auth-input"
+                       placeholder="user123" autocomplete="off" required>
+            </div>
+            <div class="auth-field">
+                <label class="b-eyebrow">Email Address <span class="auth-required">*</span></label>
+                <input type="email" name="email" class="auth-input"
+                       placeholder="example@institution.ac.za" autocomplete="off" required>
+            </div>
+            <div class="auth-field">
+                <label class="b-eyebrow">Institution</label>
+                <input type="text" name="institution" class="auth-input"
+                       placeholder="e.g. Eduvos">
+            </div>
+            <div class="auth-field">
+                <label class="b-eyebrow">Phone Number</label>
+                <input type="text" name="phone" class="auth-input"
+                       placeholder="xxx xxx xxxx">
+            </div>
+            <div class="auth-field">
+                <label class="b-eyebrow">Password <span class="auth-required">*</span></label>
+                <input type="password" name="password" class="auth-input"
+                       placeholder="At least 6 characters" autocomplete="new-password" required>
+            </div>
+            <div class="auth-field">
+                <label class="b-eyebrow">Confirm Password <span class="auth-required">*</span></label>
+                <input type="password" name="confirm_password" class="auth-input"
+                       placeholder="Repeat your password" autocomplete="new-password" required>
+            </div>
+            <button type="submit" name="register" class="b-btn b-btn--primary w-100">Register</button>
+            <p class="auth-note">
+                <i class="bi bi-check-circle-fill"></i>
+                Only verified university emails accepted.
+            </p>
+        </form>
+    </div>
+
 </div>
 
+<div class="page-wrap"></div>
+   
 <script>
 function showTab(tab, el) {
     event.preventDefault();
     document.getElementById('login-form').classList.toggle('d-none', tab !== 'login');
     document.getElementById('register-form').classList.toggle('d-none', tab !== 'register');
-    document.querySelectorAll('.nav-link').forEach(a => {
-        a.classList.remove('active', 'bg-dark', 'text-white');
-        a.classList.add('text-muted');
-    });
-    el.classList.add('active', 'bg-dark', 'text-white');
-    el.classList.remove('text-muted');
+    document.querySelectorAll('.auth-tab').forEach(a => a.classList.remove('active'));
+    el.classList.add('active');
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    const phoneInput = document.querySelector('input[name="phone"]');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 10) value = value.slice(0, 10);
+            if (value.length >= 7) {
+                value = value.slice(0, 3) + ' ' + value.slice(3, 6) + ' ' + value.slice(6);
+            } else if (value.length >= 4) {
+                value = value.slice(0, 3) + ' ' + value.slice(3);
+            }
+            e.target.value = value;
+        });
+    }
+});
 </script>
+
+<?php require_once '../includes/footer.php'; ?>
 
 <?php require_once '../includes/footer.php'; ?>
