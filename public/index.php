@@ -31,8 +31,6 @@ $categories = $categories_result->fetch_all(MYSQLI_ASSOC);
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
-</div> 
-
 <?php if (isset($_GET['message']) && $_GET['message'] == 'logged_out'): ?>
     <div class="flash-alert flash-alert--success" role="alert">
         You have been logged out successfully.
@@ -64,7 +62,10 @@ require_once __DIR__ . '/../includes/header.php';
             <?php endif; ?>
         </div>
     </div>
-    <div class="b-hero__right"></div>
+<div class="b-hero__right">
+    <img src="/assets/images/booked_logo.png" alt="Stack of textbooks" class="b-hero__books-img">
+</div>
+
 </section>
 
 <div class="page-wrap">

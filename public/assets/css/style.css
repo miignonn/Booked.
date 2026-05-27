@@ -48,7 +48,7 @@
     --near-black:     #1A1714;
     --mid:            #8C8478;
 
-    /* Accent — used sparingly */
+    /* Accent */
     --tobacco:        #6B5B3E;
     --highlight: #8c8c51;
 
@@ -326,13 +326,16 @@ a { color: inherit; }
 .b-hero {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    min-height: calc(100vh - 56px); 
-    margin: 0;
+    height: calc(100vh - 56px); 
+    margin: 0 !important;
+    padding: 0;
     border-bottom: 0.5px solid var(--border);
+    align-items: center;
 }
 
 .b-hero__left {
-    padding: 5rem 3rem 5rem 4rem;
+    padding: 3rem 3rem 3rem 4rem;
+    margin-left: 4.5rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -401,13 +404,22 @@ a { color: inherit; }
 /* Hero right — bookshelf */
 
 .b-hero__right {
-    background: #F5F2ED !important;
+    background: var(--page);
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-end;
+    justify-content: flex-start;
     overflow: hidden;
+    padding: 0;
 }
+.b-hero__books-img{
+    width: 90%;
+    height: 100%;
+    display: block;
+    mix-blend-mode: multiply;
+    margin-bottom: -4px;
+    margin-left: -2rem;
 
+}
 .b-shelf {
     width: 100%;
     height: 100%;
@@ -429,14 +441,14 @@ a { color: inherit; }
 }
 
 .b-book__spine {
-    font-family: var(--font-serif);
-    font-size: 9px;
-    font-weight: 300;
-    color: var(--c, rgba(237,206,145,0.7));
+    font-family: var(--font-sans);
+    font-size: 0.55rem;
+    font-weight: 400;
+    letter-spacing: 0.14rem;
+    text-transform: uppercase;
     writing-mode: vertical-rl;
     transform: rotate(180deg);
-    letter-spacing: 0.1em;
-    padding: 8px 0;
+    padding: 12px 0;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -445,35 +457,22 @@ a { color: inherit; }
 .b-shelf__scene {
     display: flex;
     align-items: flex-end;
-    gap: 0px;
+    gap: 4px;
     width: 100%;
     height: 100%;
     padding: 0 2rem;
     justify-content: center;
 }
 
-.b-book--1 { 
-    --w: 70px; --h: 88%; --bg: #5C2120; --c: rgba(237,206,145,0.7);
-    transform: rotate(8deg);
-    transform-origin: bottom center;
-    margin-right: -10px;
+.b-book{
+    border-radius: 2px 1px 1px 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: inset -3px 0 8px rgba(0,0,0,0.12);
 }
-.b-book--2 { 
-    --w: 58px; --h: 100%; --bg: #71744F; --c: rgba(237,206,145,0.7);
-    transform: rotate(3deg);
-    transform-origin: bottom center;
-    margin-right: -5px;
-}
-.b-book--3 { 
-    --w: 74px; --h: 82%; --bg: #D5C0A5; --c: #1C1410;
-    transform: rotate(-2deg);
-    transform-origin: bottom center;
-}
-.b-book--4 { 
-    --w: 62px; --h: 94%; --bg: #C8401A; --c: rgba(237,206,145,0.7);
-    transform: rotate(0deg);
-    transform-origin: bottom center;
-}
+
 
 /* ============================================================
    7. SECTIONS & EYEBROWS
@@ -992,8 +991,8 @@ a { color: inherit; }
 
 .browse-sidebar__title{
     font-family: var(--font-sans);
-    font-size: 0.6rem;
-    font-weight: 500;
+    font-size: 0.8rem;
+    font-weight: 600;
     letter-spacing: 0.2rem;
     text-transform: uppercase;
     color: var(--near-black);
@@ -1047,7 +1046,7 @@ a { color: inherit; }
     margin-bottom: 1rem;
 }
 
--group__header {
+.browse-group__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1057,7 +1056,7 @@ a { color: inherit; }
 
 .browse-filter-group__label { 
     font-family: var(--font-sans);
-    font-size: 0.72rem;
+    font-size: 0.75rem;
     font-weight: 500;
     letter-spacing: 0.05rem;
     color: var(--near-black);
