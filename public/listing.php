@@ -45,14 +45,14 @@ if ($id == 0) {
 }
 
 $stmt = $conn->prepare("
-SELECT listings.*,
-users.username AS seller_username,
-users.institution AS seller_institution,
-categories.name AS category_name
-FROM listings
-JOIN users ON listings.user_id = users.id
-JOIN categories ON listings.category_id = categories.id
-WHERE listings.id = ? AND listings.status IN ('available', 'pending')
+    SELECT listings.*,
+    users.username AS seller_username,
+    users.institution AS seller_institution,
+    categories.name AS category_name
+    FROM listings
+    JOIN users ON listings.user_id = users.id
+    JOIN categories ON listings.category_id = categories.id
+    WHERE listings.id = ? AND listings.status IN ('available', 'pending')
 ");
 $stmt->bind_param("i", $id);
 $stmt->execute();
@@ -124,12 +124,6 @@ require_once __DIR__ . '/../includes/header.php';
     <!-- Right: details + actions -->
     <div class="listing-page__details">
 
-        <?php if (isset($_GET['added'])): ?>
-            <div class="listing-page__alert listing-page__alert--success">
-                <i class="bi bi-check-circle"></i> Added to cart! <a href="/cart.php">View cart</a>
-            </div>
-        <?php endif; ?>
-
         <?php if (isset($report_success)): ?>
             <div class="listing-page__alert listing-page__alert--success">
                 <i class="bi bi-check-circle"></i> <?= htmlspecialchars($report_success) ?>
@@ -175,14 +169,14 @@ require_once __DIR__ . '/../includes/header.php';
 
         <?php if (isset($_SESSION['user_id'])): ?>
             <?php if ($listing['status'] === 'pending'): ?>
-                <button class="btn-checkout" disabled style="opacity:0.5;cursor:not-allowed;">
-                    <i class="bi bi-cart-plus"></i> No Longer Available
+                <button class="b-btn b-btn--primary w-100" disabled style="opacity:0.5; cursor:not-allowed;">
+                    No Longer Available
                 </button>
             <?php else: ?>
                 <form method="POST" action="/cart.php">
                     <input type="hidden" name="listing_id" value="<?= $listing['id'] ?>">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
-                    <button type="submit" class="btn-checkout">
+                    <button type="submit" class="b-btn b-btn--primary w-100">
                         <i class="bi bi-cart-plus"></i> Add to Cart
                     </button>
                 </form>
@@ -194,8 +188,8 @@ require_once __DIR__ . '/../includes/header.php';
                     <p class="listing-page__guest-title">Books don't add themselves.</p>
                     <p class="listing-page__guest-sub">Looks like you're browsing as a guest. Join thousands of students already saving on textbooks.</p>
                     <div class="listing-page__guest-actions">
-                        <a href="/login.php" class="btn-checkout">Login</a>
-                        <a href="/login.php?tab=register" class="btn-browse">Register — it's free!</a>
+                        <a href="/login.php" class="b-btn b-btn--primary">Login</a>
+                        <a href="/login.php?tab=register" class="b-btn b-btn--outline" style="color: var(--page); border-color: rgba(245,242,237,0.3);">Register — it's free!</a>
                     </div>
                 </div>
             </div>
@@ -214,9 +208,9 @@ require_once __DIR__ . '/../includes/header.php';
 <!-- Report modal -->
 <div class="modal fade" id="reportModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content rounded-3">
+        <div class="modal-content" style="border-radius:0; border: 0.5px solid var(--border);">
             <div class="modal-header border-0">
-                <h5 class="modal-title fw-bold">Report this Listing</h5>
+                <h5 class="modal-title" style="font-family: var(--font-serif); font-weight:400;">Report this Listing</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -237,8 +231,8 @@ require_once __DIR__ . '/../includes/header.php';
                         </select>
                     </div>
                     <div class="listing-page__report-actions">
-                        <button type="button" class="btn-browse" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn-danger-action">Submit Report</button>
+                        <button type="button" class="b-btn b-btn--outline" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="b-btn b-btn--primary" style="background: var(--blush);">Submit Report</button>
                     </div>
                 </form>
             </div>
