@@ -143,7 +143,7 @@ function status_badge(string $status): string {
 
                 <div class="order-card__info">
                      <p class="order-card__title"><?= htmlspecialchars($order['title']) ?></p>
-                    <div class="order-card__meta-grid">
+                    <div class="order-card__meta-grid--orders">
                       <span class="order-card__meta"><i class="bi bi-person"></i> @<?= htmlspecialchars($order['seller_username']) ?></span>
                       <span class="order-card__meta"><i class="bi bi-building"></i> <?= htmlspecialchars($order['seller_institution']) ?></span>
                       <span class="order-card__meta"><i class="bi bi-geo-alt"></i> <?= htmlspecialchars($order['campus']) ?></span>
@@ -204,7 +204,7 @@ function status_badge(string $status): string {
 
                 <div class="order-card__info">
                      <p class="order-card__title"><?= htmlspecialchars($order['title']) ?></p>
-                    <div class="order-card__meta-grid">
+                    <div class="order-card__meta-grid--orders">
                       <span class="order-card__meta"><i class="bi bi-person"></i> @<?= htmlspecialchars($order['seller_username']) ?></span>
                       <span class="order-card__meta"><i class="bi bi-building"></i> <?= htmlspecialchars($order['seller_institution']) ?></span>
                       <span class="order-card__meta"><i class="bi bi-geo-alt"></i> <?= htmlspecialchars($order['campus']) ?></span>
