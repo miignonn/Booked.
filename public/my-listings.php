@@ -114,7 +114,7 @@ require_once __DIR__ . '/../includes/header.php';
             };
             $is_suspended = isset($_SESSION['status']) && $_SESSION['status'] === 'suspended';
             ?>
-            <span class="badge bg-<?= $badge ?> align-self-center">
+            ?= $badge ?> align-self-center">
                 <?= ucfirst($listing['status']) ?>
             </span>
  

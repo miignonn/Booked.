@@ -126,7 +126,8 @@ function status_badge(string $status): string {
             <i class="bi bi-bag orders__empty-icon"></i>
             <p class="orders__empty-title">No purchases yet</p>
             <p class="orders__empty-sub">Books you buy will appear here.</p>
-            <a href="/browse.php" class="btn-checkout">Start Browsing</a>
+            <a href="/browse.php" class="b-btn b-btn--primary">Start Browsing</a>
+            
         </div>
     <?php else: ?>
         <?php foreach ($buying_orders as $order): ?>
@@ -141,30 +142,34 @@ function status_badge(string $status): string {
                 </div>
 
                 <div class="order-card__info">
-                    <p class="order-card__title"><?= htmlspecialchars($order['title']) ?></p>
-                    <p class="order-card__meta">Seller: @<?= htmlspecialchars($order['seller_username']) ?> &nbsp;·&nbsp; <?= htmlspecialchars($order['seller_institution']) ?></p>
-                    <p class="order-card__meta">Collection: <?= htmlspecialchars($order['campus']) ?> &nbsp;·&nbsp; <?= date('d M, H:i', strtotime($order['preferred_time'])) ?></p>
-                    <p class="order-card__meta"><?= date('d M Y', strtotime($order['created_at'])) ?></p>
-                    <p class="order-card__meta"><i class="bi bi-envelope"></i> <?= htmlspecialchars($order['seller_email']) ?></p>
+                     <p class="order-card__title"><?= htmlspecialchars($order['title']) ?></p>
+                    <div class="order-card__meta-grid">
+                      <span class="order-card__meta"><i class="bi bi-person"></i> @<?= htmlspecialchars($order['seller_username']) ?></span>
+                      <span class="order-card__meta"><i class="bi bi-building"></i> <?= htmlspecialchars($order['seller_institution']) ?></span>
+                      <span class="order-card__meta"><i class="bi bi-geo-alt"></i> <?= htmlspecialchars($order['campus']) ?></span>
+                      <span class="order-card__meta"><i class="bi bi-clock"></i> <?= date('d M, H:i', strtotime($order['preferred_time'])) ?></span>
+                      <span class="order-card__meta"><i class="bi bi-envelope"></i> <?= htmlspecialchars($order['seller_email']) ?></span>
+                      <span class="order-card__meta"><i class="bi bi-calendar"></i> <?= date('d M Y', strtotime($order['created_at'])) ?></span>
+                    </div>
                 </div>
 
                 <div class="order-card__price-col">
                     <p class="order-card__price">R<?= number_format($order['total_price'], 2) ?></p>
-                    <span class="badge bg-<?= status_badge($order['status']) ?> mb-2">
+                    <span class="order-status order-status--<?= ($order['status']) ?> mb-2">
                         <?= ucfirst(str_replace('_', ' ', $order['status'])) ?>
                     </span>
                     <?php if ($order['status'] === 'handed_over'): ?>
                         <form method="POST">
                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
                             <input type="hidden" name="order_id" value="<?= $order['id'] ?>">
-                            <button type="submit" name="mark_received" class="btn-order-action">
+                            <button type="submit" name="mark_received" class="b-btn b-btn--primary">
                                 Mark as Received
                             </button>
                         </form>
                     <?php endif; ?>
 
                     <?php if ($order['status'] === 'pending'): ?>
-                        <button type="button" class="btn-order-cancel"
+                        <button type="button" class="b-btn b-btn--outline"
                                 onclick="confirmCancel(<?= $order['id'] ?>)">
                             Cancel Order
                         </button>
@@ -183,7 +188,7 @@ function status_badge(string $status): string {
             <i class="bi bi-shop orders__empty-icon"></i>
             <p class="orders__empty-title">No sales yet</p>
             <p class="orders__empty-sub">Books you sell will appear here.</p>
-            <a href="/create-listing.php" class="btn-checkout">Create a Listing</a>
+            <a href="/create-listing.php" class="b-btn b-btn--primary">Create a Listing</a>
         </div>
     <?php else: ?>
         <?php foreach ($selling_orders as $order): ?>
@@ -198,22 +203,27 @@ function status_badge(string $status): string {
                 </div>
 
                 <div class="order-card__info">
-                    <p class="order-card__title"><?= htmlspecialchars($order['title']) ?></p>
-                    <p class="order-card__meta">Buyer: @<?= htmlspecialchars($order['buyer_username']) ?> &nbsp;·&nbsp; <?= htmlspecialchars($order['campus']) ?></p>
-                    <p class="order-card__meta"><?= date('d M Y', strtotime($order['created_at'])) ?> &nbsp;·&nbsp; Collect: <?= date('d M, H:i', strtotime($order['preferred_time'])) ?></p>
-                    <p class="order-card__meta"><i class="bi bi-envelope"></i> <?= htmlspecialchars($order['buyer_email']) ?></p>
+                     <p class="order-card__title"><?= htmlspecialchars($order['title']) ?></p>
+                    <div class="order-card__meta-grid">
+                      <span class="order-card__meta"><i class="bi bi-person"></i> @<?= htmlspecialchars($order['seller_username']) ?></span>
+                      <span class="order-card__meta"><i class="bi bi-building"></i> <?= htmlspecialchars($order['seller_institution']) ?></span>
+                      <span class="order-card__meta"><i class="bi bi-geo-alt"></i> <?= htmlspecialchars($order['campus']) ?></span>
+                      <span class="order-card__meta"><i class="bi bi-clock"></i> <?= date('d M, H:i', strtotime($order['preferred_time'])) ?></span>
+                      <span class="order-card__meta"><i class="bi bi-envelope"></i> <?= htmlspecialchars($order['seller_email']) ?></span>
+                      <span class="order-card__meta"><i class="bi bi-calendar"></i> <?= date('d M Y', strtotime($order['created_at'])) ?></span>
+                    </div>
                 </div>
 
                 <div class="order-card__price-col">
                     <p class="order-card__price">R<?= number_format($order['total_price'], 2) ?></p>
-                    <span class="badge bg-<?= status_badge($order['status']) ?> mb-2">
+                    <span class="order-status order-status--<?= ($order['status']) ?> mb-2">
                         <?= ucfirst(str_replace('_', ' ', $order['status'])) ?>
                     </span>
                     <?php if ($order['status'] === 'pending'): ?>
                         <form method="POST">
                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
                             <input type="hidden" name="order_id" value="<?= $order['id'] ?>">
-                            <button type="submit" name="confirm_handover" class="btn-order-action">
+                            <button type="submit" name="confirm_handover" class="b-btn b-btn--primary">
                                 Confirm Handover
                             </button>
                         </form>
