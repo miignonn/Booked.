@@ -113,13 +113,18 @@ require_once __DIR__ .'/../includes/header.php';
     <div class="form-error"><?= htmlspecialchars($error) ?></div>
 <?php endif; ?>
 
+    <
 <form method="POST" enctype="multipart/form-data" class="create-listing-form">
     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
+
+        <h1 class="create-listing-heading">List a Book</h1> 
+        <p class="create-listing-sub">Fill in the details below to publish your listing</p>
 
     <div class="create-listing-grid">
 
         <!-- LEFT column -->
         <div class="create-listing-col">
+            
 
             <!-- Image upload -->
             <div class="upload-box" id="upload-box">
@@ -129,17 +134,6 @@ require_once __DIR__ .'/../includes/header.php';
                 <input type="file" name="images[]" id="images" class="upload-box__input"
                        accept="image/*" multiple required onchange="previewImages(this)">
                 <div id="image-preview" class="upload-box__preview"></div>
-            </div>
-
-            <!-- Photo tips -->
-            <div class="photo-tips">
-                <p class="photo-tips__title"><i class="bi bi-camera"></i> Photo Tips</p>
-                <ul class="photo-tips__list">
-                    <li>Place the book on a flat, clean surface.</li>
-                    <li>Make sure the cover is clearly visible.</li>
-                    <li>Use natural lighting.</li>
-                    <li>Include photos of any damage or wear.</li>
-                </ul>
             </div>
 
             <!-- Condition -->
@@ -226,11 +220,11 @@ require_once __DIR__ .'/../includes/header.php';
             <!-- Submit buttons -->
             <input type="hidden" name="status" id="status" value="available">
             <div class="listing-actions">
-                <button type="submit" class="btn-checkout"
+                <button type="submit" class="b-btn b-btn--primary"
                         onclick="document.getElementById('status').value='available'">
                     Publish Listing
                 </button>
-                <button type="submit" class="btn-browse"
+                <button type="submit" class="b-btn b-btn--outline"
                         onclick="document.getElementById('status').value='draft'">
                     Save as Draft
                 </button>
