@@ -121,6 +121,26 @@ require_once '../../includes/functions.php';
    
 <script>
    function toggleSidebar(){
-      document.querySelector('.grid-container').classList.toggle('sidebar-collapsed')
+      const grid = document.querySelector('.grid-container');
+      const sidebar = document.getElementById('sidebar');
+      
+      if (window.innerWidth <= 768) {
+         sidebar.classList.toggle('sidebar-mobile-open');
+      } else {
+         grid.classList.toggle('sidebar-collapsed');
+      }
    }
+
+   // Close sidebar if user clicks outside of it on mobile
+   document.addEventListener('click', function(e) {
+      const sidebar = document.getElementById('sidebar');
+      const toggle = document.querySelector('.menu-toggle');
+      
+      if (window.innerWidth <= 768 
+          && sidebar.classList.contains('sidebar-mobile-open')
+          && !sidebar.contains(e.target)
+          && !toggle.contains(e.target)) {
+         sidebar.classList.remove('sidebar-mobile-open');
+      }
+   });
 </script>
