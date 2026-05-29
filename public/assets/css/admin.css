@@ -1,6 +1,21 @@
 /* ============================================================
  ADMIN PANEL
 ============================================================ */
+
+/*------ Admin variables ------*/
+:root {
+    --sidebar-bg:     #1A1714;
+    --sidebar-muted:  rgba(245,242,237,0.45);
+    --sidebar-hover:  rgba(245,242,237,0.08);
+    --card-bg:        #ffffff;
+    --header-height:  64px;
+    --terracotta:     #C8401A;
+    --off-white:      #F5F2ED;
+    --crimson:        #C8401A;
+    --crimson-light:  rgba(200,64,26,0.08);
+    --high-light:  #8c8c51;
+}
+
 body.admin-body {
     margin: 0;
     padding: 0;
@@ -25,10 +40,11 @@ body.admin-body {
 .grid-container.sidebar-collapsed #sidebar { transform: translateX(-260px); overflow: hidden; }
 .grid-container.sidebar-collapsed .main-content,
 .grid-container.sidebar-collapsed .admin-header { grid-column: 1 / -1; }
+
  
 #sidebar {
     grid-area: sidebar;
-    background-color: var(--sidebar-bg);
+    background-color: var(--dark-brown);
     display: flex;
     flex-direction: column;
     overflow-y: auto;
@@ -67,7 +83,7 @@ body.admin-body {
     font-weight: 500;
     letter-spacing: 1.8px;
     text-transform: uppercase;
-    color: rgba(247,243,236,0.28);
+    color: var(--off-white);
     padding: 0 12px;
     margin: 20px 0 6px;
 }
@@ -165,7 +181,7 @@ body.admin-body {
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background: var(--terracotta);
+    background: var(--dark-brown);
     color: #fff;
     font-size: 14px;
     font-weight: 500;
@@ -205,7 +221,7 @@ body.admin-body {
  
 .stat-card {
     background: var(--card-bg);
-    border-radius: 12px;
+    border-radius: 0;
     padding: 16px 18px;
     display: flex;
     flex-direction: column;
@@ -221,7 +237,7 @@ body.admin-body {
 .stat-label { font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
 .stat-value { font-size: 24px; font-weight: 700; color: var(--near-black); line-height: 1; }
  
-.stat-card--active { background: var(--near-black); border-color: var(--near-black); }
+.stat-card--active { background: var(--high-light); border-color: var(--high-light); }
 .stat-card--active .stat-label,
 .stat-card--active .stat-value,
 .stat-card--active .stat-icon { color: var(--off-white); }
@@ -291,11 +307,12 @@ a.stat-card.stat-card--active, a.stat-card.stat-card--active:hover { color: var(
     display: inline-block;
 }
  
-.badge-dark    { background: var(--near-black); color: var(--off-white); }
-.badge-light   { background: rgba(28,20,16,0.08); color: var(--near-black); }
-.badge-success { background: #D4EDDA; color: #2A6636; }
-.badge-danger  { background: var(--crimson-light); color: var(--crimson); }
-.badge-warning { background: #FEF3CD; color: #856404; }
+.badge-success { background: rgba(100,140,80,0.12); color: #648C50; border-radius: 0; }
+.badge-danger  { background: rgba(200,64,26,0.08);  color: #C8401A; border-radius: 0; }
+.badge-warning { background: rgba(184,134,11,0.1);  color: #B8860B; border-radius: 0; }
+.badge-dark    { background: var(--near-black); color: #F5F2ED; border-radius: 0; }
+.badge-light   { background: var(--paper); color: var(--near-black); border-radius: 0; border: 0.5px solid var(--border); }
+.admin-badge   { border-radius: 0; }
  
 .admin-alert { padding: 12px 16px; border-radius: 8px; font-size: 13.5px; display: flex; align-items: center; gap: 8px; }
 .admin-alert--success { background: #D4EDDA; color: #2A6636; }
@@ -355,7 +372,7 @@ a.stat-card.stat-card--active, a.stat-card.stat-card--active:hover { color: var(
 }
  
 .admin-btn--sm:hover { background: var(--near-black); color: var(--off-white); }
-.admin-btn--dark { background: var(--near-black); color: var(--off-white); cursor: pointer; }
+.admin-btn--dark { background: var(--dark-brown); color: var(--off-white); cursor: pointer; }
 .admin-btn--dark:hover { background: rgba(28,20,16,0.82); color: var(--off-white); }
 .admin-btn--outline { background: transparent; border: 1px solid var(--border); color: var(--near-black); cursor: pointer; }
 .admin-btn--outline:hover { border-color: rgba(28,20,16,0.4); background: rgba(28,20,16,0.04); }
@@ -364,7 +381,7 @@ a.stat-card.stat-card--active, a.stat-card.stat-card--active:hover { color: var(
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: var(--terracotta);
+    background: var(--dark-brown);
     color: #fff;
     font-size: 13px;
     font-weight: 500;

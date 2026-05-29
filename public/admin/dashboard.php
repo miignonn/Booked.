@@ -103,7 +103,6 @@ LIMIT 5
     <div class="stat-icon"><i class="bi bi-cash"></i></div>
     <div class="stat-label">Revenue Processed</div>
     <div class="stat-value">R<?= number_format($revenue) ?></div>
-    <!-- include numberformat ($revenue, 2) --> 
   </div>
 </div>
 
@@ -114,8 +113,7 @@ LIMIT 5
   <div class="stat-card stat-card--warning">
     <div class="stat-icon"><i class="bi bi-clock-history"></i></div>
     <div class="stat-label">Pending Orders</div>
-    <div class="stat-value"><?= number_format($pending_orders) ?></div>
-    <!---- include number format ($pending_orders)---> 
+    <div class="stat-value"><?= number_format($pending_orders) ?></div> 
   </div>
 
   <!-- reports submitted ---> 
@@ -139,7 +137,7 @@ LIMIT 5
 
   <!-- left table: recent registration-->
    
-                    <div class="admin-table-card">
+    <div class="admin-table-card">
     <div class="admin-table-header">
         <h2 class="admin-table-title">Recent Registrations</h2>
         <a href="/admin/users.php" class="admin-table-link">View all</a>
@@ -164,7 +162,12 @@ LIMIT 5
                         </td>
                         <td class="table-sub-text"><?= htmlspecialchars($u['institution'] ?? '—') ?></td>
                         <td>
-                            <span class="admin-badge <?= $u['status'] === 'active' ? 'badge-success' : 'badge-danger' ?>">
+                            <span class="admin-badge <?= match($u['status']) {
+                                'active'    => 'badge-success',
+                                'suspended' => 'badge-warning',
+                                'banned'    => 'badge-danger',
+                                 default     => 'badge-light'
+                                } ?>">
                                 <?= ucfirst($u['status']) ?>
                             </span>
                         </td>
@@ -249,21 +252,21 @@ LIMIT 5
                 <td>
                     <span class="admin-badge <?= match($o['status']){
                         'completed'   => 'badge-success',
-                        'handed_over' => 'badge-warning',
-                        'pending'     => 'badge-light',
+                        'handed_over' => 'badge-dark',
+                        'pending'     => 'badge-warning',
+                        'cancelled'   => 'badge-danger',
                         default       => 'badge-light',
                     } ?>">
-                        <?= ucfirst(str_replace('_', ' ', $o['status'])) ?>
-                    </span>
+                    <?= ucfirst(str_replace('_', ' ', $o['status'])) ?>
+                </span>
                 </td>
                 <td class="table-sub-text"><?= date('d M Y', strtotime($o['created_at'])) ?></td>
             </tr>
         <?php endforeach; ?>
     <?php endif; ?>
 </tbody>
-            
-    </table>
-   </div>
+</table>
+</div>
 
 
 
