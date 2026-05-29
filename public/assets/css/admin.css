@@ -407,20 +407,23 @@ a.stat-card.stat-card--active, a.stat-card.stat-card--active:hover { color: var(
     }
 
     #sidebar {
-        display: none;
+       display: none;
         position: fixed;
         top: 0;
         left: 0;
         height: 100vh;
         width: 260px;
         z-index: 300;
-        overflow-y: auto;
+        overflow-y: auto;        
+        -webkit-overflow-scrolling: touch;  
+        padding-bottom: 2rem; 
     }
 
      #sidebar.sidebar-mobile-open {
-        display: flex !important;
+       display: flex !important;
+        flex-direction: column; 
     }
-    
+
     .admin-header {
         grid-area: header;
         padding: 0 1rem;
