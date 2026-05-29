@@ -29,6 +29,25 @@ $allowed_domains = [
 // LOGIN LOGIC
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     verify_csrf();
+
+    //rate limiting
+    if (!isset($_SESSION['login_attempts'])){
+        $_SESSION['login_attempts'] = 0;
+        $_SESSION['login_time'] = time();
+    }
+    
+    if (time() - $_SESSION['login_time'] > 900){
+        $_SESSION['login_attempts'] = 0;
+        $_SESSION['login_time'] = time();
+    }
+
+    if ($_SESSION['login_attempts'] >= 5){
+        $error = "Too many login attempts. Please wait 15 minutes";
+        $active_tab = 'login';
+    } else {
+        $_SESSION['login_attempts']++;
+    }
+
     $login_input = trim($_POST['login_input']);
     $password    = $_POST['password'];
 
@@ -83,6 +102,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
 // REGISTER LOGIC
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
     verify_csrf();
+
+    //rate-limiting
+    if (!isset($_SESSION['register_attempts'])){
+        $_SESSION['register_attempts'] = 0;
+        $_SESSION['register_time'] = time();
+    }
+    if (time() - $_SESSION['register_attempts'] > 3600){
+        $_SESSION['register_attempts'] = 0;
+        $_SESSION['register_time'] = time();
+    }
+    if ($_SESSION['register_attempts'] >= 3){
+        $error= "Too many registration attempts. Please wait an hour.";
+        $active_tab = 'register';
+    } else {
+        $_SESSION['resgiter_attempts']++;
+    }
+    
     $name = trim($_POST['name']);
     $username = trim($_POST['username']);
     $email = trim($_POST['email']);
@@ -256,7 +292,4 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 </script>
-
-<?php require_once '../includes/footer.php'; ?>
-
 <?php require_once '../includes/footer.php'; ?>
