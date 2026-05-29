@@ -68,13 +68,10 @@ require_once __DIR__ . '/../includes/header.php';
             <?php endif; ?>
         </div>
     </div>
-<div class="b-hero__right">
-    <img src="/assets/images/booked_logo.png" alt="Stack of textbooks" class="b-hero__books-img">
-</div>
-
+    <div class="b-hero__right">
+        <img src="/assets/images/booked_logo.png" alt="Stack of textbooks" class="b-hero__books-img">
+    </div>
 </section>
-
-<div class="page-wrap">
 
 <!-- NEW LISTINGS -->
 <section class="b-section b-section--dark">
@@ -171,7 +168,5 @@ require_once __DIR__ . '/../includes/header.php';
         </div>
     </div>
 </section>
-
-</div> 
 
 <?php require_once '../includes/footer.php'; ?>

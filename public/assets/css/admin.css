@@ -118,7 +118,11 @@ body.admin-body {
     line-height: 1.6;
 }
 
-.sidebar-bottom { padding: 12px; border-top: 1px solid rgba(247,243,236,0.08); }
+.sidebar-bottom { 
+    padding: 12px;
+    border-top: 1px solid rgba(247,243,236,0.08);
+    margin-bottom: 80px;
+ }
 .sidebar-link-logout:hover { color: #f28c7a; }
 .sidebar-hidden { transform: translateX(-100%); }
 

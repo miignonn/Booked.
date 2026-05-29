@@ -515,26 +515,14 @@ a { color: inherit; }
 }
 
 .b-section--paper {
-    background: var(--page);
-    width: 100vw;
-    position: relative;
-    left: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
+   background: var(--page);
+    width: 100%;
     padding: 4rem 0;
-    text-align: left;
-    align-items: flex-start;
-    display: flex;
-    flex-direction: column;
 }
 
 .b-section--dark {
     background: #2C2118;
-    width: 100vw;
-    position: relative;
-    left: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
+    width: 100%;
     padding: 4rem 0;
     min-height: calc(100vh - 56px);
     display: flex;
@@ -719,11 +707,7 @@ a { color: inherit; }
 ============================================================ */
 .b-sell {
    background: #7A7D56;
-    width: 100vw;
-    position: relative;
-    left: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
+    width: 100%;
     padding: 0;
 }
 
@@ -845,6 +829,8 @@ a { color: inherit; }
     font-size: 0.8rem;
     font-weight: 300;
 }
+
+.b-section--paper .b-section__header{  text-align: left; }
 .b-section--paper .b-section__title {
     color: var(--near-black);
 }
@@ -3060,37 +3046,14 @@ html, body {
     .b-sell,
     .page-wrap,
     .b-section--dark,
-    .b-section--paper {
-       left: auto;
-        margin-left: 0;
-        margin-right: 0;
-        width: 100%;
-        max-width: 100%;
+     .b-section--paper .b-section__header {
+        text-align: center;
     }
 
-    .b-section--dark,
-    .b-sell {
-       position: relative;
-       left: auto;
-       margin-left: 0;
-       margin-right: 0;
-       width: 100vw;
-       max-width: 100vw;
-       box-sizing: border-box;
-       overflow: hidden;
-    }
 
     .b-btn--straw {
         margin-left: 0;
         align-self: auto;
-    }
-
-    .b-sell {
-       left: 0;
-        margin-left: 0;
-        margin-right: 0;
-        width: 100%;
-        position: relative;
     }
 
     .b-sell__inner {
