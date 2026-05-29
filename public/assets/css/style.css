@@ -537,8 +537,14 @@ a { color: inherit; }
 }
 
 .b-section--dark .b-section__inner {
-    align-items: flex-start;
+   max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 var(--page-px);
     text-align: left;
+}
+.b-section--dark .b-section__header {
+    text-align: left;
+    align-items: flex-end;
 }
 
 .b-section--dark .b-section__title { color: #F0E8D8; }
@@ -3034,12 +3040,26 @@ html, body {
 
     .b-hero__left {
         padding: 2rem 1.5rem;
-        width: 100%;
-        box-sizing: border-box;
+        margin-left: 0;
+        text-align: center;
+        align-items: center;
     }
 
     .b-hero__right { display: none; }
-    .b-hero__heading { font-size: 3rem; }
+    .b-hero__heading { font-size: 3rem; text-align: center;}
+
+    .b-hero__sub {
+        text-align: center;
+        max-width: 100%;
+    }
+
+     .b-hero__actions {
+        justify-content: center;
+    }
+
+    .b-eyebrow {
+        justify-content: center;
+    }
 
     /* Sections */
     .b-section,
@@ -3060,9 +3080,19 @@ html, body {
         padding: 3rem 1.5rem;
         width: 100%;
         box-sizing: border-box;
+        text-align: center;
+        align-items: center;
     }
 
-    .b-sell__steps { grid-template-columns: 1fr 1fr; }
+    .b-sell__steps { grid-template-columns: 1fr 1fr; justify-content: center; }
+    .b-sell__body {
+        margin: 0 auto 1.8rem;
+    }
+
+    .b-btn--straw {
+        margin: 0 auto;
+        text-align: center;
+    }
 
     .b-cat-grid {
         grid-template-columns: 1fr 1fr;
