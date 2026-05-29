@@ -153,30 +153,28 @@ function status_badge(string $status): string {
                     </div>
                 </div>
 
-                <div class="order-card__price-col">
-                    <p class="order-card__price">R<?= number_format($order['total_price'], 2) ?></p>
-                    <span class="order-status order-status--<?= ($order['status']) ?> mb-2">
-                        <?= ucfirst(str_replace('_', ' ', $order['status'])) ?>
-                    </span>
-                    <?php if ($order['status'] === 'handed_over'): ?>
-                        <form method="POST">
-                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
-                            <input type="hidden" name="order_id" value="<?= $order['id'] ?>">
-                            <button type="submit" name="mark_received" class="b-btn b-btn--primary">
-                                Mark as Received
-                            </button>
-                        </form>
-                    <?php endif; ?>
-
-                    <?php if ($order['status'] === 'pending'): ?>
-                        <button type="button" class="b-btn b-btn--outline"
-                                onclick="confirmCancel(<?= $order['id'] ?>)">
-                            Cancel Order
-                        </button>
-                    <?php endif; ?>
-                </div>
-
+            <div class="order-card__price-col">
+                  <p class="order-card__price">R<?= number_format($order['total_price'], 2) ?></p>
+                   <span class="order-status order-status--<?= $order['status'] ?>">
+                    <?= ucfirst(str_replace('_', ' ', $order['status'])) ?>
+                   </span>
+                  <?php if ($order['status'] === 'handed_over'): ?>
+                  <form method="POST">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
+                    <input type="hidden" name="order_id" value="<?= $order['id'] ?>">
+                    <button type="submit" name="mark_received" class="b-btn b-btn--primary">
+                    Mark as Received
+                    </button>
+                  </form>
+                 <?php endif; ?>
+                 <?php if ($order['status'] === 'pending'): ?>
+                    <button type="button" class="b-btn b-btn--outline"
+                     onclick="confirmCancel(<?= $order['id'] ?>)">
+                     Cancel Order
+                    </button>
+                 <?php endif; ?>
             </div>
+          </div>
         <?php endforeach; ?>
     <?php endif; ?>
 </div>
@@ -205,13 +203,12 @@ function status_badge(string $status): string {
                 <div class="order-card__info">
                      <p class="order-card__title"><?= htmlspecialchars($order['title']) ?></p>
                     <div class="order-card__meta-grid--orders">
-                      <span class="order-card__meta"><i class="bi bi-person"></i> @<?= htmlspecialchars($order['seller_username']) ?></span>
-                      <span class="order-card__meta"><i class="bi bi-building"></i> <?= htmlspecialchars($order['seller_institution']) ?></span>
+                      <span class="order-card__meta"><i class="bi bi-person"></i> @<?= htmlspecialchars($order['buyer_username']) ?></span>
+                      <span class="order-card__meta"><i class="bi bi-envelope"></i> <?= htmlspecialchars($order['buyer_email']) ?></span>
                       <span class="order-card__meta"><i class="bi bi-geo-alt"></i> <?= htmlspecialchars($order['campus']) ?></span>
                       <span class="order-card__meta"><i class="bi bi-clock"></i> <?= date('d M, H:i', strtotime($order['preferred_time'])) ?></span>
-                      <span class="order-card__meta"><i class="bi bi-envelope"></i> <?= htmlspecialchars($order['seller_email']) ?></span>
                       <span class="order-card__meta"><i class="bi bi-calendar"></i> <?= date('d M Y', strtotime($order['created_at'])) ?></span>
-                    </div>
+                </div>
                 </div>
 
                 <div class="order-card__price-col">
