@@ -74,8 +74,8 @@
 html { font-size: 14px; }
 
 body {
-    margin: 0;
-    padding: 0;
+     margin: 0;
+    padding-top: 56px;
     background: var(--page);
     font-family: var(--font-body);
     font-weight: 300;
@@ -103,9 +103,12 @@ a { color: inherit; }
    3. NAVIGATION
 ============================================================ */
 .site-nav {
-    background: var(--page);
-    position: sticky;
+   background: var(--page);
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
     z-index: 200;
     border-bottom: 1px solid var(--border);
 }
@@ -354,7 +357,7 @@ a { color: inherit; }
 .b-hero {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    min-height: calc(100vh - 56px);
+    height: calc(100vh - 56px);
     margin: 0 !important;
     padding: 0;
     border-bottom: 0.5px solid var(--border);
@@ -368,6 +371,7 @@ a { color: inherit; }
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: flex-start;
     background: var(--page);
 }
 

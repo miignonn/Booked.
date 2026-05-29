@@ -1,5 +1,14 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    ini_set('session.cookie_samesite', 'Lax');
+    ini_set('session.cookie_secure', '1');
+    ini_set('session.cookie_httponly', '1');
+    session_start();
+}
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ .'/../includes/functions.php';
 
