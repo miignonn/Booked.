@@ -66,6 +66,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $error = "Only JPG, PNG, and WEBP images are allowed.";
                     break;
                 }
+                //verify it is a real image, not renamed file
+                if (getimagesize($tmp_name) === false){
+                    $error = "Uploaded file is not a valid image.";
+                    break;
+                }
+
                 if ($file_size > 2 * 1024 * 1024) {
                     $error = "Each image must be under 2MB.";
                     break;
