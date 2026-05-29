@@ -167,33 +167,38 @@ require_once __DIR__ . '/../includes/header.php';
             <p class="listing-page__description"><?= nl2br(htmlspecialchars($listing['description'])) ?></p>
         <?php endif; ?>
 
-        <?php if (isset($_SESSION['user_id'])): ?>
-            <?php if ($listing['status'] === 'pending'): ?>
-                <button class="b-btn b-btn--primary w-100" disabled style="opacity:0.5; cursor:not-allowed;">
-                    No Longer Available
-                </button>
-            <?php else: ?>
-                <form method="POST" action="/cart.php">
-                    <input type="hidden" name="listing_id" value="<?= $listing['id'] ?>">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
-                    <button type="submit" class="b-btn b-btn--primary w-100">
-                        <i class="bi bi-cart-plus"></i> Add to Cart
-                    </button>
-                </form>
-            <?php endif; ?>
-        <?php else: ?>
-            <div class="listing-page__guest">
-                <i class="bi bi-cart listing-page__guest-icon"></i>
-                <div>
-                    <p class="listing-page__guest-title">Books don't add themselves.</p>
-                    <p class="listing-page__guest-sub">Looks like you're browsing as a guest. Join thousands of students already saving on textbooks.</p>
-                    <div class="listing-page__guest-actions">
-                        <a href="/login.php" class="b-btn b-btn--primary">Login</a>
-                        <a href="/login.php?tab=register" class="b-btn b-btn--outline" style="color: var(--page); border-color: rgba(245,242,237,0.3);">Register — it's free!</a>
-                    </div>
-                </div>
+        <!-- prevent users from adding own listing to cart--->
+         <?php if (isset($_SESSION['user_id'])): ?>
+    <?php if ((int)$listing['user_id'] === (int)$_SESSION['user_id']): ?>
+        <button class="b-btn b-btn--outline w-100" disabled style="opacity:0.4; cursor:not-allowed;">
+            This is your listing
+        </button>
+    <?php elseif ($listing['status'] === 'pending'): ?>
+        <button class="b-btn b-btn--primary w-100" disabled style="opacity:0.5; cursor:not-allowed;">
+            No Longer Available
+        </button>
+    <?php else: ?>
+        <form method="POST" action="/cart.php">
+            <input type="hidden" name="listing_id" value="<?= $listing['id'] ?>">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
+            <button type="submit" class="b-btn b-btn--primary w-100">
+                <i class="bi bi-cart-plus"></i> Add to Cart
+            </button>
+        </form>
+    <?php endif; ?>
+<?php else: ?>
+    <div class="listing-page__guest">
+        <i class="bi bi-cart listing-page__guest-icon"></i>
+        <div>
+            <p class="listing-page__guest-title">Books don't add themselves.</p>
+            <p class="listing-page__guest-sub">Looks like you're browsing as a guest. Join thousands of students already saving on textbooks.</p>
+            <div class="listing-page__guest-actions">
+                <a href="/login.php" class="b-btn b-btn--primary">Login</a>
+                <a href="/login.php?tab=register" class="b-btn b-btn--outline" style="color: var(--page); border-color: rgba(245,242,237,0.3);">Register — it's free!</a>
             </div>
-        <?php endif; ?>
+        </div>
+    </div>
+<?php endif; ?>
 
         <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] !== $listing['user_id']): ?>
             <button class="listing-page__report-btn"

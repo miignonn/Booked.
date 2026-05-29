@@ -45,7 +45,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_order'])) {
     $stmt = $conn->prepare("
         UPDATE orders SET status = 'cancelled'
         WHERE id = ? AND buyer_id = ? AND status = 'pending'
+        AND created_at >= NOW() - INTERVAL 24 HOUR
     ");
+    
     $stmt->bind_param("ii", $order_id, $user_id);
     $stmt->execute();
 
