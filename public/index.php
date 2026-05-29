@@ -89,7 +89,8 @@ require_once __DIR__ . '/../includes/header.php';
                             <?php if ($listing['image']): ?>
                                 <img src="/<?= htmlspecialchars($listing['image']) ?>"
                                      alt="<?= htmlspecialchars($listing['title']) ?>"
-                                     class="b-book-card__img">
+                                     class="b-book-card__img"
+                                     loading="lazy">
                             <?php else: ?>
                                 <div class="b-book-card__no-image">
                                     <i class="bi bi-book"></i>

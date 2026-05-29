@@ -98,6 +98,7 @@ require_once __DIR__ . '/../includes/header.php';
                     <?php foreach ($images as $img): ?>
                         <img src="/<?= htmlspecialchars($img['image_path']) ?>"
                              class="listing-page__thumb"
+                             loading="lazy"
                              onclick="document.getElementById('main-image').src=this.src">
                     <?php endforeach; ?>
                 </div>
