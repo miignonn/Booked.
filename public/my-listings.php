@@ -100,7 +100,7 @@ require_once __DIR__ . '/../includes/header.php';
                         <span class="order-card__meta"><i class="bi bi-person"></i> <?= htmlspecialchars($listing['author']) ?></span>
                         <span class="order-card__meta"><i class="bi bi-calendar"></i> <?= date('d M Y', strtotime($listing['created_at'])) ?></span>
                         <?php if ($is_suspended && $listing['status'] === 'available'): ?>
-                            <span class="order-card__meta" style="color: var(--blush)">
+                            <span class="order-card__meta" style="color: var(--dark-brown)">
                                 <i class="bi bi-eye-slash"></i> Hidden (suspended)
                             </span>
                         <?php endif; ?>

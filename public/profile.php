@@ -195,7 +195,7 @@ require_once __DIR__ . '/../includes/header.php';
             </div>
         </div>
 
-        <button type="submit" class="btn-checkout">Save Changes</button>
+        <button type="submit" class="b-btn b-btn--primary">Save Changes</button>
     </form>
 
     <hr class="profile-divider">
@@ -206,7 +206,7 @@ require_once __DIR__ . '/../includes/header.php';
             <p class="profile-password-label">Password</p>
             <p class="profile-password-sub">Last changed: <?= $user['password_changed_at'] ? date('d M Y', strtotime($user['password_changed_at'])) : 'Never' ?></p>
         </div>
-        <button class="btn-browse" style="width:auto; padding: 8px 16px;"
+        <button class="b-btn b-btn--outline"
                 data-bs-toggle="modal" data-bs-target="#passwordModal">
             Change Password
         </button>
@@ -243,11 +243,11 @@ require_once __DIR__ . '/../includes/header.php';
                         <label class="profile-label">Confirm New Password</label>
                         <input type="password" name="confirm_password" class="form-control">
                     </div>
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-outline-secondary w-100"
+                    <div class="profile-modal__actions">
+                        <button type="button" class="b-btn b-btn--outline"
                                 data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" name="change_password"
-                                class="btn btn-dark w-100">Update Password</button>
+                                class="b-btn b-btn--primary">Update Password</button>
                     </div>
                 </form>
             </div>

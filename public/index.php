@@ -40,7 +40,7 @@ require_once __DIR__ . '/../includes/header.php';
 
 <?php if (isset($_SESSION['status']) && $_SESSION['status'] === 'suspended'): ?>
     <div class="flash-alert flash-alert--danger" role="alert">
-        <strong>Account suspended.</strong> You can browse and view listings, but you cannot create or edit listings until your suspension is lifted.
+        <span><strong>Account suspended.</strong> You can browse and view listings, but you cannot create or edit listings until your suspension is lifted.</span>
         <button class="flash-alert__close" onclick="this.parentElement.remove()">×</button>
     </div>
 <?php endif; ?>
