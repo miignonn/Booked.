@@ -76,4 +76,12 @@ function refresh_user_status(mysqli $conn): void{
         $_SESSION['status'] = $row['status'];
     }
 }
+
+function expire_old_listings(mysqli $conn): void{
+    $conn->query("
+    UPDATE listings SET status = 'expired'
+    WHERE status = 'available'
+    AND created_at < NOW() - INTERVAL 60 DAY
+    ");
+}
 ?>

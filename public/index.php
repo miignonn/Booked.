@@ -2,6 +2,12 @@
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../includes/functions.php';
 
+//run expiry check once per session
+if (!isset($_SESSION['expiry_checked'])){
+    expire_old_listings($conn);
+    $_SESSION['expiry_checked'] = true;
+}
+
 // New listings
 $listings_sql = "SELECT listings.*, users.name AS seller_name, categories.name AS category_name
 FROM listings
