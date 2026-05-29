@@ -63,6 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
                 $active_tab = 'login';
             }  else {
                 session_regenerate_id(true);
+                $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                 $_SESSION['user_id']  = $user['id'];
                 $_SESSION['name']     = $user['name'];
                 $_SESSION['username'] = $user['username'];
