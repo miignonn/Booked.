@@ -157,14 +157,17 @@ a { color: inherit; }
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: var(--straw);
-    color: var(--crimson);
-    font-size: 10px;
-    font-weight: 600;
+    background: var(--near-black);
+    color: var(--page);
+    font-family: var(--font-sans);
+    font-size: 0.55rem;
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    margin-left: 2px;
+    position: absolute;
+    top: -6px;
+    right: -6px;
+
 }
 
 .site-nav__btn {
@@ -184,6 +187,11 @@ a { color: inherit; }
 .site-nav__btn:hover {
     opacity: 0.75;
     color: var(--page);
+}
+
+.site-nav__links a[href="/cart.php"] {
+    position: relative;
+    display: inline-flex;
 }
 
 /* Avatar dropdown */
@@ -3008,26 +3016,55 @@ nav[aria-label="breadcrumb"] {
     .site-nav__links { display: none; }
     .site-nav__hamburger { display: block; }
 
-    .b-hero { 
-        grid-template-columns: 1fr; 
-        height: auto; 
-        min-height: calc(100vh - 56px);
-
+    .b-hero {
+        grid-template-columns: 1fr;
+        height: auto;
+        min-height: auto;
     }
-    .b-hero__left { padding: 3rem 2rem; }
-    .b-hero__right { display: none; }
+
+    .b-hero__left {
+        padding: 2rem 1.5rem;
+    }
+
+    .b-hero__right {
+        display: none;
+    }
+
+    .b-hero__heading {
+        font-size: 3rem;
+    }
 
     .b-btn--straw{
         margin-left: 0;
         align-self: auto;
     }
 
-    
     .b-sell {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 3rem 21px;
+        margin: 0;
+        width: 100vw;
     }
+
+    .b-sell__inner {
+        padding: 3rem 1.5rem;
+    }
+
+    .b-sell__steps {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .b-cat-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+
+    .b-section__inner {
+        padding: 2rem 1.5rem;
+    }
+
+    .b-section__title {
+        font-size: 2rem;
+    }
+
     .b-section--paper .b-section__inner {
          padding: 0;
          width: 100%; 
@@ -3125,6 +3162,40 @@ nav[aria-label="breadcrumb"] {
     .auth-field {
         text-align: left; /* keep labels left aligned even when wrap is centered */
     }
+
+     .order-card {
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .order-card__price-col {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-start;
+        width: 100%;
+        gap: 0.5rem;
+        min-width: unset;
+    }
+
+    .order-card__price-left {
+        flex-direction: row;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .order-card__price-actions {
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+
+    .order-card__price-actions .b-btn {
+        width: auto;
+        padding: 0.5rem 0.85rem;
+    }
+
+
 }
 
 @media (max-width: 480px) {

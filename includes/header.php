@@ -93,8 +93,20 @@ if (isset($_SESSION['user_id'])) refresh_user_status($conn);
     <div class="site-nav__mobile" id="navMobile">
         <a class="site-nav__mobile-link" href="/index.php">Home</a>
         <a class="site-nav__mobile-link" href="/browse.php">Browse</a>
+        <?php if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'admin'): ?>
+            <a class="site-nav__mobile-link site-nav__mobile-link--admin" href="/admin/dashboard.php">
+              <i class="bi bi-shield-lock"></i> Admin
+            </a>
+        <?php endif; ?>
         <?php if (isset($_SESSION['user_id'])): ?>
-            <a class="site-nav__mobile-link" href="/cart.php">Cart</a>
+            <a class="site-nav__mobile-link" href="/cart.php">
+               <i class="bi bi-bag"></i> Cart
+        <?php if ($count > 0): ?>
+        <span class="site-nav__badge" style="position:relative; top:0; right:0; margin-left:6px;">
+            <?= $count ?>
+        </span>
+         <?php endif; ?>
+        </a>
             <a class="site-nav__mobile-link" href="/profile.php">Profile</a>
             <a class="site-nav__mobile-link" href="/orders.php">My Orders</a>
             <a class="site-nav__mobile-link" href="/my-listings.php">My Listings</a>
