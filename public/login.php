@@ -125,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
         $error= "Too many registration attempts. Please wait an hour.";
         $active_tab = 'register';
     } else {
-        $_SESSION['resgiter_attempts']++;
+        $_SESSION['register_attempts']++;
     }
     
     $name = trim($_POST['name']);

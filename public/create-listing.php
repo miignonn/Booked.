@@ -119,7 +119,6 @@ require_once __DIR__ .'/../includes/header.php';
     <div class="form-error"><?= htmlspecialchars($error) ?></div>
 <?php endif; ?>
 
-    <
 <form method="POST" enctype="multipart/form-data" class="create-listing-form">
     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
 

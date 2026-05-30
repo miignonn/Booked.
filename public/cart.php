@@ -124,12 +124,6 @@ require_once __DIR__. '/../includes/header.php';
             <?php foreach ($cart_items as $item): ?>
                 <div class="cart-item">
 
-                    <?php if ($item['status'] !== 'available' && $item['status'] !== 'pending'): ?>
-                        <div class="form-error cart-item__unavailable">
-                            This listing is no longer available and cannot be checked out.
-                        </div>
-                    <?php endif; ?>
-
                     <div class="cart-item__thumb">
                         <?php if ($item['image']): ?>
                             <img src="/<?= htmlspecialchars($item['image']) ?>" alt="">
