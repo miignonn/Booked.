@@ -40,8 +40,9 @@ if (isset($_SESSION['user_id'])) refresh_user_status($conn);
                     </a>
                 <?php endif; ?>
  
-                <a class="site-nav__link" href="/cart.php">
-                    <i class="bi bi-bag"></i>
+                <a class="site-nav__link site-nav__cart" href="/cart.php">
+                      <span class="site-nav__cart-wrap">
+                      <i class="bi bi-bag"></i>
                     <?php
                     $cart_count = $conn->prepare("SELECT COUNT(*) as count FROM cart WHERE user_id = ?");
                     $cart_count->bind_param("i", $_SESSION['user_id']);
@@ -49,6 +50,7 @@ if (isset($_SESSION['user_id'])) refresh_user_status($conn);
                     $count = $cart_count->get_result()->fetch_assoc()['count'];
                     if ($count > 0) echo '<span class="site-nav__badge">' . $count . '</span>';
                     ?>
+                </span>
                 </a>
  
                 <div class="site-nav__dropdown">
