@@ -247,7 +247,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <label class="b-eyebrow">Institution</label>
                 <input type="text" name="institution" class="auth-input"
                        value="<?= isset($institution) ? htmlspecialchars($institution) : '' ?>"
-                       placeholder="e.g. Eduvos">
+                       placeholder="e.g. Eduvos" required>
             </div>
             <div class="auth-field">
                 <label class="b-eyebrow">Password <span class="auth-required">*</span></label>
