@@ -67,8 +67,8 @@ if(empty($current_password) || empty($new_password) || empty($confirm_password))
         if($check->num_rows > 0){
             $error = "This username is already taken";
         } else {
-            $stmt = $conn->prepare("UPDATE users SET name = ?, username = ?, institution = ?, phone = ? WHERE id = ?");
-            $stmt->bind_param("ssssi", $name, $username, $institution, $phone, $user_id);
+            $stmt = $conn->prepare("UPDATE users SET name = ?, username = ?, institution = ? WHERE id = ?");
+            $stmt->bind_param("sssi", $name, $username, $institution, $user_id);
 
             if ($stmt->execute()){
                 $_SESSION['name'] = $name;
@@ -77,8 +77,6 @@ if(empty($current_password) || empty($new_password) || empty($confirm_password))
                 $user['name'] = $name;
                 $user['username'] = $username;
                 $user['institution'] = $institution;
-                $user['phone'] = $phone;
-
             } else {
                 $error = "Something went wrong. Please try again.";
             }
@@ -114,7 +112,7 @@ require_once __DIR__ . '/../includes/header.php';
 <div class="profile-page">
 
     <!-- Warning banner -->
-    <?php if (!empty($user['warnings']) && $user['warnings'] > 0 && !$is_suspended): ?>
+    <?php if (!empty($user['warnings']) && $user['warnings'] > 0 && !$is_suspended && !empty($user['suspended_at'])): ?>
         <div class="profile-warning-banner">
             <i class="bi bi-exclamation-triangle-fill profile-warning-banner__icon"></i>
             <div>
@@ -187,11 +185,6 @@ require_once __DIR__ . '/../includes/header.php';
                 <label class="profile-label">Institution <span class="profile-required">*</span></label>
                 <input type="text" name="institution" class="form-control"
                        value="<?= htmlspecialchars($user['institution'] ?? '') ?>" required>
-            </div>
-            <div class="profile-field">
-                <label class="profile-label">Phone Number <span class="profile-required">*</span></label>
-                <input type="text" name="phone" class="form-control"
-                       value="<?= htmlspecialchars($user['phone'] ?? '') ?>" required>
             </div>
         </div>
 

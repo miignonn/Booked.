@@ -91,10 +91,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $conn->prepare("INSERT INTO listings
             (user_id, category_id, title, author, edition, institution, description, price, `condition`, status, image)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("iisssssdsss",
+            $stmt->bind_param("iissssssss",
             $user_id, $category_id, $title, $author, $edition,
             $institution, $description, $price, $condition, $status, $primary_image);
-
+       
         if ($stmt->execute()) {
             $listing_id = $conn->insert_id;
 

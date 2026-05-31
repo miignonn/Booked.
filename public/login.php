@@ -232,27 +232,22 @@ require_once __DIR__ . '/../includes/header.php';
             <div class="auth-field">
                 <label class="b-eyebrow">Full Name <span class="auth-required">*</span></label>
                 <input type="text" name="name" class="auth-input"
-                       placeholder="Your full name" required>
+                     value="<?= isset($name) ? htmlspecialchars($name) : '' ?>"
+                     placeholder="Your full name" required>
             </div>
             <div class="auth-field">
                 <label class="b-eyebrow">Username <span class="auth-required">*</span></label>
                 <input type="text" name="username" class="auth-input"
-                       placeholder="user123" autocomplete="off" required>
+                  value="<?= isset($username) ? htmlspecialchars($username) : '' ?>"
+                  placeholder="user123" autocomplete="off" required>
             </div>
-            <div class="auth-field">
-                <label class="b-eyebrow">Email Address <span class="auth-required">*</span></label>
-                <input type="email" name="email" class="auth-input"
-                       placeholder="example@institution.ac.za" autocomplete="off" required>
+            <input type="email" name="email" class="auth-input"
+                  value="<?= isset($email) ? htmlspecialchars($email) : '' ?>"
+                  placeholder="example@institution.ac.za" autocomplete="off" required>
             </div>
-            <div class="auth-field">
-                <label class="b-eyebrow">Institution</label>
-                <input type="text" name="institution" class="auth-input"
-                       placeholder="e.g. Eduvos">
-            </div>
-            <div class="auth-field">
-                <label class="b-eyebrow">Phone Number</label>
-                <input type="text" name="phone" class="auth-input"
-                       placeholder="xxx xxx xxxx">
+            <input type="text" name="institution" class="auth-input"
+                   value="<?= isset($institution) ? htmlspecialchars($institution) : '' ?>"
+                   placeholder="e.g. Eduvos">
             </div>
             <div class="auth-field">
                 <label class="b-eyebrow">Password <span class="auth-required">*</span></label>
@@ -285,20 +280,5 @@ function showTab(tab, el) {
     el.classList.add('active');
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    const phoneInput = document.querySelector('input[name="phone"]');
-    if (phoneInput) {
-        phoneInput.addEventListener('input', function (e) {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length > 10) value = value.slice(0, 10);
-            if (value.length >= 7) {
-                value = value.slice(0, 3) + ' ' + value.slice(3, 6) + ' ' + value.slice(6);
-            } else if (value.length >= 4) {
-                value = value.slice(0, 3) + ' ' + value.slice(3);
-            }
-            e.target.value = value;
-        });
-    }
-});
 </script>
 <?php require_once '../includes/footer.php'; ?>
