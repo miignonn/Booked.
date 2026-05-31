@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                 }
                 $order_id = $conn->insert_id;
 
-                $$lock = $conn->prepare("UPDATE listings SET status = 'pending' WHERE id = ? AND status = 'available'");
+                $lock = $conn->prepare("UPDATE listings SET status = 'pending' WHERE id = ? AND status = 'available'");
                 $lock->bind_param("i", $listing_id);
                 $lock->execute();
 
