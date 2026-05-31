@@ -164,7 +164,7 @@ function status_badge(string $status): string {
                   <form method="POST">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
                     <input type="hidden" name="order_id" value="<?= $order['id'] ?>">
-                    <button type="submit" name="mark_received" class="b-btn b-btn--primary">
+                    <button type="submit" name="mark_received" class="btn-handover">
                     Mark as Received
                     </button>
                   </form>
@@ -222,7 +222,7 @@ function status_badge(string $status): string {
                         <form method="POST">
                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
                             <input type="hidden" name="order_id" value="<?= $order['id'] ?>">
-                            <button type="submit" name="confirm_handover" class="b-btn b-btn--primary">
+                            <button type="submit" name="confirm_handover" class="btn-handover">
                                 Confirm Handover
                             </button>
                         </form>

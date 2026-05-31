@@ -33,10 +33,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['listing_id'])) {
         $insert->bind_param("ii", $user_id, $listing_id);
         $insert->execute();
 
-        // Lock the listing so no one else can add it
-        $lock = $conn->prepare("UPDATE listings SET status = 'pending' WHERE id = ? AND status = 'available'");
-        $lock->bind_param("i", $listing_id);
-        $lock->execute();
     }
 
     set_flash('success', 'Item added to cart!');
@@ -57,13 +53,6 @@ if (isset($_GET['remove'])) {
     $del = $conn->prepare("DELETE FROM cart WHERE id = ? AND user_id = ?");
     $del->bind_param("ii", $remove_id, $user_id);
     $del->execute();
-
-    // Restore listing to available
-    if ($cart_row) {
-        $restore = $conn->prepare("UPDATE listings SET status = 'available' WHERE id = ?");
-        $restore->bind_param("i", $cart_row['listing_id']);
-        $restore->execute();
-    }
 
     set_flash('success', 'Item removed from cart.');
     header('Location: /cart.php');
@@ -176,7 +165,7 @@ require_once __DIR__. '/../includes/header.php';
                 </div>
             </div>
 
-            <?php $has_unavailable = array_filter($cart_items, fn($i) => $i['status'] !== 'available' && $i['status'] !== 'pending'); ?>
+            <?php $has_unavailable = array_filter($cart_items, fn($i) => $i['status'] !== 'available'); ?>
             <?php if ($has_unavailable): ?>
                 <button class="btn-checkout btn-checkout--disabled" disabled>
                     Remove unavailable items first

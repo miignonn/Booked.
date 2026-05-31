@@ -155,20 +155,20 @@ a { color: inherit; }
 .site-nav__link--admin { opacity: 0.8; }
 
 .site-nav__badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 16px;
+    height: 16px;
+    font-size: 0.5rem;
+    background: var(--near-black);
+    color: var(--page);
+    border-radius: 50%;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: var(--near-black);
-    color: var(--page);
-    font-family: var(--font-sans);
-    font-size: 0.55rem;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    position: absolute;
-    top: -6px;
-    right: -6px;
 }
+
 
 .site-nav__btn {
     font-family: var(--font-sans);
@@ -1435,6 +1435,28 @@ input[type="range"]::-moz-range-thumb {
     margin: 0 0 1.5rem;
 }
 
+.btn-handover {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-size: 0.62rem;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1.5px solid #648C50;
+    background: transparent;
+    color: #648C50;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+
+.btn-handover:hover {
+    background: #648C50;
+    color: #fff;
+}
+
 /* ============================================================
    15. STEP BAR
 ============================================================ */
@@ -2086,7 +2108,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
 
 .btn-checkout {
     display: block;
-    width: 100%;
+    width: 50%;
     padding: 13px;
     background: var(--dark-brown);
     color: var(--page);
@@ -2839,8 +2861,12 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     border-radius: 20px;
 }
 
-.condition-badge--success  { background: #D4EDDA; color: #2A6636; }
-.condition-badge--info     { background: #D1ECF1; color: #0C5460; }
+
+.condition-badge--success  { background: #D4EDDA; color: #2A6636; }  /* New */
+.condition-badge--info     { background: #E8F5E0; color: #4A7C35; }  /* Like new */
+.condition-badge--warning  { background: #FFF3CD; color: #856404; }  /* Good */
+.condition-badge--danger   { background: #FADBD8; color: #C0392B; }  /* Fair */
+.condition-badge--secondary{ background: #F1948A; color: #7B241C; }  /* Poor */
 
 nav[aria-label="breadcrumb"] {
     padding: 1.5rem var(--page-px) 1rem;
@@ -3149,8 +3175,9 @@ html, body {
     }
 
     .order-card__price-actions .b-btn {
-        width: auto;
-        padding: 0.5rem 0.85rem;
+         font-size: 0.55rem;
+    padding: 0.4rem 0.8rem;
+    letter-spacing: 0.12em;
     }
 }
 
