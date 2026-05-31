@@ -61,9 +61,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                 }
                 $order_id = $conn->insert_id;
 
-                $lock = $conn->prepare("UPDATE listings SET status = 'pending' WHERE id = ?");
+                $$lock = $conn->prepare("UPDATE listings SET status = 'pending' WHERE id = ? AND status = 'available'");
                 $lock->bind_param("i", $listing_id);
                 $lock->execute();
+
+                if ($lock->affected_rows === 0) {
+                 $error = "Sorry, this listing was taken by another buyer. Please remove it from your cart.";
+                break;
+                }
 
                 $clear = $conn->prepare("DELETE FROM cart WHERE listing_id = ? AND user_id = ?");
                 $clear->bind_param("ii", $listing_id, $user_id);
