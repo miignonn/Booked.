@@ -30,7 +30,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         
     } elseif ($action == 'activate'){
         //restore a suspended or banned user back to active
-        $stmt= $conn->prepare("UPDATE users SET status = 'active', 'suspended_ at' = NULL WHERE id = ?");
+       $stmt = $conn->prepare("UPDATE users SET status = 'active', `suspended_at` = NULL WHERE id = ?");
         $stmt->bind_param("i", $target_id);
         $stmt->execute();
         $action_success = "User reactivated successfully.";
