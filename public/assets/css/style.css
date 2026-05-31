@@ -1568,6 +1568,16 @@ input[type="range"]::-moz-range-thumb {
     padding: 0 var(--page-px) 3rem;
 }
 
+.cart-page {
+        padding: 1rem var(--page-px-mobile) 3rem;
+        overflow-x: hidden;
+    }
+
+.cart__count {
+        padding: 0 var(--page-px-mobile);
+    }
+
+
 .cart-section {
     background: var(--paper);
     padding: 1.5rem;
@@ -3103,15 +3113,21 @@ html, body {
     .site-footer__inner { grid-template-columns: 1fr; gap: 2rem; }
 
     /* Cart & Checkout */
-    .cart-layout { grid-template-columns: 1fr; }
+    .cart-layout { grid-template-columns: 1fr; padding: 0; width: 100%; }
     .cart-item { gap: 10px; }
     .cart-item__thumb { width: 52px; height: 52px; }
 
     /* Listing page */
     .listing-page {
         grid-template-columns: 1fr;
-        padding: 1rem var(--page-px);
         gap: 1.5rem;
+        padding: 1rem var(--page-px-mobile);
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    .listing-page__details {
+        padding-right: 0;
     }
 
     .listing-page__media {
