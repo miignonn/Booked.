@@ -3255,6 +3255,10 @@ html, body {
     padding: 0.4rem 0.8rem;
     letter-spacing: 0.12em;
     }
+
+    .btn-checkout{
+        width: 50%;
+    }
 }
 
 @media (max-width: 480px) {
