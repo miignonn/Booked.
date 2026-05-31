@@ -156,10 +156,10 @@ a { color: inherit; }
 
 .site-nav__badge {
     position: absolute;
-    top: -8px;
-    right: -8px;
-    width: 16px;
-    height: 16px;
+    top: -6px;
+    right: -10px;
+    width: 18px;
+    height: 18px;
     font-size: 0.5rem;
     background: var(--near-black);
     color: var(--page);
@@ -167,6 +167,8 @@ a { color: inherit; }
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    font-family: var(--font-sans);
+    line-height: 1;
 }
 
 
@@ -191,6 +193,8 @@ a { color: inherit; }
 .site-nav__links a[href="/cart.php"] {
     position: relative;
     display: inline-flex;
+    align-items: center;
+    padding: 4px;
 }
 
 /* Avatar dropdown */
@@ -656,10 +660,10 @@ a { color: inherit; }
     color: var(--near-black);
 }
 
-.b-book-card__cond--new  { background: #D4E0E8; color: #1E3040; }
-.b-book-card__cond--good { background: #DDE8D0; color: #2E4020; }
-.b-book-card__cond--fair { background: #F5E8CE; color: #6B4820; }
-.b-book-card__cond--poor { background: var(--crimson-light); color: var(--crimson); }
+.b-book-card__cond--new  { background: #D4EDDA; color: #2A6636; }
+.b-book-card__cond--good { background: #FFF3CD; color: #856404; }
+.b-book-card__cond--fair { background: #FADBD8; color: #C0392B; }
+.b-book-card__cond--poor { background: #F1948A; color: #7B241C; }
 
 .b-book-card__subj {
     font-family: var(--font-sans);
@@ -2805,7 +2809,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
 
 .listing-page__spec-val {
     font-family: var(--font-body);
-    font-size: 0.9rem;
+    font-size: 1.2rem;
     color: var(--near-black);
     text-align: right;
 }
@@ -3043,6 +3047,27 @@ html, body {
     }
 
     .b-section__title { font-size: 2rem; }
+
+    .b-book-grid {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        background: transparent;
+        border: none;
+        gap: 1px;
+    }
+        
+
+    .b-book-grid::-webkit-scrollbar { display: none; }
+
+    .b-book-card {
+        min-width: 75vw;
+        flex-shrink: 0;
+        scroll-snap-align: start;
+    }
 
     /* Footer */
     .site-footer__inner { grid-template-columns: 1fr; gap: 2rem; }
