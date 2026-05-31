@@ -39,7 +39,6 @@ $allowed_domains = [
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     verify_csrf();
 
-    //rate limiting
     if (!isset($_SESSION['login_attempts'])){
         $_SESSION['login_attempts'] = 0;
         $_SESSION['login_time'] = time();
@@ -75,7 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
 
         if ($user && password_verify($password, $user['password'])) {
 
-            //auto-unsuspend after 30 days
             if($user['status'] === 'suspended'){
                 $suspended_at = $user['suspended_at'] ?? $user['created_at'];
                 if (strtotime($suspended_at . ' + 30 days') < time()){
@@ -89,14 +87,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
             if ($user['status'] === 'banned') {
                 $error      = "Your account has been permanently banned.";
                 $active_tab = 'login';
-            }  else {
+            } else {
                 session_regenerate_id(true);
                 $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                 $_SESSION['user_id']  = $user['id'];
                 $_SESSION['name']     = $user['name'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['role']     = $user['role'];
-                $_SESSION['status'] = $user['status'];
+                $_SESSION['status']   = $user['status'];
                 header('Location: /index.php');
                 exit();
             }
@@ -112,7 +110,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
     verify_csrf();
 
-    //rate-limiting
     if (!isset($_SESSION['register_attempts'])){
         $_SESSION['register_attempts'] = 0;
         $_SESSION['register_time'] = time();
@@ -122,20 +119,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
         $_SESSION['register_time'] = time();
     }
     if ($_SESSION['register_attempts'] >= 3){
-        $error= "Too many registration attempts. Please wait an hour.";
+        $error = "Too many registration attempts. Please wait an hour.";
         $active_tab = 'register';
     } else {
         $_SESSION['register_attempts']++;
     }
     
-    $name = trim($_POST['name']);
-    $username = trim($_POST['username']);
-    $email = trim($_POST['email']);
-    $institution = trim($_POST['institution']);
-    $phone = trim($_POST['phone']);
-    $password = $_POST['password'];
+    $name             = trim($_POST['name']);
+    $username         = trim($_POST['username']);
+    $email            = trim($_POST['email']);
+    $institution      = trim($_POST['institution']);
+    $password         = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
-    $active_tab = 'register';
+    $active_tab       = 'register';
 
     if (empty($name) || empty($username) || empty($email) || empty($password) || empty($confirm_password)) {
         $error = "Please fill in all required fields.";
@@ -154,7 +150,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
         } elseif ($password !== $confirm_password){
             $error = "Passwords do not match.";
         } else {
-            // check email not taken
             $check = $conn->prepare("SELECT id FROM users WHERE email = ? OR username = ?");
             $check->bind_param("ss", $email, $username);
             $check->execute();
@@ -164,11 +159,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
                 $error = "Email or username already taken.";
             } else {
                 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-                $stmt = $conn->prepare("INSERT INTO users (name, username, email, institution, phone, password) VALUES (?, ?, ?, ?, ?, ?)");
-                $stmt->bind_param("ssssss", $name, $username, $email, $institution, $phone, $hashed_password);
+                $stmt = $conn->prepare("INSERT INTO users (name, username, email, institution, password) VALUES (?, ?, ?, ?, ?)");
+                $stmt->bind_param("sssss", $name, $username, $email, $institution, $hashed_password);
 
                 if ($stmt->execute()) {
-                    $success = "Account created! You can now log in.";
+                    $success    = "Account created! You can now log in.";
                     $active_tab = 'login';
                 } else {
                     $error = "Something went wrong. Please try again.";
@@ -177,6 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
         }
     }
 }
+
 require_once __DIR__ . '/../includes/header.php';
 ?>
 </div><!-- close page-wrap from header -->
@@ -232,22 +228,26 @@ require_once __DIR__ . '/../includes/header.php';
             <div class="auth-field">
                 <label class="b-eyebrow">Full Name <span class="auth-required">*</span></label>
                 <input type="text" name="name" class="auth-input"
-                     value="<?= isset($name) ? htmlspecialchars($name) : '' ?>"
-                     placeholder="Your full name" required>
+                       value="<?= isset($name) ? htmlspecialchars($name) : '' ?>"
+                       placeholder="Your full name" required>
             </div>
             <div class="auth-field">
                 <label class="b-eyebrow">Username <span class="auth-required">*</span></label>
                 <input type="text" name="username" class="auth-input"
-                  value="<?= isset($username) ? htmlspecialchars($username) : '' ?>"
-                  placeholder="user123" autocomplete="off" required>
+                       value="<?= isset($username) ? htmlspecialchars($username) : '' ?>"
+                       placeholder="user123" autocomplete="off" required>
             </div>
-            <input type="email" name="email" class="auth-input"
-                  value="<?= isset($email) ? htmlspecialchars($email) : '' ?>"
-                  placeholder="example@institution.ac.za" autocomplete="off" required>
+            <div class="auth-field">
+                <label class="b-eyebrow">Email Address <span class="auth-required">*</span></label>
+                <input type="email" name="email" class="auth-input"
+                       value="<?= isset($email) ? htmlspecialchars($email) : '' ?>"
+                       placeholder="example@institution.ac.za" autocomplete="off" required>
             </div>
-            <input type="text" name="institution" class="auth-input"
-                   value="<?= isset($institution) ? htmlspecialchars($institution) : '' ?>"
-                   placeholder="e.g. Eduvos">
+            <div class="auth-field">
+                <label class="b-eyebrow">Institution</label>
+                <input type="text" name="institution" class="auth-input"
+                       value="<?= isset($institution) ? htmlspecialchars($institution) : '' ?>"
+                       placeholder="e.g. Eduvos">
             </div>
             <div class="auth-field">
                 <label class="b-eyebrow">Password <span class="auth-required">*</span></label>
@@ -270,7 +270,7 @@ require_once __DIR__ . '/../includes/header.php';
 </div>
 
 <div class="page-wrap"></div>
-   
+
 <script>
 function showTab(tab, el) {
     event.preventDefault();
@@ -279,6 +279,6 @@ function showTab(tab, el) {
     document.querySelectorAll('.auth-tab').forEach(a => a.classList.remove('active'));
     el.classList.add('active');
 }
-
 </script>
+
 <?php require_once '../includes/footer.php'; ?>
