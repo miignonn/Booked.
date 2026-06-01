@@ -25,7 +25,7 @@ Booked is a full-stack C2C e-commerce web application developed using PHP and MY
 **Backend:** PHP (plain)
 **Database:** MYSQL (hosted on Railway)
 **Frontend:** HTML, CSS, JavaScript, Bootstrap 5
-**Version Control**: Git/GitHub
+**Version Control:** Git/GitHub
 
 ## What I learned
 
