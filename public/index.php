@@ -51,6 +51,30 @@ require_once __DIR__ . '/../includes/header.php';
     </div>
 <?php endif; ?>
 
+<?php 
+$pending_sale = null;
+if (isset($_SESSION['user_id'])){
+$pending_stmt = $conn->prepare("
+SELECT COUNT(*) as count FROM orders
+WHERE seller_id = ? AND status = 'pending'
+");
+$pending_stmt->bind_param("i", $_SESSION['user_id']);
+$pending_stmt->execute();
+$pending_sale = $pending_stmt->get_result()->fetch_assoc()['count'];
+}
+?>
+
+<?php if (!empty($pending_sale) && $pending_sale > 0): ?>
+<div class="flash-alert flash-alert--warning" role="alert">
+    <p>
+        <strong> You have <?= $pending_sale ?> pending sale <?= $pending_sale > 1 ? 's' : '' ?>!</strong>
+        A buyer has placed an order for your listing.
+        <a href="/orders.php?tab=selling">View your orders</a>
+    </p>
+    <button class="flash-alert__close" onclick="this.parentElement.remove()">x</button>
+</div>
+<?php endif; ?>
+
 <!-- HERO -->
 <section class="b-hero">
     <div class="b-hero__left">
