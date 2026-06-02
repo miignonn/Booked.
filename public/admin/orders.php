@@ -11,14 +11,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($order_id > 0) {
 
         if ($action == 'set_status') {
-            $new_status      = $_POST['new_status'] ?? '';
+            $new_status       = $_POST['new_status'] ?? '';
             $allowed_statuses = ['pending', 'handed_over', 'completed', 'cancelled'];
 
             if (in_array($new_status, $allowed_statuses, true)) {
                 $stmt = $conn->prepare("UPDATE orders SET status = ? WHERE id = ?");
                 $stmt->bind_param("si", $new_status, $order_id);
                 $stmt->execute();
+
+                $listing_status = match($new_status) {
+                    'pending'     => 'available',
+                    'handed_over' => 'available',
+                    'completed'   => 'sold',
+                    'cancelled'   => 'available',
+                };
+
+                $sync = $conn->prepare("
+                    UPDATE listings SET status = ?
+                    WHERE id = (SELECT listing_id FROM orders WHERE id = ?)
+                ");
+                $sync->bind_param("si", $listing_status, $order_id);
+                $sync->execute();
+
                 $action_success = "Order status updated to \"$new_status\".";
+
             } else {
                 $action_error = "Invalid status value.";
             }
@@ -59,10 +75,8 @@ $sql = "
         l.condition     AS listing_condition,
         buyer.username  AS buyer_name,
         buyer.email     AS buyer_email,
-        buyer.phone     AS buyer_phone,
         seller.username AS seller_name,
-        seller.email    AS seller_email_account,
-        seller.phone    AS seller_phone
+        seller.email    AS seller_email_account
     FROM orders o
     JOIN listings l       ON o.listing_id = l.id
     JOIN users    buyer   ON o.buyer_id   = buyer.id
@@ -83,7 +97,6 @@ $stmt->execute();
 $orders = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $total  = count($orders);
 
-//status counts for summary strip
 $status_counts = [];
 $count_result  = $conn->query("SELECT status, COUNT(*) AS total FROM orders GROUP BY status");
 while ($row = $count_result->fetch_assoc()) {
@@ -181,33 +194,27 @@ require_once __DIR__ . '/../../includes/admin-header.php';
         <?php else: ?>
             <?php foreach ($orders as $o): ?>
             <tr>
-                <!---- Order ID ---->
                 <td>
                     <p class="table-main-text">#<?= $o['id'] ?></p>
                 </td>
 
-                <!---- Listing ---->
                 <td>
                     <p class="table-main-text"><?= htmlspecialchars($o['listing_title']) ?></p>
                     <p class="table-sub-text">by <?= htmlspecialchars($o['listing_author'] ?? '—') ?></p>
                 </td>
 
-                <!---- Buyer ---->
                 <td>
                     <p class="table-main-text"><?= htmlspecialchars($o['buyer_name']) ?></p>
                     <p class="table-sub-text"><?= htmlspecialchars($o['buyer_email']) ?></p>
                 </td>
 
-                <!---- Seller ---->
                 <td>
                     <p class="table-main-text"><?= htmlspecialchars($o['seller_name']) ?></p>
                     <p class="table-sub-text"><?= htmlspecialchars($o['seller_email_account']) ?></p>
                 </td>
 
-                <!---- Amount ---->
                 <td class="table-main-text">R<?= number_format((float)$o['total_price'], 2) ?></td>
 
-                <!---- Status badge ---->
                 <td>
                     <span class="admin-badge <?= match($o['status']) {
                         'pending'     => 'badge-warning',
@@ -220,14 +227,11 @@ require_once __DIR__ . '/../../includes/admin-header.php';
                     </span>
                 </td>
 
-                <!---- Date ---->
                 <td class="table-sub-text"><?= date('d M Y', strtotime($o['created_at'])) ?></td>
 
-                <!---- Actions ---->
                 <td>
                     <div class="action-buttons">
 
-                        <!---- View details button (triggers modal) ---->
                         <button
                             class="admin-btn admin-btn--sm"
                             type="button"
@@ -240,10 +244,8 @@ require_once __DIR__ . '/../../includes/admin-header.php';
                             data-listing-price="<?= number_format((float)$o['listing_price'], 2) ?>"
                             data-buyer-name="<?= htmlspecialchars($o['buyer_name'], ENT_QUOTES) ?>"
                             data-buyer-email="<?= htmlspecialchars($o['buyer_email'], ENT_QUOTES) ?>"
-                            data-buyer-phone="<?= htmlspecialchars($o['buyer_phone'] ?? '—', ENT_QUOTES) ?>"
                             data-seller-name="<?= htmlspecialchars($o['seller_name'], ENT_QUOTES) ?>"
                             data-seller-email="<?= htmlspecialchars($o['seller_email_account'], ENT_QUOTES) ?>"
-                            data-seller-phone="<?= htmlspecialchars($o['seller_phone'] ?? '—', ENT_QUOTES) ?>"
                             data-campus="<?= htmlspecialchars($o['campus'] ?? '—', ENT_QUOTES) ?>"
                             data-preferred-time="<?= htmlspecialchars($o['preferred_time'] ?? '—', ENT_QUOTES) ?>"
                             data-total="<?= number_format((float)$o['total_price'], 2) ?>"
@@ -252,14 +254,13 @@ require_once __DIR__ . '/../../includes/admin-header.php';
                             View
                         </button>
 
-                        <!---- Status change forms ---->
                         <?php foreach (['pending', 'handed_over', 'completed', 'cancelled'] as $s): ?>
                         <?php if ($s !== $o['status']): ?>
                             <form method="POST">
-                                <input type="hidden" name="csrf_token"  value="<?= htmlspecialchars(csrf_token()) ?>">
-                                <input type="hidden" name="order_id"    value="<?= (int)$o['id'] ?>">
-                                <input type="hidden" name="action"      value="set_status">
-                                <input type="hidden" name="new_status"  value="<?= $s ?>">
+                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
+                                <input type="hidden" name="order_id"   value="<?= (int)$o['id'] ?>">
+                                <input type="hidden" name="action"     value="set_status">
+                                <input type="hidden" name="new_status" value="<?= $s ?>">
                                 <button type="submit" class="admin-btn admin-btn--sm">
                                     <?= ucfirst(str_replace('_', ' ', $s)) ?>
                                 </button>
@@ -267,7 +268,6 @@ require_once __DIR__ . '/../../includes/admin-header.php';
                         <?php endif; ?>
                         <?php endforeach; ?>
 
-                        <!---- Delete ---->
                         <form method="POST" class="delete-form">
                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
                             <input type="hidden" name="order_id"   value="<?= (int)$o['id'] ?>">
@@ -281,13 +281,12 @@ require_once __DIR__ . '/../../includes/admin-header.php';
             <?php endforeach; ?>
         <?php endif; ?>
         </tbody>
-
     </table>
 </div>
 
 </main>
 
-<!---- Order Details Modal ---> 
+<!---- Order Details Modal ---->
 <div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content" style="background: var(--off-white); border: 1px solid var(--border); border-radius: 12px;">
@@ -303,7 +302,6 @@ require_once __DIR__ . '/../../includes/admin-header.php';
             <div class="modal-body">
                 <div class="row g-4">
 
-                    <!---- Listing details ---->
                     <div class="col-12">
                         <p class="stat-label mb-2">Listing</p>
                         <div class="admin-table-card p-3">
@@ -314,13 +312,11 @@ require_once __DIR__ . '/../../includes/admin-header.php';
                         </div>
                     </div>
 
-                    <!---- Buyer and Seller side by side ---->
                     <div class="col-md-6">
                         <p class="stat-label mb-2">Buyer</p>
                         <div class="admin-table-card p-3">
                             <p class="table-main-text mb-1" id="modal-buyer-name"></p>
-                            <p class="table-sub-text mb-1" id="modal-buyer-email"></p>
-                            <p class="table-sub-text mb-0">Phone: <span id="modal-buyer-phone"></span></p>
+                            <p class="table-sub-text mb-0" id="modal-buyer-email"></p>
                         </div>
                     </div>
 
@@ -328,12 +324,10 @@ require_once __DIR__ . '/../../includes/admin-header.php';
                         <p class="stat-label mb-2">Seller</p>
                         <div class="admin-table-card p-3">
                             <p class="table-main-text mb-1" id="modal-seller-name"></p>
-                            <p class="table-sub-text mb-1" id="modal-seller-email"></p>
-                            <p class="table-sub-text mb-0">Phone: <span id="modal-seller-phone"></span></p>
+                            <p class="table-sub-text mb-0" id="modal-seller-email"></p>
                         </div>
                     </div>
 
-                    <!---- Handover details ---->
                     <div class="col-md-6">
                         <p class="stat-label mb-2">Handover Details</p>
                         <div class="admin-table-card p-3">
@@ -342,7 +336,6 @@ require_once __DIR__ . '/../../includes/admin-header.php';
                         </div>
                     </div>
 
-                    <!---- Payment details ---->
                     <div class="col-md-6">
                         <p class="stat-label mb-2">Payment</p>
                         <div class="admin-table-card p-3">
@@ -364,7 +357,6 @@ require_once __DIR__ . '/../../includes/admin-header.php';
 </div>
 
 <script>
-    //populate the order details modal from the clicked button's data attributes
     document.getElementById('orderModal').addEventListener('show.bs.modal', function(event) {
         const btn = event.relatedTarget;
         document.getElementById('modal-order-id').textContent         = '#' + btn.dataset.orderId;
@@ -374,10 +366,8 @@ require_once __DIR__ . '/../../includes/admin-header.php';
         document.getElementById('modal-listing-price').textContent     = btn.dataset.listingPrice;
         document.getElementById('modal-buyer-name').textContent        = btn.dataset.buyerName;
         document.getElementById('modal-buyer-email').textContent       = btn.dataset.buyerEmail;
-        document.getElementById('modal-buyer-phone').textContent       = btn.dataset.buyerPhone;
         document.getElementById('modal-seller-name').textContent       = btn.dataset.sellerName;
         document.getElementById('modal-seller-email').textContent      = btn.dataset.sellerEmail;
-        document.getElementById('modal-seller-phone').textContent      = btn.dataset.sellerPhone;
         document.getElementById('modal-campus').textContent            = btn.dataset.campus;
         document.getElementById('modal-preferred-time').textContent    = btn.dataset.preferredTime;
         document.getElementById('modal-total').textContent             = btn.dataset.total;
@@ -385,7 +375,6 @@ require_once __DIR__ . '/../../includes/admin-header.php';
         document.getElementById('modal-date').textContent              = btn.dataset.date;
     });
 
-    //delete confirmation
     document.querySelectorAll('.delete-form').forEach(function(form) {
         form.addEventListener('submit', function(e) {
             if (!confirm('Delete this order? This cannot be undone.')) {
