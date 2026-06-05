@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->bind_param("i", $report_id);
             $stmt->execute();
             $action_success = "Report dismissed.";
- 
+
         } elseif ($action == 'warn') {
             //get the listing owner from the report
             $stmt = $conn->prepare("
@@ -57,7 +57,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $stmt->bind_param("i", $report_id);
                 $stmt->execute();
             }
- 
+
+        } elseif ($action == 'flag') {
+            // get the listing id from the report
+            $stmt = $conn->prepare("SELECT listing_id FROM reports WHERE id = ? LIMIT 1");
+            $stmt->bind_param("i", $report_id);
+            $stmt->execute();
+            $result = $stmt->get_result()->fetch_assoc();
+
+            if ($result) {
+                // set listing status to flagged
+                $stmt = $conn->prepare("UPDATE listings SET status = 'flagged' WHERE id = ?");
+                $stmt->bind_param("i", $result['listing_id']);
+                $stmt->execute();
+
+                // mark report as reviewed
+                $stmt = $conn->prepare("UPDATE reports SET status = 'reviewed' WHERE id = ?");
+                $stmt->bind_param("i", $report_id);
+                $stmt->execute();
+
+                $action_success = "Listing flagged successfully.";
+            }
+
         } elseif ($action == 'delete') {
             //permanently remove the report
             $stmt = $conn->prepare("DELETE FROM reports WHERE id = ?");
@@ -152,10 +173,10 @@ require_once __DIR__. '/../../includes/admin-header.php';
 <div class="stat-grid stat-grid-4 mb-4">
     <?php
     $strip_stats = [
-        ''        => ['label' => 'Total', 'icon' => 'bi-flag'],
-        'pending' => ['label' => 'Pending',          'icon' => 'bi-hourglass'],
-        'reviewed' => ['label' => 'Reviewed',       'icon' => 'bi-check-circle'],
-        'dismissed' => ['label' => 'Dismissed',            'icon' => 'bi-check-circle'],
+        ''          => ['label' => 'Total',     'icon' => 'bi-flag'],
+        'pending'   => ['label' => 'Pending',   'icon' => 'bi-hourglass'],
+        'reviewed'  => ['label' => 'Reviewed',  'icon' => 'bi-check-circle'],
+        'dismissed' => ['label' => 'Dismissed', 'icon' => 'bi-check-circle'],
     ];
     $total_all = array_sum($status_counts);
     foreach ($strip_stats as $key => $meta):
@@ -174,14 +195,14 @@ require_once __DIR__. '/../../includes/admin-header.php';
 <!---  Filter Bar ----> 
 <form method="GET" class="admin-filter-bar mb-4">
     <select name="status" class="admin-select" onchange="this.form.submit()">
-        <option value="">All Statusses</option>
-        <option value="pending" <?= $filter_status == 'pending' ? 'selected' : '' ?>>Pending</option>
-        <option value="reviewed" <?= $filter_status == 'reviewed' ? 'selected' : '' ?>>Reviewed</option>
+        <option value="">All Statuses</option>
+        <option value="pending"   <?= $filter_status == 'pending'   ? 'selected' : '' ?>>Pending</option>
+        <option value="reviewed"  <?= $filter_status == 'reviewed'  ? 'selected' : '' ?>>Reviewed</option>
         <option value="dismissed" <?= $filter_status == 'dismissed' ? 'selected' : '' ?>>Dismissed</option>
     </select>
 
     <?php if ($filter_status): ?>
-        <a href="reports.php" class="admin-btn--outline">Clear</a>
+        <a href="reports.php" class="admin-btn admin-btn--outline">Clear</a>
     <?php endif; ?>
 </form>
 
@@ -252,6 +273,7 @@ require_once __DIR__. '/../../includes/admin-header.php';
                     <?= ucfirst($r['status'] ?? 'pending') ?>
                     </span>
                 </td>
+
                 <!---- Date ---->
                 <td class="table-sub-text"><?= date('d M Y', strtotime($r['created_at'])) ?></td>
  
@@ -267,6 +289,14 @@ require_once __DIR__. '/../../includes/admin-header.php';
                                 <input type="hidden" name="report_id" value="<?= (int)$r['id'] ?>">
                                 <input type="hidden" name="action"    value="warn">
                                 <button type="submit" class="admin-btn admin-btn--sm">Warn</button>
+                            </form>
+
+                            <!---- Flag listing ---->
+                            <form method="POST">
+                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
+                                <input type="hidden" name="report_id" value="<?= (int)$r['id'] ?>">
+                                <input type="hidden" name="action"    value="flag">
+                                <button type="submit" class="admin-btn admin-btn--sm">Flag</button>
                             </form>
  
                             <!---- Dismiss ---->
@@ -310,4 +340,3 @@ require_once __DIR__. '/../../includes/admin-header.php';
 </script>
  
 <?php require_once '../../includes/admin-footer.php'; ?>
- 

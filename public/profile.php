@@ -180,14 +180,11 @@ require_once __DIR__ . '/../includes/header.php';
             <p class="profile-field-hint">Email cannot be changed.</p>
         </div>
 
-        <div class="listing-field-row">
-            <div class="profile-field">
-                <label class="profile-label">Institution <span class="profile-required">*</span></label>
-                <input type="text" name="institution" class="form-control"
-                       value="<?= htmlspecialchars($user['institution'] ?? '') ?>" required>
-            </div>
+        <div class="profile-field">
+           <label class="profile-label">Institution <span class="profile-required">*</span></label>
+              <input type="text" name="institution" class="form-control"
+               value="<?= htmlspecialchars($user['institution'] ?? '') ?>" required>
         </div>
-
         <button type="submit" class="b-btn b-btn--primary">Save Changes</button>
     </form>
 
