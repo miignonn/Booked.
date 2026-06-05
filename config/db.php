@@ -18,3 +18,6 @@ if ($conn->connect_error) {
     die("Service temporarily unavailable");
 }
 $conn->set_charset('utf8mb4');
+
+
+

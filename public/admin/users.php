@@ -1,6 +1,5 @@
 <?php 
-require_once __DIR__ . '/../../config/db.php';
-require_once __DIR__ . '/../../includes/functions.php';
+require_once __DIR__ . '/../../includes/require_admin.php';
 
 //Handle actions
 if($_SERVER['REQUEST_METHOD'] == 'POST'){

@@ -348,6 +348,7 @@ a { color: inherit; }
     opacity: 0.6;
     padding: 0;
     line-height: 1;
+    font-family: Arial, sans-serif;
 }
 
 .flash-alert__close:hover { opacity: 1; }
@@ -366,6 +367,11 @@ a { color: inherit; }
 
 .flash-alert--warning { background: #FEF3CD; color: #856404; }
 .flash-alert--info    { background: #D1ECF1; color: #0C5460; }
+.flash-alert--warning a{
+    color: inherit;
+    font-weight: 600;
+    text-decoration: underline;
+}
 
 
 /* ============================================================
