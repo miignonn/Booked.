@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     if(empty($campus) || empty($preferred_time)){
         $error = "Please fill in all required fields";
     } else {
-        // stock check - verify all items still available
+        // stock check, verify all items still available
         foreach($cart_items as $item){
             if ($item['status'] !== 'available'){
                 $error = "\"" . htmlspecialchars($item['title']) . "\" is no longer available. Please remove it from your cart.";
@@ -41,43 +41,45 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 
         if (!$error){
             $order_id = 0;
-            foreach($cart_items as $item){
-                $seller_id    = $item['user_id'];
-                $listing_id   = $item['id'];
-                $seller_email = $item['seller_email'];
-                $price        = $item['price'];
+            $conn->begin_transaction();
 
-                $order_stmt = $conn->prepare("
-                    INSERT INTO orders
-                    (listing_id, buyer_id, seller_id, total_price, campus, preferred_time, seller_email, status)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')
-                ");
-                $order_stmt->bind_param("iiidsss", $listing_id, $user_id, $seller_id, $price, $campus, $preferred_time, $seller_email);
-                $order_stmt->execute();
+            try {
+                foreach($cart_items as $item){
+                    $seller_id    = $item['user_id'];
+                    $listing_id   = $item['id'];
+                    $seller_email = $item['seller_email'];
+                    $price        = $item['price'];
 
-                if ($order_stmt->error){
-                    $error = "Order failed: " . $order_stmt->error;
-                    break;
+                    $order_stmt = $conn->prepare("
+                        INSERT INTO orders
+                        (listing_id, buyer_id, seller_id, total_price, campus, preferred_time, seller_email, status)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')
+                    ");
+                    $order_stmt->bind_param("iiidsss", $listing_id, $user_id, $seller_id, $price, $campus, $preferred_time, $seller_email);
+                    $order_stmt->execute();
+                    $order_id = $conn->insert_id;
+
+                    //only update if still available
+                    $lock = $conn->prepare("UPDATE listings SET status = 'pending' WHERE id = ? AND status = 'available'");
+                    $lock->bind_param("i", $listing_id);
+                    $lock->execute();
+
+                    if ($lock->affected_rows === 0) {
+                        throw new Exception("\"" . htmlspecialchars($item['title']) . "\" was just taken by another buyer. Please remove it from your cart.");
+                    }
+
+                    $clear = $conn->prepare("DELETE FROM cart WHERE listing_id = ? AND user_id = ?");
+                    $clear->bind_param("ii", $listing_id, $user_id);
+                    $clear->execute();
                 }
-                $order_id = $conn->insert_id;
 
-                $lock = $conn->prepare("UPDATE listings SET status = 'pending' WHERE id = ? AND status = 'available'");
-                $lock->bind_param("i", $listing_id);
-                $lock->execute();
-
-                if ($lock->affected_rows === 0) {
-                 $error = "Sorry, this listing was taken by another buyer. Please remove it from your cart.";
-                break;
-                }
-
-                $clear = $conn->prepare("DELETE FROM cart WHERE listing_id = ? AND user_id = ?");
-                $clear->bind_param("ii", $listing_id, $user_id);
-                $clear->execute();
-            }
-
-            if (!$error) {
+                $conn->commit();
                 header('Location: /order-confirmed.php?order_id=' . $order_id);
                 exit();
+
+            } catch (Exception $e) {
+                $conn->rollback();
+                $error = $e->getMessage();
             }
         }
     }
