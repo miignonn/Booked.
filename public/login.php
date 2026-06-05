@@ -114,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
         $_SESSION['register_attempts'] = 0;
         $_SESSION['register_time'] = time();
     }
-    if (time() - $_SESSION['register_attempts'] > 3600){
+    if (time() - $_SESSION['register_time'] > 3600){
         $_SESSION['register_attempts'] = 0;
         $_SESSION['register_time'] = time();
     }
