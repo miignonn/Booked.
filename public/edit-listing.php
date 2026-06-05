@@ -92,6 +92,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $file_size = $_FILES['images']['size'][$i];
                 $tmp_name  = $_FILES['images']['tmp_name'][$i];
 
+                // Guard: tmp_name is empty when upload exceeds PHP limits
+                if (empty($tmp_name) || !is_uploaded_file($tmp_name)) {
+                  $error = "One or more files failed to upload. Check your file size and try again.";
+                break;
+                }
+
                 //whitelist the extension from the original filename
                 $ext = strtolower(pathinfo($_FILES['images']['name'][$i], PATHINFO_EXTENSION));
                 if (!array_key_exists($ext, $allowed_extensions)) {
