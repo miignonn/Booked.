@@ -51,23 +51,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $primary_image = null;
 
     if (empty($error) && isset($_FILES['images']) && count($_FILES['images']['name']) > 0) {
-        $allowed_types  = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+        // Whitelisted extensions and their corresponding real MIME types
+        $allowed_extensions = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'webp' => 'image/webp'];
         $uploaded_count = count(array_filter($_FILES['images']['name']));
 
         if ($uploaded_count > 4) {
             $error = "You can upload a maximum of 4 images.";
         } else {
             for ($i = 0; $i < $uploaded_count; $i++) {
-                $file_type = $_FILES['images']['type'][$i];
                 $file_size = $_FILES['images']['size'][$i];
                 $tmp_name  = $_FILES['images']['tmp_name'][$i];
 
-                if (!in_array($file_type, $allowed_types)) {
+                //ehitelist the extension from the original filename
+                $ext = strtolower(pathinfo($_FILES['images']['name'][$i], PATHINFO_EXTENSION));
+                if (!array_key_exists($ext, $allowed_extensions)) {
                     $error = "Only JPG, PNG, and WEBP images are allowed.";
                     break;
                 }
-                //verify it is a real image, not renamed file
-                if (getimagesize($tmp_name) === false){
+
+                //verify the real MIME type from the file itself
+                $real_mime = mime_content_type($tmp_name);
+                if ($real_mime !== $allowed_extensions[$ext]) {
+                    $error = "File content does not match its extension.";
+                    break;
+                }
+
+                //verify it is a real image via GD
+                if (getimagesize($tmp_name) === false) {
                     $error = "Uploaded file is not a valid image.";
                     break;
                 }
@@ -77,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     break;
                 }
 
-                $ext         = pathinfo($_FILES['images']['name'][$i], PATHINFO_EXTENSION);
+                //use only the whitelisted extension
                 $filename    = uniqid('listing_', true) . '.' . $ext;
                 $upload_path = __DIR__ . '/assets/images/' . $filename;
                 move_uploaded_file($tmp_name, $upload_path);
@@ -91,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $conn->prepare("INSERT INTO listings
             (user_id, category_id, title, author, edition, institution, description, price, `condition`, status, image)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param( "iisssssdsss",
+            $stmt->bind_param("iissssssss",
             $user_id, $category_id, $title, $author, $edition,
             $institution, $description, $price, $condition, $status, $primary_image);
        

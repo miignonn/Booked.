@@ -19,6 +19,12 @@ $stmt->bind_param('ii', $id, $_SESSION['user_id']);
 $stmt->execute();
 $listing = $stmt->get_result()->fetch_assoc();
 
+if (!$listing) {
+    set_flash('danger', 'Listing not found.');
+    header('Location: /my-listings.php');
+    exit();
+}
+
 if ($listing['status'] == 'sold') {
     set_flash('danger', 'You are not authorised to edit this listing.');
     header('Location: /my-listings.php');
@@ -42,6 +48,7 @@ if ($current_user['status'] === 'banned'){
     header('Location: /login.php?message=banned');
     exit();
 }
+
 // fetch categories
 $categories = $conn->query("SELECT * FROM categories ORDER BY name ASC");
 
@@ -53,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     verify_csrf();
     $title       = trim($_POST['title']);
     $author      = trim($_POST['author']);
-    $edition        = trim($_POST['edition']);
+    $edition     = trim($_POST['edition']);
     $institution = trim($_POST['institution']);
     $description = trim($_POST['description']);
     $price       = trim($_POST['price']);
@@ -69,7 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // handle image upload
     if (empty($error) && isset($_FILES['images']) && !empty(array_filter($_FILES['images']['name']))) {
-        $allowed_types  = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+        // Whitelisted extensions and their corresponding real MIME types
+        $allowed_extensions = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'webp' => 'image/webp'];
         $uploaded_count = count(array_filter($_FILES['images']['name']));
 
         if ($uploaded_count > 4) {
@@ -81,17 +89,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $del_imgs->execute();
 
             for ($i = 0; $i < $uploaded_count; $i++) {
-                $file_type = $_FILES['images']['type'][$i];
                 $file_size = $_FILES['images']['size'][$i];
                 $tmp_name  = $_FILES['images']['tmp_name'][$i];
 
-                if (!in_array($file_type, $allowed_types)) {
+                //whitelist the extension from the original filename
+                $ext = strtolower(pathinfo($_FILES['images']['name'][$i], PATHINFO_EXTENSION));
+                if (!array_key_exists($ext, $allowed_extensions)) {
                     $error = "Only JPG, PNG, and WEBP images are allowed.";
                     break;
                 }
-                
-                //verify it is an actual image, not renamed file
-                if (getimagesize($tmp_name) === false){
+
+                //verify the real MIME type from the file itself
+                $real_mime = mime_content_type($tmp_name);
+                if ($real_mime !== $allowed_extensions[$ext]) {
+                    $error = "File content does not match its extension.";
+                    break;
+                }
+
+                //verify it is a real image via GD
+                if (getimagesize($tmp_name) === false) {
                     $error = "Uploaded file is not a valid image.";
                     break;
                 }
@@ -101,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     break;
                 }
 
-                $ext         = pathinfo($_FILES['images']['name'][$i], PATHINFO_EXTENSION);
+                //use only the whitelisted extension
                 $filename    = uniqid('listing_', true) . '.' . $ext;
                 $upload_path = __DIR__ . '/assets/images/' . $filename;
                 move_uploaded_file($tmp_name, $upload_path);
@@ -143,11 +159,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
-
-
 <?php if($error): ?>
-    <div class="alert alert-danger"><?=  htmlspecialchars($error) ?></div>
-    <?php endif; ?>
+    <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+<?php endif; ?>
 
 <form method="POST" enctype="multipart/form-data" class="create-listing-form">
     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
@@ -254,34 +268,30 @@ require_once __DIR__ . '/../includes/header.php';
 </form>
     
 <script>
-    function previewImages(input){
-        const preview = document.getElementById('image-preview');
-            preview.innerHTML = '';
-            const files = Array.from(input.files). slice(0,4);
-            files.forEach(file => {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    const wrapper = document.createElement('div');
-                    wrapper.style.cssText = 'position:relative;display:inline-block';
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.style.cssText = 'width:80px;height:80px;object-fit:cover;border-radius:8px;border:2px solid white:box-shadow:0 1px 4px rgba(0,0,0,0.15)';
-                    const btn = document.createElement('button');
-                    btn.innerHTML = 'x';
-                    btn.type = 'button';
-                    btn.style.cssText = 'position:absolute;top:-6px;right:-6px;background:black;color:white;border:none;border-radius: 50%;width:20px;height:20px;font-size:12px;line-height:1;cursor:pointer;padding:0';
-                    btn.onclick = () => wrapper.remove();
-                    wrapper.appendChild(img);
-                    wrapper.appendChild(btn);
-                    preview.appendChild(wrapper);
-                };
-                reader.readAsDataURL(file);
+function previewImages(input) {
+    const preview = document.getElementById('image-preview');
+    preview.innerHTML = '';
+    const files = Array.from(input.files).slice(0, 4);
+    files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = e => {
+            const wrapper = document.createElement('div');
+            wrapper.style.cssText = 'position:relative;display:inline-block';
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.style.cssText = 'width:80px;height:80px;object-fit:cover;border-radius:8px;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.15)';
+            const btn = document.createElement('button');
+            btn.innerHTML = 'x';
+            btn.type = 'button';
+            btn.style.cssText = 'position:absolute;top:-6px;right:-6px;background:black;color:white;border:none;border-radius:50%;width:20px;height:20px;font-size:12px;line-height:1;cursor:pointer;padding:0';
+            btn.onclick = () => wrapper.remove();
+            wrapper.appendChild(img);
+            wrapper.appendChild(btn);
+            preview.appendChild(wrapper);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+</script>
 
-            });
-    }
-    
-    </script>
-
-    <?php require_once '../includes/footer.php'; ?>
-
- 
+<?php require_once '../includes/footer.php'; ?>
