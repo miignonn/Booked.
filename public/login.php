@@ -36,14 +36,15 @@ $allowed_domains = [
     ];
 
 // LOGIN LOGIC
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
-    verify_csrf();
-
-    if (!isset($_SESSION['login_attempts'])){
+if (!isset($_SESSION['login_attempts'])){
         $_SESSION['login_attempts'] = 0;
         $_SESSION['login_time'] = time();
     }
-    
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
+    verify_csrf();
+
+
     if (time() - $_SESSION['login_time'] > 900){
         $_SESSION['login_attempts'] = 0;
         $_SESSION['login_time'] = time();

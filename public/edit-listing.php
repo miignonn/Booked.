@@ -96,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 if (empty($tmp_name) || !is_uploaded_file($tmp_name)) {
                   $error = "One or more files failed to upload. Check your file size and try again.";
                 break;
-                }
+}
 
                 //whitelist the extension from the original filename
                 $ext = strtolower(pathinfo($_FILES['images']['name'][$i], PATHINFO_EXTENSION));
