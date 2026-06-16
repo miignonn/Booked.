@@ -47,11 +47,10 @@ $params = [];
 $types  = '';
 
 if ($search) {
-    // Search by title or module code
-    $where[]  = "(l.title LIKE ? OR l.module_code LIKE ?)";
+    // Search by title 
+    $where[]  = "(l.title LIKE ?)";
     $params[] = "%$search%";
-    $params[] = "%$search%";
-    $types   .= 'ss';
+    $types   .= 's';
 }
 
 if ($filter_status) {
@@ -154,7 +153,7 @@ require_once __DIR__ . '/../../includes/admin-header.php';
     <div class="admin-search-wrap">
         <i class="bi bi-search admin-search-icon"></i>
         <input type="text" name="search" class="admin-search-input"
-               placeholder="Search by title or module code"
+               placeholder="Search by title"
                value="<?= htmlspecialchars($search) ?>">
     </div>
 
